@@ -1,4 +1,4 @@
-package com.intnet.tenant_service;
+package com.intnet.tenant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
