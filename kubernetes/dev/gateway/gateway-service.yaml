@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: intnet-gateway-service
+  name: intnet-gateway
 spec:
-  selector:
-    app: intnet-gateway-service
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
-      nodePort: 30080
-  type: NodePort
+  selector:
+    app: intnet-gateway

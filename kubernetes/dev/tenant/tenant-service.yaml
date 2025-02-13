@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: intnet-tenant-service
+  name: intnet-tenant
 spec:
-  selector:
-    app: intnet-tenant-service
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
-  type: ClusterIP
+  selector:
+    app: intnet-tenant
