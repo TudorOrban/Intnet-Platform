@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intnet-tenant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intnet-tenant
+  template:
+    metadata:
+      labels:
+        app: intnet-tenant
+    spec:
+      containers:
+        - name: intnet-tenant
+          image: intnet-tenant:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
