@@ -63,21 +63,27 @@ public class PolicyServiceImpl implements PolicyService {
                 String description = policy.getDescription();
 
                 try {
+                    logger.info("Role name: {}", roleName);
                     realmResource.roles().get(roleName).toRepresentation();
                     logger.info("Role {} already exists. Skipping creation.", roleName);
                 } catch (NotFoundException e) {
+                    logger.info("Exception: {}", e.getMessage());
                     RoleRepresentation roleRepresentation = new RoleRepresentation();
                     roleRepresentation.setName(roleName);
                     roleRepresentation.setDescription(description);
+                    logger.info("RoleRepresentation - Name: {}", roleRepresentation.getName());
+                    logger.info("RoleRepresentation - Description: {}", roleRepresentation.getDescription());
                     realmResource.roles().create(roleRepresentation);
                     logger.info("Role {} created successfully.", roleName);
+                } catch (Exception innerException) {
+                    logger.error("Error processing policy {}: {}", policy.getName(), innerException.getMessage());
                 }
             }
 
             keycloak.close();
         } catch (Exception e) {
             logger.error("Error creating/updating Keycloak roles: ", e);
-            throw e;
+//            throw e;
         }
     }
 }
