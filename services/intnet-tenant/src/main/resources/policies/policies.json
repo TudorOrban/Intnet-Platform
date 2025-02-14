@@ -1,0 +1,10 @@
+[
+    {
+        "name": "READ_PRODUCT",
+        "description": "Permission to read product information"
+    },
+    {
+        "name": "UPDATE_WAREHOUSE",
+        "description": "Permission to update warehouse"
+    }
+]
