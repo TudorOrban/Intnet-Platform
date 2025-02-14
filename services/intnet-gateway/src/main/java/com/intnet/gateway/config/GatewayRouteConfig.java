@@ -1,4 +1,4 @@
-package com.intnet.gateway.core.config;
+package com.intnet.gateway.config;
 
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;

@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: endpoint-reader
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints", "services", "pods"]
+    verbs: ["list", "get", "watch"]
