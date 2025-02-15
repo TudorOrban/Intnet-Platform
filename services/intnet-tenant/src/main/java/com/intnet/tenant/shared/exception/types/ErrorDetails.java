@@ -1,4 +1,4 @@
-package com.intnet.tenant.shared.exception;
+package com.intnet.tenant.shared.exception.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

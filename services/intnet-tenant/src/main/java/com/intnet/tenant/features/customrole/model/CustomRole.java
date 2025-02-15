@@ -1,13 +1,17 @@
-package com.intnet.tenant.core.policy.model;
+package com.intnet.tenant.features.customrole.model;
 
+import com.intnet.tenant.features.policy.model.Policy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Policy {
+public class CustomRole {
     private String name;
     private String description;
+    private List<Policy> policies;
 }
