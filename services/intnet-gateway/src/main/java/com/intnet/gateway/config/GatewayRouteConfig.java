@@ -17,6 +17,8 @@ public class GatewayRouteConfig {
                 // Tenant
                 .route("test-route", r -> r.path("/api/v1/test/**")
                         .uri(TENANT_SERVICE))
+                .route("custom-roles", r -> r.path("/api/v1/custom-roles/**")
+                        .uri(TENANT_SERVICE))
                 .build();
     }
 }

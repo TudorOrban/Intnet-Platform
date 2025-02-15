@@ -50,4 +50,11 @@ public class GlobalExceptionHandler {
         logger.error("Unavailable Service Exception: {}", errorDetails);
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(OperationFailedException.class)
+    public ResponseEntity<ErrorDetails> handleUnavailableServiceException(OperationFailedException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        logger.error("Operation Failed Exception: {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

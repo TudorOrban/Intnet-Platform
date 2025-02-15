@@ -1,6 +1,5 @@
 package com.intnet.tenant.features.customrole.dto;
 
-import com.intnet.tenant.features.policy.model.Policy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +12,5 @@ import java.util.List;
 public class CreateCustomRoleDto {
     private String name;
     private String description;
-    private List<Policy> policies;
+    private List<String> policyNames;
 }

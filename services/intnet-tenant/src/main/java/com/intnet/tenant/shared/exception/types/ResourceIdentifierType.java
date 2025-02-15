@@ -4,8 +4,8 @@ package com.intnet.tenant.shared.exception.types;
 public enum ResourceIdentifierType {
     ID,
     USER_ID,
-    USERNAME,
     EMAIL,
+    NAME,
     TITLE;
 
     @Override
@@ -13,8 +13,8 @@ public enum ResourceIdentifierType {
         return switch (this) {
             case ID -> "ID";
             case USER_ID -> "User ID";
-            case USERNAME -> "Username";
             case EMAIL -> "Email";
+            case NAME -> "NAME";
             case TITLE -> "Title";
         };
     }
