@@ -15,19 +15,27 @@ spec:
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:26.1.1
-          command: ["/opt/keycloak/bin/kc.sh", "start-dev", "--http-port=8080"]
+          command:
+            - /opt/keycloak/bin/kc.sh
+            - start-dev
+            - --http-port=8080
           ports:
             - containerPort: 8080
           env:
-            - name: KEYCLOAK_USER
+            - name: KEYCLOAK_ADMIN
               value: admin
-            - name: KEYCLOAK_PASSWORD
+            - name: KEYCLOAK_ADMIN_PASSWORD
               value: admin
-            - name: KEYCLOAK_LOG_LEVEL
-              value: DEBUG
-            - name: KC_HTTP_PORT
-              value: "8081"
+          volumeMounts:
+            - name: keycloak-data
+              mountPath: /opt/keycloak/data
+      volumes:
+        - name: keycloak-data
+          persistentVolumeClaim:
+            claimName: keycloak-pvc
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:

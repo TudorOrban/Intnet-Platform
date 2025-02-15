@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intnet.tenant.core.policy.model.Policy;
 import jakarta.ws.rs.NotFoundException;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
@@ -48,15 +49,17 @@ public class PolicyServiceImpl implements PolicyService {
 
             ObjectMapper mapper = new ObjectMapper();
             List<Policy> policies = mapper.readValue(policiesJson, new TypeReference<>() {});
-
-            Keycloak keycloak = Keycloak.getInstance(
-                    keycloakAuthServer,
-                    keycloakRealm,
-                    keycloakClientId,
-                    keycloakClientSecret
-            );
-
+            logger.info("Policies: {}", policies.size());
+            Keycloak keycloak = KeycloakBuilder.builder()
+                    .serverUrl(keycloakAuthServer)
+                    .realm(keycloakRealm)
+                    .clientId(keycloakClientId)
+                    .clientSecret(keycloakClientSecret)
+                    .grantType(org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS)
+                    .build();
+            logger.info("With keycloak");
             RealmResource realmResource = keycloak.realm(keycloakRealm);
+            logger.info("With realm");
 
             for (Policy policy : policies) {
                 String roleName = policy.getName();
