@@ -1,24 +1,16 @@
 package com.intnet.network.core.config;
 
-import org.neo4j.driver.AuthTokens;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.GraphDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.neo4j.core.transaction.Neo4jTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//@Configuration
+@Configuration
+@EnableTransactionManagement
 public class Neo4jConfig {
 
-//    @Bean
-    public Driver neo4jDriver() {
-        String uri = System.getenv("NEO4J_URI");
-        String username = System.getenv("NEO4J_USERNAME");
-        String password = System.getenv("NEO4J_PASSWORD");
-
-        if (uri == null || username == null || password == null) {
-            throw new RuntimeException("Neo4j connection details not found in env");
-        }
-
-        return GraphDatabase.driver(uri, AuthTokens.basic(username, password));
+    @Bean
+    public Neo4jTransactionManager transactionManager(org.neo4j.driver.Driver driver) {
+        return new Neo4jTransactionManager(driver);
     }
 }

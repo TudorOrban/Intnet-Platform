@@ -2,18 +2,22 @@ package com.intnet.network.features.graph.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.*;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class GridGraph {
 
     private Map<Long, GridNode> nodes;
     private Map<Long, Set<Edge>> adjacencyMap;
-    private Map<Long, Edge> edges = new HashMap<>();
+    private Map<Long, Edge> edges;
+
+    public GridGraph() {
+        nodes = new HashMap<>();
+        adjacencyMap = new HashMap<>();
+        edges = new HashMap<>();
+    }
 
     public void addNode(GridNode node) {
         nodes.put(node.getId(), node);

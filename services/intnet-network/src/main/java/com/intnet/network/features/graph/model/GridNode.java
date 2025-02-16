@@ -18,6 +18,8 @@ public class GridNode {
     @GeneratedValue
     private Long id;
 
+    private Long graphId;
+
     private NodeType nodeType;
     private Map<String, Object> properties;
 }

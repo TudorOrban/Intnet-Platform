@@ -17,6 +17,8 @@ public class Edge {
     @GeneratedValue
     private Long id;
 
+    private Long graphId;
+
     private Long sourceId;
     private Long destinationId;
     private Map<String, Object> properties;

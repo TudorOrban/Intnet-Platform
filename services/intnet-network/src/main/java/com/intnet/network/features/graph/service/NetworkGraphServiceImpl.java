@@ -1,5 +1,6 @@
 package com.intnet.network.features.graph.service;
 
+import com.intnet.network.features.graph.dto.CreateGridGraphDto;
 import com.intnet.network.features.graph.model.Edge;
 import com.intnet.network.features.graph.model.GridGraph;
 import com.intnet.network.features.graph.model.GridNode;
@@ -26,14 +27,17 @@ public class NetworkGraphServiceImpl implements NetworkGraphService {
     }
 
     @Transactional
-    public void saveGraphToNeo4j(GridGraph graph, Long graphId) {
+    public void createGraph(CreateGridGraphDto graphDto) {
+        GridGraph graph = graphDto.getGraph();
+        Long graphId = graphDto.getGraphId();
+
         for (GridNode node : graph.getNodes().values()) {
-            node.getProperties().put("graphId", graphId);
+            node.setGraphId(graphId);
             nodeRepository.save(node);
         }
 
         for (Edge edge : graph.getEdges().values()) {
-            edge.getProperties().put("graphId", graphId);
+            edge.setGraphId(graphId);
             edgeRepository.save(edge);
         }
     }
@@ -43,14 +47,14 @@ public class NetworkGraphServiceImpl implements NetworkGraphService {
 
         Iterable<GridNode> nodes = nodeRepository.findAll();
         for (GridNode node : nodes) {
-            if (node.getProperties().containsKey("graphId") && node.getProperties().get("graphId").equals(graphId)) {
+            if (node.getGraphId().equals(graphId)) {
                 graph.addNode(node);
             }
         }
 
         Iterable<Edge> edges = edgeRepository.findAll();
         for (Edge edge : edges) {
-            if (edge.getProperties().containsKey("graphId") && edge.getProperties().get("graphId").equals(graphId)) {
+            if (edge.getGraphId().equals(graphId)) {
                 graph.addEdge(edge);
             }
         }
