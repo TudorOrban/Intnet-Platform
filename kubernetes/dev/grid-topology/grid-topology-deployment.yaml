@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intnet-grid-topology
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intnet-grid-topology
+  template:
+    metadata:
+      labels:
+        app: intnet-grid-topology
+    spec:
+      containers:
+        - name: intnet-grid-topology
+          image: intnet-grid-topology:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
