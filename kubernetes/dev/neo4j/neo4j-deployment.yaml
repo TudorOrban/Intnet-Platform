@@ -14,13 +14,12 @@ spec:
     spec:
       containers:
         - name: neo4j
-          image: neo4j:latest
-          ports:
-            - containerPort: 7687
-            - containerPort: 7474
+          image: neo4j:4.4.10
           env:
             - name: NEO4J_AUTH
               value: neo4j/example-password
+            - name: NEO4J_server_config_strict__validation__enabled
+              value: "false"
           volumeMounts:
             - name: neo4j-data
               mountPath: /data

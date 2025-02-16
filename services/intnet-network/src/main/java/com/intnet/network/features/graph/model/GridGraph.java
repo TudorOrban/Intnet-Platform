@@ -4,26 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GridGraph {
 
-    private Map<Integer, Node> nodes;
-    private Map<Integer, Set<Edge>> adjacencyMap;
-    private Map<Integer, Edge> edges = new HashMap<>();
+    private Map<Long, GridNode> nodes;
+    private Map<Long, Set<Edge>> adjacencyMap;
+    private Map<Long, Edge> edges = new HashMap<>();
 
-    public void addNode(Node node) {
+    public void addNode(GridNode node) {
         nodes.put(node.getId(), node);
-        adjacencyMap.put(node.getId(), new HashSet<>()); // Initialize edge set
+        adjacencyMap.put(node.getId(), new HashSet<>());
     }
 
-    public Node getNode(int id) {
+    public GridNode getNode(Long id) {
         return nodes.get(id);
     }
 
@@ -33,7 +30,7 @@ public class GridGraph {
         adjacencyMap.get(edge.getDestinationId()).add(edge);
     }
 
-    public Set<Edge> getConnectedEdges(int nodeId) {
+    public Set<Edge> getConnectedEdges(Long nodeId) {
         return adjacencyMap.getOrDefault(nodeId, new HashSet<>());
     }
 
@@ -41,11 +38,11 @@ public class GridGraph {
         return new HashSet<>(edges.values());
     }
 
-    public Set<Node> getNeighbors(int nodeId) {
-        Set<Node> neighbors = new HashSet<>();
+    public Set<GridNode> getNeighbors(Long nodeId) {
+        Set<GridNode> neighbors = new HashSet<>();
 
         for (Edge edge : this.getConnectedEdges(nodeId)) {
-            if (edge.getSourceId() == nodeId) {
+            if (Objects.equals(edge.getSourceId(), nodeId)) {
                 neighbors.add(getNode(edge.getDestinationId()));
             } else {
                 neighbors.add(getNode(edge.getSourceId()));
