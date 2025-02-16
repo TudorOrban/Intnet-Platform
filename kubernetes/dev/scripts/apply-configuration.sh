@@ -18,11 +18,11 @@ cd ../tenant || exit
 kubectl apply -f tenant-deployment.yaml
 kubectl apply -f tenant-service.yaml
 
-cd ../
+cd ../neo4j || exit
 kubectl apply -f neo4j-persistent-volume.yaml
 kubectl apply -f neo4j-deployment.yaml
 kubectl apply -f neo4j-service.yaml
 
-cd ../network || exit
-kubectl apply -f network-deployment.yaml
-kubectl apply -f network-service.yaml
+cd ../grid-topology || exit
+kubectl apply -f grid-topology-deployment.yaml
+kubectl apply -f grid-topology-service.yaml
