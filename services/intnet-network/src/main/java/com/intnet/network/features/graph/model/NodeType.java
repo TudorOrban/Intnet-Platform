@@ -6,5 +6,6 @@ public enum NodeType {
     TRANSFORMER,
     GENERATOR,
     LOAD,
+    STORAGE,
     DER,
 }

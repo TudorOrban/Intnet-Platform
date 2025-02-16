@@ -1,5 +1,7 @@
 package com.intnet.network.features.graph.model;
 
+import com.intnet.network.features.graph.model.electric.DistributionLineProperties;
+import com.intnet.network.features.graph.model.electric.TransmissionLineProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Edge {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -21,5 +24,9 @@ public class Edge {
 
     private Long sourceId;
     private Long destinationId;
+
+    private EdgeType edgeType;
+    private TransmissionLineProperties transmissionLineProperties;
+    private DistributionLineProperties distributionLineProperties;
     private Map<String, Object> properties;
 }
