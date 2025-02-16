@@ -40,9 +40,6 @@ public class Substation {
     @Column(name = "connected_buses")
     private List<Integer> connectedBuses;
 
-    @Column(name = "operational_since")
-    private ZonedDateTime operationalSince;
-
     @PrePersist
     private void onCreate() {
         createdAt = ZonedDateTime.now();
