@@ -9,6 +9,7 @@ import com.intnet.griddata.features.substation.repository.SubstationStateReposit
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
+import com.intnet.griddata.shared.sanitization.service.EntitySanitizerService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,19 @@ public class SubstationServiceImpl implements SubstationService {
     private final SubstationRepository substationRepository;
     private final SubstationStateRepository substationStateRepository;
     private final GridGraphUpdaterService graphUpdaterService;
+    private final EntitySanitizerService sanitizerService;
 
     @Autowired
     public SubstationServiceImpl(
             SubstationRepository substationRepository,
             SubstationStateRepository substationStateRepository,
-            GridGraphUpdaterService graphUpdaterService
+            GridGraphUpdaterService graphUpdaterService,
+            EntitySanitizerService sanitizerService
     ) {
         this.substationRepository = substationRepository;
         this.substationStateRepository = substationStateRepository;
         this.graphUpdaterService = graphUpdaterService;
+        this.sanitizerService = sanitizerService;
     }
 
     public SubstationSearchDto getSubstationById(Long id, Boolean attachState) {
@@ -47,7 +51,9 @@ public class SubstationServiceImpl implements SubstationService {
 
     @Transactional
     public SubstationSearchDto createSubstation(CreateSubstationDto substationDto) {
-        Substation substation = this.mapCreateSubstationDtoToSubstation(substationDto);
+        CreateSubstationDto sanitizedSubstationDto = sanitizerService.sanitizeCreateSubstationDto(substationDto);
+
+        Substation substation = this.mapCreateSubstationDtoToSubstation(sanitizedSubstationDto);
 
         Substation savedSubstation = substationRepository.save(substation);
 
@@ -68,13 +74,12 @@ public class SubstationServiceImpl implements SubstationService {
     }
 
     public SubstationSearchDto updateSubstation(UpdateSubstationDto substationDto) {
-        Substation substation = substationRepository.findById(substationDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(substationDto.getId().toString(), ResourceType.SUBSTATION, ResourceIdentifierType.ID));
+        UpdateSubstationDto sanitizedSubstationDto = sanitizerService.sanitizeUpdateSubstationDto(substationDto);
 
-        substation.setLatitude(substationDto.getLatitude());
-        substation.setLongitude(substationDto.getLongitude());
-        substation.setTransformers(substationDto.getTransformers());
-        substation.setConnectedBuses(substationDto.getConnectedBuses());
+        Substation substation = substationRepository.findById(sanitizedSubstationDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(sanitizedSubstationDto.getId().toString(), ResourceType.SUBSTATION, ResourceIdentifierType.ID));
+
+        this.setUpdateSubstationDtoToSubstation(substation, sanitizedSubstationDto);
 
         Substation savedSubstation = substationRepository.save(substation);
 
@@ -100,5 +105,12 @@ public class SubstationServiceImpl implements SubstationService {
 
     private SubstationStateDto mapSubstationStateToSubstationStateDto(SubstationState state) {
         return SubstationMapper.INSTANCE.substationStateToSubstationStateDto(state);
+    }
+
+    private void setUpdateSubstationDtoToSubstation(Substation substation, UpdateSubstationDto substationDto) {
+        substation.setLatitude(substationDto.getLatitude());
+        substation.setLongitude(substationDto.getLongitude());
+        substation.setTransformers(substationDto.getTransformers());
+        substation.setConnectedBuses(substationDto.getConnectedBuses());
     }
 }

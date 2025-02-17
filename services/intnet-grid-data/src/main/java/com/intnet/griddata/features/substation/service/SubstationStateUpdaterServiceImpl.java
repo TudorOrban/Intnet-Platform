@@ -8,6 +8,7 @@ import com.intnet.griddata.features.substation.repository.SubstationStateReposit
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
+import com.intnet.griddata.shared.sanitization.service.EntitySanitizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,24 +16,24 @@ import org.springframework.stereotype.Service;
 public class SubstationStateUpdaterServiceImpl implements SubstationStateUpdaterService {
 
     private final SubstationStateRepository substationStateRepository;
+    private final EntitySanitizerService sanitizerService;
 
     @Autowired
     public SubstationStateUpdaterServiceImpl(
-            SubstationStateRepository substationStateRepository
+            SubstationStateRepository substationStateRepository,
+            EntitySanitizerService sanitizerService
     ) {
         this.substationStateRepository = substationStateRepository;
+        this.sanitizerService = sanitizerService;
     }
 
     public SubstationStateDto updateSubstationState(UpdateSubstationStateDto stateDto) {
-        SubstationState state = substationStateRepository.findBySubstationId(stateDto.getSubstationId())
-                .orElseThrow(() -> new ResourceNotFoundException(stateDto.getSubstationId().toString(), ResourceType.SUBSTATION_STATE, ResourceIdentifierType.SUBSTATION_ID));
+        UpdateSubstationStateDto sanitizedStateDto = sanitizerService.sanitizeUpdateSubstationStateDto(stateDto);
 
-        state.setVoltage(stateDto.getVoltage());
-        state.setFrequency(stateDto.getFrequency());
-        state.setTemperature(stateDto.getTemperature());
-        state.setLoad(stateDto.getLoad());
-        state.setTotalInflow(stateDto.getTotalInflow());
-        state.setTotalOutflow(stateDto.getTotalOutflow());
+        SubstationState state = substationStateRepository.findBySubstationId(sanitizedStateDto.getSubstationId())
+                .orElseThrow(() -> new ResourceNotFoundException(sanitizedStateDto.getSubstationId().toString(), ResourceType.SUBSTATION_STATE, ResourceIdentifierType.SUBSTATION_ID));
+
+        this.setUpdateSubstationStateDtoToSubstationState(state, sanitizedStateDto);
 
         SubstationState savedState = substationStateRepository.save(state);
 
@@ -41,5 +42,14 @@ public class SubstationStateUpdaterServiceImpl implements SubstationStateUpdater
 
     private SubstationStateDto mapSubstationStateToSubstationStateDto(SubstationState state) {
         return SubstationMapper.INSTANCE.substationStateToSubstationStateDto(state);
+    }
+
+    private void setUpdateSubstationStateDtoToSubstationState(SubstationState state, UpdateSubstationStateDto stateDto) {
+        state.setVoltage(stateDto.getVoltage());
+        state.setFrequency(stateDto.getFrequency());
+        state.setTemperature(stateDto.getTemperature());
+        state.setLoad(stateDto.getLoad());
+        state.setTotalInflow(stateDto.getTotalInflow());
+        state.setTotalOutflow(stateDto.getTotalOutflow());
     }
 }

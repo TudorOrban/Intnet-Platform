@@ -9,6 +9,7 @@ import com.intnet.griddata.features.bus.repository.BusStateRepository;
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
+import com.intnet.griddata.shared.sanitization.service.EntitySanitizerService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,19 @@ public class BusServiceImpl implements BusService {
     private final BusRepository busRepository;
     private final BusStateRepository busStateRepository;
     private final GridGraphUpdaterService graphUpdaterService;
+    private final EntitySanitizerService sanitizerService;
 
     @Autowired
     public BusServiceImpl(
             BusRepository busRepository,
             BusStateRepository busStateRepository,
-            GridGraphUpdaterService graphUpdaterService
+            GridGraphUpdaterService graphUpdaterService,
+            EntitySanitizerService sanitizerService
     ) {
         this.busRepository = busRepository;
         this.busStateRepository = busStateRepository;
         this.graphUpdaterService = graphUpdaterService;
+        this.sanitizerService = sanitizerService;
     }
 
     public BusSearchDto getBusById(Long id, Boolean attachState) {
@@ -47,7 +51,9 @@ public class BusServiceImpl implements BusService {
 
     @Transactional
     public BusSearchDto createBus(CreateBusDto busDto) {
-        Bus bus = this.mapCreateBusDtoToBus(busDto);
+        CreateBusDto sanitizedBusDto = sanitizerService.sanitizeCreateBusDto(busDto);
+
+        Bus bus = this.mapCreateBusDtoToBus(sanitizedBusDto);
 
         Bus savedBus = busRepository.save(bus);
 
@@ -68,11 +74,12 @@ public class BusServiceImpl implements BusService {
     }
 
     public BusSearchDto updateBus(UpdateBusDto busDto) {
-        Bus bus = busRepository.findById(busDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(busDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+        UpdateBusDto sanitizedBusDto = sanitizerService.sanitizeUpdateBusDto(busDto);
 
-        bus.setLatitude(busDto.getLatitude());
-        bus.setLongitude(busDto.getLongitude());
+        Bus bus = busRepository.findById(sanitizedBusDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(sanitizedBusDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+
+        this.setUpdateBusDtoToBus(bus, sanitizedBusDto);
 
         Bus savedBus = busRepository.save(bus);
 
@@ -98,5 +105,10 @@ public class BusServiceImpl implements BusService {
 
     private BusStateDto mapBusStateToBusStateDto(BusState state) {
         return BusMapper.INSTANCE.busStateToBusStateDto(state);
+    }
+
+    private void setUpdateBusDtoToBus(Bus bus, UpdateBusDto busDto) {
+        bus.setLatitude(busDto.getLatitude());
+        bus.setLongitude(busDto.getLongitude());
     }
 }

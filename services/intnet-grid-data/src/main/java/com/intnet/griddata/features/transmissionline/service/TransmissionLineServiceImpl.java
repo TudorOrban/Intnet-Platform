@@ -9,6 +9,7 @@ import com.intnet.griddata.features.transmissionline.repository.TransmissionLine
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
+import com.intnet.griddata.shared.sanitization.service.EntitySanitizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +19,19 @@ public class TransmissionLineServiceImpl implements TransmissionLineService {
     private final TransmissionLineRepository transmissionLineRepository;
     private final TransmissionLineStateRepository transmissionLineStateRepository;
     private final GridGraphUpdaterService graphUpdaterService;
+    private final EntitySanitizerService sanitizerService;
 
     @Autowired
     public TransmissionLineServiceImpl(
             TransmissionLineRepository transmissionLineRepository,
             TransmissionLineStateRepository transmissionLineStateRepository,
-            GridGraphUpdaterService graphUpdaterService
+            GridGraphUpdaterService graphUpdaterService,
+            EntitySanitizerService sanitizerService
     ) {
         this.transmissionLineRepository = transmissionLineRepository;
         this.transmissionLineStateRepository = transmissionLineStateRepository;
         this.graphUpdaterService = graphUpdaterService;
+        this.sanitizerService = sanitizerService;
     }
 
     public TransmissionLineSearchDto getTransmissionLineById(Long id, Boolean attachState) {
@@ -45,7 +49,9 @@ public class TransmissionLineServiceImpl implements TransmissionLineService {
     }
 
     public TransmissionLineSearchDto createTransmissionLine(CreateTransmissionLineDto transmissionLineDto) {
-        TransmissionLine transmissionLine = this.mapCreateTransmissionLineDtoToTransmissionLine(transmissionLineDto);
+        CreateTransmissionLineDto sanitizedLineDto = sanitizerService.sanitizeCreateTransmissionLineDto(transmissionLineDto);
+
+        TransmissionLine transmissionLine = this.mapCreateTransmissionLineDtoToTransmissionLine(sanitizedLineDto);
 
         TransmissionLine savedTransmissionLine = transmissionLineRepository.save(transmissionLine);
 
@@ -66,14 +72,12 @@ public class TransmissionLineServiceImpl implements TransmissionLineService {
     }
 
     public TransmissionLineSearchDto updateTransmissionLine(UpdateTransmissionLineDto transmissionLineDto) {
-        TransmissionLine transmissionLine = transmissionLineRepository.findById(transmissionLineDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(transmissionLineDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+        UpdateTransmissionLineDto sanitizedLineDto = sanitizerService.sanitizeUpdateTransmissionLineDto(transmissionLineDto);
 
-        transmissionLine.setEdgeType(transmissionLineDto.getEdgeType());
-        transmissionLine.setLength(transmissionLineDto.getLength());
-        transmissionLine.setImpedance(transmissionLineDto.getImpedance());
-        transmissionLine.setAdmittance(transmissionLineDto.getAdmittance());
-        transmissionLine.setCapacity(transmissionLineDto.getCapacity());
+        TransmissionLine transmissionLine = transmissionLineRepository.findById(sanitizedLineDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(sanitizedLineDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+
+        this.setUpdateTransmissionLineDtoToTransmissionLine(transmissionLine, sanitizedLineDto);
 
         TransmissionLine savedTransmissionLine = transmissionLineRepository.save(transmissionLine);
 
@@ -99,5 +103,13 @@ public class TransmissionLineServiceImpl implements TransmissionLineService {
 
     private TransmissionLineStateDto mapTransmissionLineStateToTransmissionLineStateDto(TransmissionLineState state) {
         return TransmissionLineMapper.INSTANCE.transmissionLineStateToTransmissionLineStateDto(state);
+    }
+
+    private void setUpdateTransmissionLineDtoToTransmissionLine(TransmissionLine transmissionLine, UpdateTransmissionLineDto lineDto) {
+        transmissionLine.setEdgeType(lineDto.getEdgeType());
+        transmissionLine.setLength(lineDto.getLength());
+        transmissionLine.setImpedance(lineDto.getImpedance());
+        transmissionLine.setAdmittance(lineDto.getAdmittance());
+        transmissionLine.setCapacity(lineDto.getCapacity());
     }
 }
