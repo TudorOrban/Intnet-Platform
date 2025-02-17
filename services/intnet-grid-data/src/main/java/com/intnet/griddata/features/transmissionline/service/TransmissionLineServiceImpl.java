@@ -63,7 +63,7 @@ public class TransmissionLineServiceImpl implements TransmissionLineService {
         TransmissionLine transmissionLine = transmissionLineRepository.findById(transmissionLineDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(transmissionLineDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
 
-        transmissionLine.setLineType(transmissionLineDto.getLineType());
+        transmissionLine.setEdgeType(transmissionLineDto.getEdgeType());
         transmissionLine.setLength(transmissionLineDto.getLength());
         transmissionLine.setImpedance(transmissionLineDto.getImpedance());
         transmissionLine.setAdmittance(transmissionLineDto.getAdmittance());

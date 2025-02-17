@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class GatewayRouteConfig {
 
     private static final String TENANT_SERVICE = "http://intnet-tenant:80";
-    private static final String NETWORK_SERVICE = "http://intnet-network:81";
+    private static final String NETWORK_SERVICE = "http://intnet-grid-topology:81";
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {

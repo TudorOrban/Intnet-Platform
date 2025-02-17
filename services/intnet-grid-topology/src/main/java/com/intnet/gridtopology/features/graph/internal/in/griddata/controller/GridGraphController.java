@@ -1,8 +1,6 @@
 package com.intnet.gridtopology.features.graph.internal.in.griddata.controller;
 
-import com.intnet.gridtopology.features.graph.internal.in.griddata.dto.AddGridEdgeDto;
-import com.intnet.gridtopology.features.graph.internal.in.griddata.dto.AddGridNodeDto;
-import com.intnet.gridtopology.features.graph.internal.in.griddata.dto.CreateGridGraphDto;
+import com.intnet.gridtopology.features.graph.internal.in.griddata.dto.*;
 import com.intnet.gridtopology.features.graph.model.GridGraph;
 import com.intnet.gridtopology.features.graph.service.GridGraphService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +31,14 @@ public class GridGraphController {
     }
 
     @PostMapping("/node")
-    public ResponseEntity<Void> addNode(@RequestBody AddGridNodeDto nodeDto) {
-        graphService.addNode(nodeDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<GridNodeDto> addNode(@RequestBody AddGridNodeDto nodeDto) {
+        GridNodeDto addedNode = graphService.addNode(nodeDto);
+        return ResponseEntity.ok(addedNode);
     }
 
     @PostMapping("/edge")
-    public ResponseEntity<Void> addEdge(@RequestBody AddGridEdgeDto edgeDto) {
-        graphService.addEdge(edgeDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<GridEdgeDto> addEdge(@RequestBody AddGridEdgeDto edgeDto) {
+        GridEdgeDto addedEdge = graphService.addEdge(edgeDto);
+        return ResponseEntity.ok(addedEdge);
     }
 }

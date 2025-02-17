@@ -1,6 +1,6 @@
 package com.intnet.griddata.features.transmissionline.dto;
 
-import com.intnet.griddata.shared.enums.LineType;
+import com.intnet.griddata.shared.enums.EdgeType;
 import com.intnet.griddata.shared.enums.NodeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class TransmissionLineSearchDto {
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
-    private LineType lineType;
+    private EdgeType edgeType;
     private Double length;
     private Double impedance;
     private Double admittance;

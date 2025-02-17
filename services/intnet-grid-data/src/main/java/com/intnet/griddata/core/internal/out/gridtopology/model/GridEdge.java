@@ -1,4 +1,4 @@
-package com.intnet.griddata.features.transmissionline.dto;
+package com.intnet.griddata.core.internal.out.gridtopology.model;
 
 import com.intnet.griddata.shared.enums.EdgeType;
 import com.intnet.griddata.shared.enums.NodeType;
@@ -9,17 +9,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTransmissionLineDto {
+public class GridEdge {
 
+    private Long id;
     private Long gridId;
     private Long sourceNodeId;
     private NodeType sourceNodeType;
     private Long destinationNodeId;
     private NodeType destinationNodeType;
-
     private EdgeType edgeType;
-    private Double length;
-    private Double impedance;
-    private Double admittance;
-    private Double capacity;
 }

@@ -1,6 +1,6 @@
 package com.intnet.griddata.shared.enums;
 
-public enum LineType {
+public enum EdgeType {
     OVERHEAD,
     UNDERGROUND
 }

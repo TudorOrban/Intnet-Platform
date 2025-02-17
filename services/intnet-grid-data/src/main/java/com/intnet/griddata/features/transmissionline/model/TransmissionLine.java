@@ -1,6 +1,6 @@
 package com.intnet.griddata.features.transmissionline.model;
 
-import com.intnet.griddata.shared.enums.LineType;
+import com.intnet.griddata.shared.enums.EdgeType;
 import com.intnet.griddata.shared.enums.NodeType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,7 +49,7 @@ public class TransmissionLine {
     private Double capacity; // MVA
 
     @Enumerated(EnumType.STRING)
-    private LineType lineType;
+    private EdgeType edgeType;
 
     @PrePersist
     private void onCreate() {
