@@ -9,14 +9,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class GridTopologyUpdaterServiceImpl implements GridTopologyUpdaterService {
+public class GridTopologyCommunicatorServiceImpl implements GridTopologyCommunicatorService {
 
     private final WebClient webClient;
 
     @Value("${grid-topology.service.url}")
     private String gridTopologyServiceUrl;
 
-    public GridTopologyUpdaterServiceImpl(
+    public GridTopologyCommunicatorServiceImpl(
             WebClient.Builder webClientBuilder
     ) {
         this.webClient = webClientBuilder.baseUrl(gridTopologyServiceUrl + "/grid-graphs").build();

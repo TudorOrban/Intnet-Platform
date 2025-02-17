@@ -1,5 +1,6 @@
 package com.intnet.griddata.features.transmissionline.service;
 
+import com.intnet.griddata.core.internal.out.gridtopology.service.GridGraphUpdaterService;
 import com.intnet.griddata.features.transmissionline.dto.*;
 import com.intnet.griddata.features.transmissionline.model.TransmissionLine;
 import com.intnet.griddata.features.transmissionline.model.TransmissionLineState;
@@ -16,14 +17,17 @@ public class TransmissionLineServiceImpl implements TransmissionLineService {
 
     private final TransmissionLineRepository transmissionLineRepository;
     private final TransmissionLineStateRepository transmissionLineStateRepository;
+    private final GridGraphUpdaterService graphUpdaterService;
 
     @Autowired
     public TransmissionLineServiceImpl(
             TransmissionLineRepository transmissionLineRepository,
-            TransmissionLineStateRepository transmissionLineStateRepository
+            TransmissionLineStateRepository transmissionLineStateRepository,
+            GridGraphUpdaterService graphUpdaterService
     ) {
         this.transmissionLineRepository = transmissionLineRepository;
         this.transmissionLineStateRepository = transmissionLineStateRepository;
+        this.graphUpdaterService = graphUpdaterService;
     }
 
     public TransmissionLineSearchDto getTransmissionLineById(Long id, Boolean attachState) {
@@ -46,6 +50,8 @@ public class TransmissionLineServiceImpl implements TransmissionLineService {
         TransmissionLine savedTransmissionLine = transmissionLineRepository.save(transmissionLine);
 
         TransmissionLineStateDto stateDto = this.createTransmissionLineState(savedTransmissionLine);
+
+        graphUpdaterService.updateGraph(savedTransmissionLine);
 
         return this.mapTransmissionLineToTransmissionLineSearchDto(savedTransmissionLine, stateDto);
     }

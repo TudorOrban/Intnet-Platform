@@ -1,35 +1,30 @@
 package com.intnet.griddata.core.internal.out.gridtopology.dto;
 
+import com.intnet.griddata.features.bus.model.Bus;
+import com.intnet.griddata.features.substation.model.Substation;
+import com.intnet.griddata.features.transmissionline.model.TransmissionLine;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface GridMapper {
     GridMapper INSTANCE = Mappers.getMapper(GridMapper.class);
 
-//    @Mapping(source = "node.id", target = "id")
-//    @Mapping(source = "node.gridId", target = "gridId")
-//    @Mapping(source = "node.nodeType", target = "nodeType")
-//    GridNodeDto gridNodeToGridNodeDto(GridNode node);
-//
-//    @Mapping(source = "id", target = "id")
-//    @Mapping(source = "gridId", target = "gridId")
-//    @Mapping(source = "nodeType", target = "nodeType")
-//    GridNode addGridNodeDtoToGridNode(AddGridNodeDto nodeDto);
-//
-//    @Mapping(source = "edge.id", target = "id")
-//    @Mapping(source = "edge.sourceNodeId", target = "sourceNodeId")
-//    @Mapping(source = "edge.sourceNodeType", target = "sourceNodeType")
-//    @Mapping(source = "edge.destinationNodeId", target = "destinationNodeId")
-//    @Mapping(source = "edge.destinationNodeType", target = "destinationNodeType")
-//    @Mapping(source = "edge.edgeType", target = "edgeType")
-//    GridEdgeDto gridEdgeToGridEdgeDto(GridEdge edge);
-//
-//    @Mapping(source = "id", target = "id")
-//    @Mapping(source = "sourceNodeId", target = "sourceNodeId")
-//    @Mapping(source = "sourceNodeType", target = "sourceNodeType")
-//    @Mapping(source = "destinationNodeId", target = "destinationNodeId")
-//    @Mapping(source = "destinationNodeType", target = "destinationNodeType")
-//    @Mapping(source = "edgeType", target = "edgeType")
-//    GridEdge addGridEdgeDtoToGridEdge(AddGridEdgeDto edgeDto);
+    @Mapping(source = "substation.id", target = "id")
+    @Mapping(source = "substation.gridId", target = "gridId")
+    AddGridNodeDto substationToAddGridNodeDto(Substation substation);
+
+    @Mapping(source = "bus.id", target = "id")
+    @Mapping(source = "bus.gridId", target = "gridId")
+    AddGridNodeDto busToAddGridNodeDto(Bus bus);
+
+    @Mapping(source = "line.id", target = "id")
+    @Mapping(source = "line.gridId", target = "gridId")
+    @Mapping(source = "line.sourceNodeId", target = "sourceNodeId")
+    @Mapping(source = "line.sourceNodeType", target = "sourceNodeType")
+    @Mapping(source = "line.destinationNodeId", target = "destinationNodeId")
+    @Mapping(source = "line.destinationNodeType", target = "destinationNodeType")
+    @Mapping(source = "line.edgeType", target = "edgeType")
+    AddGridEdgeDto transmissionLineToAddGridEdgeDto(TransmissionLine line);
 }

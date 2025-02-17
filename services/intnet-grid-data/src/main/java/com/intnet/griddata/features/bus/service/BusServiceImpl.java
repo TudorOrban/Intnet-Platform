@@ -1,5 +1,6 @@
 package com.intnet.griddata.features.bus.service;
 
+import com.intnet.griddata.core.internal.out.gridtopology.service.GridGraphUpdaterService;
 import com.intnet.griddata.features.bus.dto.*;
 import com.intnet.griddata.features.bus.model.Bus;
 import com.intnet.griddata.features.bus.model.BusState;
@@ -8,6 +9,7 @@ import com.intnet.griddata.features.bus.repository.BusStateRepository;
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +18,17 @@ public class BusServiceImpl implements BusService {
 
     private final BusRepository busRepository;
     private final BusStateRepository busStateRepository;
+    private final GridGraphUpdaterService graphUpdaterService;
 
     @Autowired
     public BusServiceImpl(
             BusRepository busRepository,
-            BusStateRepository busStateRepository
+            BusStateRepository busStateRepository,
+            GridGraphUpdaterService graphUpdaterService
     ) {
         this.busRepository = busRepository;
         this.busStateRepository = busStateRepository;
+        this.graphUpdaterService = graphUpdaterService;
     }
 
     public BusSearchDto getBusById(Long id, Boolean attachState) {
@@ -40,12 +45,15 @@ public class BusServiceImpl implements BusService {
         return this.mapBusToBusSearchDto(bus, stateDto);
     }
 
+    @Transactional
     public BusSearchDto createBus(CreateBusDto busDto) {
         Bus bus = this.mapCreateBusDtoToBus(busDto);
 
         Bus savedBus = busRepository.save(bus);
 
         BusStateDto stateDto = this.createBusState(savedBus);
+
+        graphUpdaterService.updateGraph(savedBus);
 
         return this.mapBusToBusSearchDto(savedBus, stateDto);
     }

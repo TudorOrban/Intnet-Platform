@@ -1,5 +1,6 @@
 package com.intnet.griddata.features.substation.service;
 
+import com.intnet.griddata.core.internal.out.gridtopology.service.GridGraphUpdaterService;
 import com.intnet.griddata.features.substation.dto.*;
 import com.intnet.griddata.features.substation.model.Substation;
 import com.intnet.griddata.features.substation.model.SubstationState;
@@ -8,6 +9,7 @@ import com.intnet.griddata.features.substation.repository.SubstationStateReposit
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +18,17 @@ public class SubstationServiceImpl implements SubstationService {
 
     private final SubstationRepository substationRepository;
     private final SubstationStateRepository substationStateRepository;
+    private final GridGraphUpdaterService graphUpdaterService;
 
     @Autowired
     public SubstationServiceImpl(
             SubstationRepository substationRepository,
-            SubstationStateRepository substationStateRepository
+            SubstationStateRepository substationStateRepository,
+            GridGraphUpdaterService graphUpdaterService
     ) {
         this.substationRepository = substationRepository;
         this.substationStateRepository = substationStateRepository;
+        this.graphUpdaterService = graphUpdaterService;
     }
 
     public SubstationSearchDto getSubstationById(Long id, Boolean attachState) {
@@ -40,12 +45,15 @@ public class SubstationServiceImpl implements SubstationService {
         return this.mapSubstationToSubstationSearchDto(substation, stateDto);
     }
 
+    @Transactional
     public SubstationSearchDto createSubstation(CreateSubstationDto substationDto) {
         Substation substation = this.mapCreateSubstationDtoToSubstation(substationDto);
 
         Substation savedSubstation = substationRepository.save(substation);
 
         SubstationStateDto stateDto = this.createSubstationState(savedSubstation);
+
+        graphUpdaterService.updateGraph(savedSubstation);
 
         return this.mapSubstationToSubstationSearchDto(savedSubstation, stateDto);
     }

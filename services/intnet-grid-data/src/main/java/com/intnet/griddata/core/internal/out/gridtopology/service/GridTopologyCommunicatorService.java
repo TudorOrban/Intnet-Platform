@@ -3,7 +3,7 @@ package com.intnet.griddata.core.internal.out.gridtopology.service;
 import com.intnet.griddata.core.internal.out.gridtopology.dto.*;
 import com.intnet.griddata.core.internal.out.gridtopology.model.GridGraph;
 
-public interface GridTopologyUpdaterService {
+public interface GridTopologyCommunicatorService {
 
     GridGraph getGraphByGridId(Long gridId);
     void createGraph(CreateGridGraphDto graphDto);
