@@ -2,6 +2,7 @@ package com.intnet.griddata.core.internal.out.gridtopology.service;
 
 import com.intnet.griddata.core.internal.out.gridtopology.dto.*;
 import com.intnet.griddata.core.internal.out.gridtopology.model.GridGraph;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,18 @@ import reactor.core.publisher.Mono;
 @Service
 public class GridTopologyCommunicatorServiceImpl implements GridTopologyCommunicatorService {
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
+    private WebClient webClient;
 
     @Value("${grid-topology.service.url}")
     private String gridTopologyServiceUrl;
 
-    public GridTopologyCommunicatorServiceImpl(
-            WebClient.Builder webClientBuilder
-    ) {
+    public GridTopologyCommunicatorServiceImpl(WebClient.Builder webClientBuilder) {
+        this.webClientBuilder = webClientBuilder;
+    }
+
+    @PostConstruct
+    public void init() {
         this.webClient = webClientBuilder.baseUrl(gridTopologyServiceUrl + "/grid-graphs").build();
     }
 

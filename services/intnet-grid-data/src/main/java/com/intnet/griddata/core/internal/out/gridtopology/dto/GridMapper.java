@@ -11,20 +11,20 @@ import org.mapstruct.factory.Mappers;
 public interface GridMapper {
     GridMapper INSTANCE = Mappers.getMapper(GridMapper.class);
 
-    @Mapping(source = "substation.id", target = "id")
-    @Mapping(source = "substation.gridId", target = "gridId")
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "gridId", target = "gridId")
     AddGridNodeDto substationToAddGridNodeDto(Substation substation);
 
-    @Mapping(source = "bus.id", target = "id")
-    @Mapping(source = "bus.gridId", target = "gridId")
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "gridId", target = "gridId")
     AddGridNodeDto busToAddGridNodeDto(Bus bus);
 
-    @Mapping(source = "line.id", target = "id")
-    @Mapping(source = "line.gridId", target = "gridId")
-    @Mapping(source = "line.sourceNodeId", target = "sourceNodeId")
-    @Mapping(source = "line.sourceNodeType", target = "sourceNodeType")
-    @Mapping(source = "line.destinationNodeId", target = "destinationNodeId")
-    @Mapping(source = "line.destinationNodeType", target = "destinationNodeType")
-    @Mapping(source = "line.edgeType", target = "edgeType")
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "gridId", target = "gridId")
+    @Mapping(source = "sourceNodeId", target = "sourceNodeId")
+    @Mapping(source = "sourceNodeType", target = "sourceNodeType")
+    @Mapping(source = "destinationNodeId", target = "destinationNodeId")
+    @Mapping(source = "destinationNodeType", target = "destinationNodeType")
+    @Mapping(source = "edgeType", target = "edgeType")
     AddGridEdgeDto transmissionLineToAddGridEdgeDto(TransmissionLine line);
 }
