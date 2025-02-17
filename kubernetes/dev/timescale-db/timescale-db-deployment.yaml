@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timescale-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timescale-db
+  template:
+    metadata:
+      labels:
+        app: timescale-db
+    spec:
+      containers:
+        - name: timescale-db
+          image: timescale/timescaledb-postgis-latest-pg15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: example-user
+            - name: POSTGRES_PASSWORD
+              value: example-password
+            - name: POSTGRES_DB
+              value: intnet_history
+          volumeMounts:
+            - name: timescale-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: timescale-data
+          persistentVolumeClaim:
+            claimName: timescale-pvc

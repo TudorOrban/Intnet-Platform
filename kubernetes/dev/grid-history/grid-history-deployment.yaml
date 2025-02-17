@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intnet-grid-history
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intnet-grid-history
+  template:
+    metadata:
+      labels:
+        app: intnet-grid-history
+    spec:
+      containers:
+        - name: intnet-grid-history
+          image: intnet-grid-history:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker-dev"

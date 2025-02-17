@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.intnet</groupId>
-	<artifactId>grid-history</artifactId>
+	<artifactId>grid-history-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>grid-history</name>
+	<name>grid-history-service</name>
 	<description>Intnet microservice responsible for managing Grid Data</description>
 	<url/>
 	<licenses>
