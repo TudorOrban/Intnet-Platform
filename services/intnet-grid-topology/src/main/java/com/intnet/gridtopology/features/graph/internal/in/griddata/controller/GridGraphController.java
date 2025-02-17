@@ -1,6 +1,6 @@
-package com.intnet.gridtopology.features.graph.controller;
+package com.intnet.gridtopology.features.graph.internal.in.griddata.controller;
 
-import com.intnet.gridtopology.features.graph.dto.CreateGridGraphDto;
+import com.intnet.gridtopology.features.graph.internal.in.griddata.dto.CreateGridGraphDto;
 import com.intnet.gridtopology.features.graph.model.GridGraph;
 import com.intnet.gridtopology.features.graph.service.GridGraphService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/graphs")
+@RequestMapping("api/v1/grid-graphs")
 public class GridGraphController {
 
     private final GridGraphService graphService;
@@ -19,8 +19,8 @@ public class GridGraphController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GridGraph> getGraphById(@PathVariable Long id) {
-        GridGraph graph = graphService.loadGraphFromNeo4j(id, true);
+    public ResponseEntity<GridGraph> getGraphByGridId(@PathVariable Long gridId) {
+        GridGraph graph = graphService.getGraphByGridId(gridId, true);
         return ResponseEntity.ok(graph);
     }
 
@@ -29,4 +29,5 @@ public class GridGraphController {
         graphService.createGraph(graphDto);
         return ResponseEntity.ok().build();
     }
+
 }

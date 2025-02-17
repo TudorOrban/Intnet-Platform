@@ -1,4 +1,4 @@
-package com.intnet.gridtopology.features.graph.dto;
+package com.intnet.gridtopology.features.graph.internal.in.griddata.dto;
 
 import com.intnet.gridtopology.features.graph.model.GridGraph;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateGridGraphDto {
-    private Long graphId;
+    private Long gridId;
     private GridGraph graph;
 }

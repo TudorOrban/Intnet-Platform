@@ -1,6 +1,6 @@
 package com.intnet.gridtopology.features.graph.service;
 
-import com.intnet.gridtopology.features.graph.dto.CreateGridGraphDto;
+import com.intnet.gridtopology.features.graph.internal.in.griddata.dto.CreateGridGraphDto;
 import com.intnet.gridtopology.features.graph.model.Edge;
 import com.intnet.gridtopology.features.graph.model.GridGraph;
 import com.intnet.gridtopology.features.graph.model.GridNode;
@@ -29,32 +29,32 @@ public class GridGraphServiceImpl implements GridGraphService {
     @Transactional
     public void createGraph(CreateGridGraphDto graphDto) {
         GridGraph graph = graphDto.getGraph();
-        Long graphId = graphDto.getGraphId();
+        Long gridId = graphDto.getGridId();
 
         for (GridNode node : graph.getNodes().values()) {
-            node.setGraphId(graphId);
+            node.setGridId(gridId);
             nodeRepository.save(node);
         }
 
         for (Edge edge : graph.getEdges().values()) {
-            edge.setGraphId(graphId);
+            edge.setGridId(gridId);
             edgeRepository.save(edge);
         }
     }
 
-    public GridGraph loadGraphFromNeo4j(Long graphId, Boolean includeAdjacencyMap) {
+    public GridGraph getGraphByGridId(Long graphId, Boolean includeAdjacencyMap) {
         GridGraph graph = new GridGraph();
 
         Iterable<GridNode> nodes = nodeRepository.findAll();
         for (GridNode node : nodes) {
-            if (node.getGraphId().equals(graphId)) {
+            if (node.getGridId().equals(graphId)) {
                 graph.addNode(node);
             }
         }
 
         Iterable<Edge> edges = edgeRepository.findAll();
         for (Edge edge : edges) {
-            if (edge.getGraphId().equals(graphId)) {
+            if (edge.getGridId().equals(graphId)) {
                 graph.addEdge(edge);
             }
         }
