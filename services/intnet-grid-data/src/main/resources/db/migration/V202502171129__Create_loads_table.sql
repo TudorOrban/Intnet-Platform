@@ -1,0 +1,15 @@
+-- V202502171129__Create_loads_table.sql
+CREATE TYPE load_type AS ENUM ('RESIDENTIAL', 'COMMERCIAL', 'INDUSTRIAL');
+
+CREATE TABLE loads (
+    id SERIAL PRIMARY KEY,
+    grid_id BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+
+    load_type load_type,
+
+    FOREIGN KEY (grid_id) REFERENCES grids(id)
+);
