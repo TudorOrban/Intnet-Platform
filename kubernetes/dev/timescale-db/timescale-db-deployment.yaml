@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: timescale-db
-          image: timescale/timescaledb-postgis-latest-pg15
+          image: timescale/timescaledb:latest-pg16
           ports:
             - containerPort: 5432
           env:
