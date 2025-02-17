@@ -17,6 +17,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/v1/grids/**").permitAll()
                         .requestMatchers("/api/v1/substations/**").permitAll()
+                        .requestMatchers("/api/v1/buses/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
