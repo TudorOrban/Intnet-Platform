@@ -8,12 +8,14 @@ import org.springframework.data.neo4j.core.schema.Id;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Edge {
+public class GridEdge {
 
     @Id
     private Long id;
     private Long gridId;
-    private Long sourceId;
-    private Long destinationId;
+    private Long sourceNodeId;
+    private NodeType sourceNodeType;
+    private Long destinationNodeId;
+    private NodeType destinationNodeType;
     private EdgeType edgeType;
 }
