@@ -22,9 +22,9 @@ public class BusController {
     @GetMapping("/{id}")
     public ResponseEntity<BusSearchDto> getBusById(
             @PathVariable Long id,
-            @RequestParam(name = "attachUsers", required = false, defaultValue = "false") Boolean attachUsers
+            @RequestParam(name = "attachState", required = false, defaultValue = "false") Boolean attachState
     ) {
-        BusSearchDto bus = busService.getBusById(id, attachUsers);
+        BusSearchDto bus = busService.getBusById(id, attachState);
         return ResponseEntity.ok(bus);
     }
 
