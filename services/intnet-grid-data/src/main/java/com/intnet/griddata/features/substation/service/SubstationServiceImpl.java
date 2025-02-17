@@ -1,11 +1,10 @@
 package com.intnet.griddata.features.substation.service;
 
-import com.intnet.griddata.features.substation.dto.CreateSubstationDto;
-import com.intnet.griddata.features.substation.dto.SubstationMapper;
-import com.intnet.griddata.features.substation.dto.SubstationSearchDto;
-import com.intnet.griddata.features.substation.dto.UpdateSubstationDto;
+import com.intnet.griddata.features.substation.dto.*;
 import com.intnet.griddata.features.substation.model.Substation;
+import com.intnet.griddata.features.substation.model.SubstationState;
 import com.intnet.griddata.features.substation.repository.SubstationRepository;
+import com.intnet.griddata.features.substation.repository.SubstationStateRepository;
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
@@ -16,17 +15,29 @@ import org.springframework.stereotype.Service;
 public class SubstationServiceImpl implements SubstationService {
 
     private final SubstationRepository substationRepository;
+    private final SubstationStateRepository substationStateRepository;
 
     @Autowired
-    public SubstationServiceImpl(SubstationRepository substationRepository) {
+    public SubstationServiceImpl(
+            SubstationRepository substationRepository,
+            SubstationStateRepository substationStateRepository
+    ) {
         this.substationRepository = substationRepository;
+        this.substationStateRepository = substationStateRepository;
     }
 
-    public SubstationSearchDto getSubstationById(Long id) {
+    public SubstationSearchDto getSubstationById(Long id, Boolean attachState) {
         Substation substation = substationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id.toString(), ResourceType.SUBSTATION, ResourceIdentifierType.ID));
 
-        return this.mapSubstationToSubstationSearchDto(substation);
+        SubstationStateDto stateDto = null;
+        if (attachState) {
+            SubstationState state = substationStateRepository.findBySubstationId(substation.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException(substation.getId().toString(), ResourceType.SUBSTATION_STATE, ResourceIdentifierType.SUBSTATION_ID));
+            stateDto = this.mapSubstationStateToSubstationStateDto(state);
+        }
+
+        return this.mapSubstationToSubstationSearchDto(substation, stateDto);
     }
 
     public SubstationSearchDto createSubstation(CreateSubstationDto substationDto) {
@@ -34,7 +45,18 @@ public class SubstationServiceImpl implements SubstationService {
 
         Substation savedSubstation = substationRepository.save(substation);
 
-        return this.mapSubstationToSubstationSearchDto(savedSubstation);
+        SubstationStateDto stateDto = this.createSubstationState(savedSubstation);
+
+        return this.mapSubstationToSubstationSearchDto(savedSubstation, stateDto);
+    }
+
+    private SubstationStateDto createSubstationState(Substation savedSubstation) {
+        SubstationState substationState = new SubstationState();
+        substationState.setGridId(savedSubstation.getGridId());
+        substationState.setSubstationId(savedSubstation.getId());
+
+        SubstationState savedState = substationStateRepository.save(substationState);
+        return this.mapSubstationStateToSubstationStateDto(savedState);
     }
 
     public SubstationSearchDto updateSubstation(UpdateSubstationDto substationDto) {
@@ -48,7 +70,7 @@ public class SubstationServiceImpl implements SubstationService {
 
         Substation savedSubstation = substationRepository.save(substation);
 
-        return this.mapSubstationToSubstationSearchDto(savedSubstation);
+        return this.mapSubstationToSubstationSearchDto(savedSubstation, null);
     }
 
     public void deleteSubstation(Long id) {
@@ -58,11 +80,17 @@ public class SubstationServiceImpl implements SubstationService {
         this.substationRepository.delete(substation);
     }
 
-    private SubstationSearchDto mapSubstationToSubstationSearchDto(Substation substation) {
-        return SubstationMapper.INSTANCE.substationToSubstationSearchDto(substation);
+    private SubstationSearchDto mapSubstationToSubstationSearchDto(Substation substation, SubstationStateDto stateDto) {
+        SubstationSearchDto substationDto = SubstationMapper.INSTANCE.substationToSubstationSearchDto(substation);
+        substationDto.setState(stateDto);
+        return substationDto;
     }
 
     private Substation mapCreateSubstationDtoToSubstation(CreateSubstationDto substationDto) {
         return SubstationMapper.INSTANCE.createSubstationDtoToSubstation(substationDto);
+    }
+
+    private SubstationStateDto mapSubstationStateToSubstationStateDto(SubstationState state) {
+        return SubstationMapper.INSTANCE.substationStateToSubstationStateDto(state);
     }
 }

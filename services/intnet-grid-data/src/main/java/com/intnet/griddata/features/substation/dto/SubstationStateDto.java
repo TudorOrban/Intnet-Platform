@@ -5,22 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubstationSearchDto {
+public class SubstationStateDto {
 
     private Long id;
     private Long gridId;
+    private Long substationId;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-    private Double latitude;
-    private Double longitude;
-    private Integer transformers;
-    private List<Integer> connectedBuses;
-    private ZonedDateTime operationalSince;
-
-    private SubstationStateDto state;
+    private Double voltage;
+    private Double current;
+    private Double frequency;
+    private Double temperature;
+    private Double load;
+    private Double totalInflow;
+    private Double totalOutflow;
 }

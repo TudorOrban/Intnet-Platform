@@ -20,8 +20,11 @@ public class SubstationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SubstationSearchDto> getSubstationById(@PathVariable Long id) {
-        SubstationSearchDto substation = substationService.getSubstationById(id);
+    public ResponseEntity<SubstationSearchDto> getSubstationById(
+            @PathVariable Long id,
+            @RequestParam(name = "attachUsers", required = false, defaultValue = "false") Boolean attachUsers
+    ) {
+        SubstationSearchDto substation = substationService.getSubstationById(id, attachUsers);
         return ResponseEntity.ok(substation);
     }
 

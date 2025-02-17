@@ -6,7 +6,9 @@ public enum ResourceIdentifierType {
     USER_ID,
     EMAIL,
     NAME,
-    TITLE;
+    TITLE,
+
+    SUBSTATION_ID;
 
     @Override
     public String toString() {
@@ -16,6 +18,8 @@ public enum ResourceIdentifierType {
             case EMAIL -> "Email";
             case NAME -> "NAME";
             case TITLE -> "Title";
+
+            case SUBSTATION_ID -> "Substation ID";
         };
     }
 }

@@ -41,10 +41,10 @@ public class SubstationState {
 
     private Double load;
 
-    @Column(name = "totalInflow")
+    @Column(name = "total_inflow")
     private Double totalInflow;
 
-    @Column(name = "totalOutflow")
+    @Column(name = "total_outflow")
     private Double totalOutflow;
 
     @PrePersist
