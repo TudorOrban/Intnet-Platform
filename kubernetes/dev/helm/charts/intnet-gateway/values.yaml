@@ -1,12 +1,12 @@
 replicaCount: 1
 image:
-  repository: intnet-grid-data
+  repository: intnet-gateway
   tag: latest
   pullPolicy: IfNotPresent
 springProfile: "docker-dev"
 service:
   type: ClusterIP
-  port: 82
+  port: 90
 resources:
   requests:
     cpu: 100m

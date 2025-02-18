@@ -1,12 +1,7 @@
-apiVersion: v2
+apiVersion: v3
 name: intnet-platform
 description: Umbrella chart for all microservices
 
 type: application
 
 version: 0.1.0
-
-dependencies:
-  - name: intnet-grid-data
-    version: "0.1.0"
-    repository: "file://./charts"

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-intnet-grid-data
+  name: {{ .Release.Name }}-intnet-grid-history
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: intnet-grid-data
+      app: intnet-grid-history
   template:
     metadata:
       labels:
-        app: intnet-grid-data
+        app: intnet-grid-history
     spec:
       containers:
-        - name: intnet-grid-data
+        - name: intnet-grid-history
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

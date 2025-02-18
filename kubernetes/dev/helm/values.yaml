@@ -1,4 +1,12 @@
 imagePullPolicy: IfNotPresent
 
-gridDataReplicaCount: 2
-gridHistoryReplicaCount: 1
+intnet-gateway:
+  replicaCount: 1
+intnet-tenant:
+  replicaCount: 1
+intnet-grid-data:
+  replicaCount: 1
+intnet-grid-topology:
+  replicaCount: 1
+intnet-grid-history:
+  replicaCount: 1
