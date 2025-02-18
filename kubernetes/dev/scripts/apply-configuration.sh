@@ -26,3 +26,21 @@ kubectl apply -f neo4j-service.yaml
 cd ../grid-topology || exit
 kubectl apply -f grid-topology-deployment.yaml
 kubectl apply -f grid-topology-service.yaml
+
+cd ../grid-data || exit
+kubectl apply -f grid-data-deployment.yaml
+kubectl apply -f grid-data-service.yaml
+
+cd ../timescale-db || exit
+kubectl apply -f timescale-db-persistent-volume-claim.yaml
+kubectl apply -f timescale-db-deployment.yaml
+kubectl apply -f timescale-db-service.yaml
+
+cd ../grid-history || exit
+kubectl apply -f grid-history-deployment.yaml
+kubectl apply -f grid-history-service.yaml
+
+cd ../grafana || exit
+kubectl apply -f grafana-persistent-volume-claim.yaml
+kubectl apply -f grafana-deployment.yaml
+kubectl apply -f grafana-service.yaml
