@@ -1,0 +1,6 @@
+dependencies:
+- name: intnet-grid-data
+  repository: file://./charts/intnet-grid-data
+  version: 0.1.0
+digest: sha256:da7b92e717cfe307ce528d16cb9a06df8e2cad18b0895b74d39cafbaec69c13e
+generated: "2025-02-18T15:00:05.756451745+02:00"

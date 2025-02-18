@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-intnet-grid-data
+spec:
+  replicas: {{ .Values.gridDataReplicaCount }}
+  selector:
+    matchLabels:
+      app: intnet-grid-data
+  template:
+    metadata:
+      labels:
+        app: intnet-grid-data
+    spec:
+      containers:
+        - name: intnet-grid-data
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.springProfile }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}

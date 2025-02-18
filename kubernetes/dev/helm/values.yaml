@@ -1,0 +1,4 @@
+imagePullPolicy: IfNotPresent
+
+gridDataReplicaCount: 2
+gridHistoryReplicaCount: 1
