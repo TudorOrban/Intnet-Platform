@@ -10,3 +10,12 @@ intnet-grid-topology:
   replicaCount: 1
 intnet-grid-history:
   replicaCount: 1
+
+grafana:
+  replicaCount: 1
+keycloak:
+  replicaCount: 1
+neo4j:
+  replicaCount: 1
+timescale-db:
+  replicaCount: 1

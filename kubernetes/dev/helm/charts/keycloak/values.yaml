@@ -1,0 +1,20 @@
+replicaCount: 1
+image:
+  repository: quay.io/keycloak/keycloak
+  tag: 26.1.1
+security:
+  keycloakUser: admin
+  keycloakPassword: admin
+service:
+  type: ClusterIP
+  port: 3000
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+pvc:
+  storage:
+    size: 1Gi

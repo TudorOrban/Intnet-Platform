@@ -1,0 +1,20 @@
+replicaCount: 1
+image:
+  repository: grafana/grafana
+  tag: latest
+security:
+  grafanaUser: admin
+  grafanaPassword: example-password
+service:
+  type: ClusterIP
+  port: 8080
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+pvc:
+  storage:
+    size: 1Gi

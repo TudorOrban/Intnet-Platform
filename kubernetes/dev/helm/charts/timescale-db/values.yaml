@@ -1,0 +1,22 @@
+replicaCount: 1
+image:
+  repository: timescale/timescaledb
+  tag: latest-pg16
+security:
+  postgresUser: example-user
+  postgresPassword: example-password
+db:
+  name: intnet_grid_history
+service:
+  type: ClusterIP
+  port: 5432
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+pvc:
+  storage:
+    size: 1Gi
