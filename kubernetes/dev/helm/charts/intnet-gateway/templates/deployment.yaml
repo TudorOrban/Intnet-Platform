@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: intnet-gateway
+      {{- include "..selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: intnet-gateway
+        {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
         - name: intnet-gateway
@@ -18,6 +18,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
+              name: http
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: {{ .Values.springProfile }}

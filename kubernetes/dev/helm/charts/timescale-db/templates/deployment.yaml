@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: timescale-db
+  name: {{ .Release.Name }}-timescale-db
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: timescale-db
+      {{- include "..selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: timescale-db
+        {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
         - name: timescale-db

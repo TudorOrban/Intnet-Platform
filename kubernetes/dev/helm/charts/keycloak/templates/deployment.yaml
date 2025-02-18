@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: keycloak
+  name: {{ .Release.Name }}-keycloak
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: keycloak
+      {{- include "..selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: keycloak
+        {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
         - name: keycloak

@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: grafana
+  name: {{ .Release.Name }}-grafana
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: grafana
+      {{- include "..selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: grafana
+        {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
         - name: grafana

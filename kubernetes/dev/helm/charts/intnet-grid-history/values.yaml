@@ -6,7 +6,7 @@ image:
 springProfile: "docker-dev"
 service:
   type: ClusterIP
-  port: 82
+  port: 83
 resources:
   requests:
     cpu: 100m

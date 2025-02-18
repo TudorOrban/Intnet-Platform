@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: intnet-grid-topology
+      {{- include "..selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: intnet-grid-topology
+        {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
         - name: intnet-grid-topology

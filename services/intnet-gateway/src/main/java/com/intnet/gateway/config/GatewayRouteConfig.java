@@ -9,9 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayRouteConfig {
 
-    private static final String TENANT_SERVICE = "http://intnet-tenant:80";
-    private static final String GRID_TOPOLOGY_SERVICE = "http://intnet-grid-topology:81";
-    private static final String GRID_DATA_SERVICE = "http://intnet-grid-data:82";
+    private static final String TENANT_SERVICE = "http://std-release-intnet-tenant:80";
+    private static final String GRID_TOPOLOGY_SERVICE = "http://std-release-intnet-grid-topology:81";
+    private static final String GRID_DATA_SERVICE = "http://std-release-intnet-grid-data:82";
+    private static final String GRID_HISTORY_SERVICE = "http://std-release-intnet-grid-history:83";
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -21,12 +22,14 @@ public class GatewayRouteConfig {
                         .uri(TENANT_SERVICE))
                 .route("graphs", r -> r.path("/api/v1/graphs/**")
                         .uri(GRID_TOPOLOGY_SERVICE))
-                .route("graphs", r -> r.path("/api/v1/substations/**")
+                .route("substations", r -> r.path("/api/v1/substations/**")
                         .uri(GRID_DATA_SERVICE))
-                .route("graphs", r -> r.path("/api/v1/buses/**")
+                .route("buses", r -> r.path("/api/v1/buses/**")
                         .uri(GRID_DATA_SERVICE))
-                .route("graphs", r -> r.path("/api/v1/transmission-lines/**")
+                .route("transmission-lines", r -> r.path("/api/v1/transmission-lines/**")
                         .uri(GRID_DATA_SERVICE))
+                .route("bus-state-records", r -> r.path("/api/v1/bus-state-records/**")
+                        .uri(GRID_HISTORY_SERVICE))
                 .build();
     }
 }

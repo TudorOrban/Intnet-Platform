@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: intnet-tenant
+      {{- include "..selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: intnet-tenant
+        {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
         - name: intnet-tenant
