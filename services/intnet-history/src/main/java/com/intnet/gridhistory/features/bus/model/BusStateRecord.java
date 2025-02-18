@@ -5,14 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "bus_state_history")
-public class BusStateHistory {
+public class BusStateRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class BusStateHistory {
     private Long busId;
 
     @Column(name = "time", nullable = false)
-    private Instant time;
+    private ZonedDateTime time;
 
     private Double voltage;
     private Double load;
@@ -36,6 +36,6 @@ public class BusStateHistory {
 
     @PrePersist
     private void beforePersist() {
-        time = Instant.now();
+        time = ZonedDateTime.now();
     }
 }
