@@ -1,0 +1,6 @@
+apiVersion: v3
+name: intnet-grid-device-manager
+description: A Helm chart for the Intnet Grid Device Manager microservice
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
