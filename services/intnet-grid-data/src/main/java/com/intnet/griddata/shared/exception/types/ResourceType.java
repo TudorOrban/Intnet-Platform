@@ -10,7 +10,7 @@ public enum ResourceType {
     @Override
     public String toString() {
         return switch (this) {
-            case GRID -> "GRID";
+            case GRID -> "Grid";
             case SUBSTATION -> "Substation";
             case SUBSTATION_STATE -> "Substation State";
             case BUS -> "Bus";

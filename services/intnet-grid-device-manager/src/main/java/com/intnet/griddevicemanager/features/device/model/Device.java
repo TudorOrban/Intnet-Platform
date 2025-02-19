@@ -72,7 +72,18 @@ public class Device {
         try {
             this.metadataJson = mapper.writeValueAsString(metadata);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Invalid device metadata: " + e.getMessage()); // TODO: Add custom exceptions
+            throw new RuntimeException("Invalid device metadata: " + e.getMessage());
         }
+    }
+
+    @PrePersist
+    private void onCreate() {
+        createdAt = ZonedDateTime.now();
+        updatedAt = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        updatedAt = ZonedDateTime.now();
     }
 }
