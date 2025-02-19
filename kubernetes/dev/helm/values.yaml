@@ -10,6 +10,8 @@ intnet-grid-topology:
   replicaCount: 0
 intnet-grid-history:
   replicaCount: 0
+intnet-grid-device-manager:
+  replicaCount: 1
 
 grafana:
   replicaCount: 0
