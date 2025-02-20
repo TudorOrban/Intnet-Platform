@@ -13,6 +13,11 @@ intnet-grid-history:
 intnet-grid-device-manager:
   replicaCount: 1
 
+modbus-adapter:
+  replicaCount: 1
+simulated-device-modbus:
+  replicaCount: 1
+
 keycloak:
   replicaCount: 0
 timescale-db:

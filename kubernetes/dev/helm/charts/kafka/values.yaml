@@ -2,14 +2,9 @@ replicaCount: 1
 image:
   repository: confluentinc/cp-kafka
   tag: 7.3.1
-zookeeper:
-  connectString: {{ .Release.Name }}-zookeeper-service:2181
-security:
-  neo4jUser: neo4j
-  neo4jPassword: example-password
 service:
   type: ClusterIP
-  port: 7687
+  port: 9092
 resources:
   requests:
     cpu: 100m

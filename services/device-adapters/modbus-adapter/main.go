@@ -3,10 +3,11 @@ package main
 import (
 	"log"
 	"modbusadapter/api/core"
+	"modbusadapter/internal/di"
 )
 
 func main() {
-	container := buildContainer()
+	container := di.BuildContainer()
 
 	err := container.Invoke(func(server *core.Server) {
 		server.Start()
