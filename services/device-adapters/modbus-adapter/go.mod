@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/confluentinc/confluent-kafka-go/v2 v2.8.0 // indirect
 	github.com/goburrow/modbus v0.1.0 // indirect
 	github.com/goburrow/serial v0.1.0 // indirect
 )

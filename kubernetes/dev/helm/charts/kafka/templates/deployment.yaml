@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-neo4j
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "..selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "..labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: neo4j
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 7687
+          env:
+            - name: NEO4J_AUTH
+              value: {{ .Values.security.neo4jUser }}/{{ .Values.security.neo4jPassword }}
+            - name: NEO4J_dbms_memory_pagecache_size
+              value: "128M"
+            - name: NEO4J_dbms_memory_heap_max_size
+              value: "128M"
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          volumeMounts:
+            - name: neo4j-pv
+              mountPath: /data
+      volumes:
+        - name: neo4j-pv
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-neo4j-pvc
