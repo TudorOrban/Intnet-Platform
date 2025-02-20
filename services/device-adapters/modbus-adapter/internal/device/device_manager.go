@@ -3,6 +3,7 @@ package device
 import (
 	"fmt"
 	"log"
+	"modbusadapter/internal/kafka"
 	"time"
 
 	"github.com/goburrow/modbus"
@@ -10,12 +11,14 @@ import (
 
 type StdDeviceManager struct {
 	DeviceReader DeviceReader
+	Producer     kafka.Producer
 }
 
 func NewStdDeviceManager(
 	deviceReader DeviceReader,
+	producer kafka.Producer,
 ) DeviceManager {
-	return &StdDeviceManager{DeviceReader: deviceReader}
+	return &StdDeviceManager{DeviceReader: deviceReader, Producer: producer}
 }
 
 func (m *StdDeviceManager) ConnectToDevices(devices []Device) (interface{}, error) {
@@ -33,10 +36,10 @@ func (m *StdDeviceManager) processDevice(device Device) {
 	}
 	defer handler.Close()
 
-	go m.pollModbusValue(client, device.DeviceDataConfig.Voltage, device.IPAddress)
-	go m.pollModbusValue(client, device.DeviceDataConfig.Load, device.IPAddress)
-	go m.pollModbusValue(client, device.DeviceDataConfig.Generation, device.IPAddress)
-	go m.pollModbusValue(client, device.DeviceDataConfig.PhaseAngle, device.IPAddress)
+	go m.pollModbusValue(client, device.DeviceDataConfig.Voltage, device.IPAddress, device.ID)
+	go m.pollModbusValue(client, device.DeviceDataConfig.Load, device.IPAddress, device.ID)
+	go m.pollModbusValue(client, device.DeviceDataConfig.Generation, device.IPAddress, device.ID)
+	go m.pollModbusValue(client, device.DeviceDataConfig.PhaseAngle, device.IPAddress, device.ID)
 
 	select {}
 }
@@ -53,7 +56,7 @@ func (m *StdDeviceManager) establishConnection(device Device) (modbus.Client, *m
 	return client, handler, nil
 }
 
-func (m *StdDeviceManager) pollModbusValue(client modbus.Client, reg DeviceVariableConfig, ipAddress string) {
+func (m *StdDeviceManager) pollModbusValue(client modbus.Client, reg DeviceVariableConfig, ipAddress string, deviceID string) {
 	ticker := time.NewTicker(time.Duration(reg.PollFrequencySeconds * float64(time.Second)))
 	defer ticker.Stop()
 
@@ -65,5 +68,19 @@ func (m *StdDeviceManager) pollModbusValue(client modbus.Client, reg DeviceVaria
 		}
 		log.Printf("Read %s from %s: %v", reg.Type, ipAddress, value)
 		// TODO: push to Kafka
+		message := kafka.ModbusMessage{
+			Timestamp: time.Now(),
+			DeviceID:  deviceID,
+			Type:      kafka.GetMeasuredValueType(reg.Type),
+			Value:     value,
+		}
+
+		err = m.Producer.Produce(message)
+		if err != nil {
+			log.Printf("Error pushing to Kafka: %v", err)
+			continue
+		}
+
+		log.Printf("Pushed %s from %s to Kafka: %v", reg.Type, ipAddress, value)
 	}
 }

@@ -41,3 +41,18 @@ func (n *MeasuredValueType) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+func GetMeasuredValueType(regType string) MeasuredValueType {
+	switch regType {
+	case "Voltage":
+		return Voltage
+	case "Load":
+		return Load
+	case "Generation":
+		return Generation
+	case "PhaseAngle":
+		return PhaseAngle
+	default:
+		return -1
+	}
+}

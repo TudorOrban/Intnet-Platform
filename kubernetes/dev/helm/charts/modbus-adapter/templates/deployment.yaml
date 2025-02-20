@@ -18,6 +18,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
+          env:
+            - name: KAFKA_BROKERS
+              value: {{ .Release.Name }}-kafka:9092
+            - name: KAFKA_TOPIC
+              value: "modbus_data"
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}

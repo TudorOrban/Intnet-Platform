@@ -24,23 +24,31 @@ func BuildContainer() *dig.Container {
 }
 
 func provideKafkaProducer(container *dig.Container) {
-	container.Provide(func() string {
-		kafkaBrokers := os.Getenv("KAFKA_BROKERS")
-		if kafkaBrokers == "" {
-			kafkaBrokers = "localhost:9092"
-			log.Println("Using default Kafka brokers: ", kafkaBrokers)
-		}
-		return kafkaBrokers
-	})
+    container.Provide(provideKafkaConfig)
 
-	container.Provide(func() string {
-		kafkaTopic := os.Getenv("KAFKA_TOPIC")
-		if kafkaTopic == "" {
-			kafkaTopic = "modbus_data"
-			log.Println("Using default Kafka topic: ", kafkaTopic)
-		}
-		return kafkaTopic
-	})
+    container.Provide(
+        func(config kafka.KafkaConfig) (kafka.Producer, error) {
+            return kafka.NewStdKafkaProducer(config)
+        },
+        dig.As(new(kafka.Producer)),
+    )
+}
 
-	container.Provide(kafka.NewStdKafkaProducer, dig.As(new(kafka.Producer)))
+func provideKafkaConfig() kafka.KafkaConfig {
+    brokers := os.Getenv("KAFKA_BROKERS")
+    if brokers == "" {
+        brokers = "localhost:9092"
+        log.Println("Using default Kafka brokers: ", brokers)
+    }
+
+    topic := os.Getenv("KAFKA_TOPIC")
+    if topic == "" {
+        topic = "modbus_data"
+        log.Println("Using default Kafka topic: ", topic)
+    }
+
+    return kafka.KafkaConfig{
+        Brokers: brokers,
+        Topic:   topic,
+    }
 }

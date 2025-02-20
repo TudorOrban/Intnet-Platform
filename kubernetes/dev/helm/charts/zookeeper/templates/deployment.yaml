@@ -19,6 +19,17 @@ spec:
           - containerPort: 2181
           - containerPort: 2888
           - containerPort: 3888
+          env:
+            - name: ZOOKEEPER_SERVER_ID
+              value: "{{ .Values.zookeeper.serverID }}"
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: "{{ .Values.zookeeper.clientPort }}"
+            - name: ZOOKEEPER_TICK_TIME
+              value: "{{ .Values.zookeeper.tickTime }}"
+            - name: ZOOKEEPER_INIT_LIMIT
+              value: "{{ .Values.zookeeper.initLimit }}"
+            - name: ZOOKEEPER_SYNC_LIMIT
+              value: "{{ .Values.zookeeper.syncLimit }}"
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}

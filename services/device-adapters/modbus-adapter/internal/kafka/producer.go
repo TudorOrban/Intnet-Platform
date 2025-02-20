@@ -8,6 +8,11 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
+type KafkaConfig struct {
+	Brokers string
+	Topic   string
+}
+
 type StdKafkaProducer struct {
 	producer *kafka.Producer
 	topic    string
@@ -17,17 +22,17 @@ func NewKafkaProducer() Producer {
 	return &StdKafkaProducer{}
 }
 
-func NewStdKafkaProducer(brokers string, topic string) (Producer, error) {
-	config := &kafka.ConfigMap{
-		"bootstrap.servers": brokers,
+func NewStdKafkaProducer(config KafkaConfig) (Producer, error) {
+	configMap := &kafka.ConfigMap{
+		"bootstrap.servers": config.Brokers,
 	}
-
-	producer, err := kafka.NewProducer(config)
+	log.Printf("Topic: %s", config.Topic)
+	producer, err := kafka.NewProducer(configMap)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Kafka producer: %w", err)
 	}
 
-	return &StdKafkaProducer{producer: producer, topic: topic}, nil
+	return &StdKafkaProducer{producer: producer, topic: config.Topic}, nil
 }
 
 func (p *StdKafkaProducer) Produce(message ModbusMessage) error {
