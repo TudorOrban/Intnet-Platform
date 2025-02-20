@@ -57,7 +57,12 @@ func (h *ConnectionHandler) processDevice(device device.Device) {
 	}
 	defer handler.Close()
 
-	h.readDeviceData(client, device)
+	go h.pollModbusValue(client, device.DeviceDataConfig.Voltage, device.IPAddress)
+	go h.pollModbusValue(client, device.DeviceDataConfig.Load, device.IPAddress)
+	go h.pollModbusValue(client, device.DeviceDataConfig.Generation, device.IPAddress)
+	go h.pollModbusValue(client, device.DeviceDataConfig.PhaseAngle, device.IPAddress)
+
+	select {}
 }
 
 func (h *ConnectionHandler) establishConnection(device device.Device) (modbus.Client, *modbus.TCPClientHandler, error) {
@@ -72,41 +77,22 @@ func (h *ConnectionHandler) establishConnection(device device.Device) (modbus.Cl
 	return client, handler, nil
 }
 
-func (h *ConnectionHandler) readDeviceData(client modbus.Client, device device.Device) {
-	// Read Voltage
-	voltage, err := h.readModbusValue(client, device.DeviceMapping.Voltage)
-	if err != nil {
-		log.Printf("Error reading voltage from %s: %v", device.IPAddress, err)
-		return
-	}
-	log.Printf("Read voltage from %s: %v", device.IPAddress, voltage)
+func (h *ConnectionHandler) pollModbusValue(client modbus.Client, reg device.DeviceVariableConfig, ipAddress string) {
+	ticker := time.NewTicker(time.Duration(reg.PollFrequencySeconds * float64(time.Second)))
+	defer ticker.Stop()
 
-	// Read load
-	load, err := h.readModbusValue(client, device.DeviceMapping.Load)
-	if err != nil {
-		log.Printf("Error reading load from %s: %v", device.IPAddress, err)
-		return
+	for range ticker.C {
+		value, err := h.readModbusValue(client, reg)
+		if err != nil {
+			log.Printf("Error reading %s from %s: %v", reg.Type, ipAddress, err)
+			continue
+		}
+		log.Printf("Read %s from %s: %v", reg.Type, ipAddress, value)
+		// TODO: push to Kafka
 	}
-	log.Printf("Read load from %s: %v", device.IPAddress, load)
-
-	// Read generation
-	generation, err := h.readModbusValue(client, device.DeviceMapping.Generation)
-	if err != nil {
-		log.Printf("Error reading generation from %s: %v", device.IPAddress, err)
-		return
-	}
-	log.Printf("Read generation from %s: %v", device.IPAddress, generation)
-
-	// Read phaseAngle
-	phaseAngle, err := h.readModbusValue(client, device.DeviceMapping.PhaseAngle)
-	if err != nil {
-		log.Printf("Error reading phaseAngle from %s: %v", device.IPAddress, err)
-		return
-	}
-	log.Printf("Read phaseAngle from %s: %v", device.IPAddress, phaseAngle)
 }
 
-func (h *ConnectionHandler) readModbusValue(client modbus.Client, reg device.Modbus) (interface{}, error) {
+func (h *ConnectionHandler) readModbusValue(client modbus.Client, reg device.DeviceVariableConfig) (interface{}, error) {
 	switch reg.Type {
 	case "holdingRegister":
 		return h.readHoldingRegister(client, reg)
@@ -121,7 +107,7 @@ func (h *ConnectionHandler) readModbusValue(client modbus.Client, reg device.Mod
 	}
 }
 
-func (h *ConnectionHandler) readHoldingRegister(client modbus.Client, reg device.Modbus) (interface{}, error) {
+func (h *ConnectionHandler) readHoldingRegister(client modbus.Client, reg device.DeviceVariableConfig) (interface{}, error) {
 	results, err := client.ReadHoldingRegisters(reg.Address, 1)
 	if err != nil {
 		return nil, err
@@ -133,7 +119,7 @@ func (h *ConnectionHandler) readHoldingRegister(client modbus.Client, reg device
 	return float64(val) * reg.ScalingFactor, nil
 }
 
-func (h *ConnectionHandler) readInputRegister(client modbus.Client, reg device.Modbus) (interface{}, error) {
+func (h *ConnectionHandler) readInputRegister(client modbus.Client, reg device.DeviceVariableConfig) (interface{}, error) {
 	results, err := client.ReadInputRegisters(reg.Address, 1)
 	if err != nil {
 		return nil, err
@@ -145,7 +131,7 @@ func (h *ConnectionHandler) readInputRegister(client modbus.Client, reg device.M
 	return float64(val) * reg.ScalingFactor, nil
 }
 
-func (h *ConnectionHandler) readCoil(client modbus.Client, reg device.Modbus) (interface{}, error) {
+func (h *ConnectionHandler) readCoil(client modbus.Client, reg device.DeviceVariableConfig) (interface{}, error) {
 	results, err := client.ReadCoils(reg.Address, 1)
 	if err != nil {
 		return nil, err
@@ -156,7 +142,7 @@ func (h *ConnectionHandler) readCoil(client modbus.Client, reg device.Modbus) (i
 	return results[0], nil // Coil value is a single byte (0 or 1)
 }
 
-func (h *ConnectionHandler) readDiscreteInput(client modbus.Client, reg device.Modbus) (interface{}, error) {
+func (h *ConnectionHandler) readDiscreteInput(client modbus.Client, reg device.DeviceVariableConfig) (interface{}, error) {
 	results, err := client.ReadDiscreteInputs(reg.Address, 1)
 	if err != nil {
 		return nil, err

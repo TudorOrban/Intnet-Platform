@@ -3,7 +3,7 @@ from pymodbus.server import ModbusTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext
 
 # Initialize data store for holding registers
-store = ModbusSequentialDataBlock(0, [0] * 100)
+store = ModbusSequentialDataBlock(0, [12345] * 100)
 
 context = {
     0: ModbusSlaveContext(
