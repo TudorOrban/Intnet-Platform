@@ -8,6 +8,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 502
+EXPOSE 5020
 
 CMD ["python", "modbus_server.py"]

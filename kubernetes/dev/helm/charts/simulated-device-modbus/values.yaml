@@ -5,7 +5,7 @@ image:
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
-  port: 502
+  port: 5020
 resources:
   requests:
     cpu: 100m
