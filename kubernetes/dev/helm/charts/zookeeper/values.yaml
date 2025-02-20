@@ -1,13 +1,10 @@
 replicaCount: 1
 image:
-  repository: neo4j
-  tag: 4.4.10
-security:
-  neo4jUser: neo4j
-  neo4jPassword: example-password
+  repository: confluentinc/cp-zookeeper
+  tag: 7.3.1
 service:
   type: ClusterIP
-  port: 7687
+  port: 2181
 resources:
   requests:
     cpu: 100m

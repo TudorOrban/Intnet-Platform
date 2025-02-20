@@ -13,11 +13,13 @@ intnet-grid-history:
 intnet-grid-device-manager:
   replicaCount: 1
 
-grafana:
-  replicaCount: 0
 keycloak:
+  replicaCount: 0
+timescale-db:
   replicaCount: 0
 neo4j:
   replicaCount: 0
-timescale-db:
+kafka:
+  replicaCount: 1
+grafana:
   replicaCount: 0

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-neo4j
+  name: {{ .Release.Name }}-kafka
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -13,17 +13,13 @@ spec:
         {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
-        - name: neo4j
+        - name: kafka
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
-            - containerPort: 7687
+            - containerPort: 9092
           env:
-            - name: NEO4J_AUTH
-              value: {{ .Values.security.neo4jUser }}/{{ .Values.security.neo4jPassword }}
-            - name: NEO4J_dbms_memory_pagecache_size
-              value: "128M"
-            - name: NEO4J_dbms_memory_heap_max_size
-              value: "128M"
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: {{ .Values.zookeeper.connectString }}
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
@@ -32,9 +28,9 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
           volumeMounts:
-            - name: neo4j-pv
+            - name: kafka-pv
               mountPath: /data
       volumes:
-        - name: neo4j-pv
+        - name: kafka-pv
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-neo4j-pvc
+            claimName: {{ .Release.Name }}-kafka-pvc

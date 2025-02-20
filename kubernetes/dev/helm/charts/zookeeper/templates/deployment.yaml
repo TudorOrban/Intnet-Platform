@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-neo4j
+  name: {{ .Release.Name }}-zookeeper
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -13,17 +13,12 @@ spec:
         {{- include "..labels" . | nindent 8 }}
     spec:
       containers:
-        - name: neo4j
+        - name: zookeeper
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
-            - containerPort: 7687
-          env:
-            - name: NEO4J_AUTH
-              value: {{ .Values.security.neo4jUser }}/{{ .Values.security.neo4jPassword }}
-            - name: NEO4J_dbms_memory_pagecache_size
-              value: "128M"
-            - name: NEO4J_dbms_memory_heap_max_size
-              value: "128M"
+          - containerPort: 2181
+          - containerPort: 2888
+          - containerPort: 3888
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
@@ -32,9 +27,9 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
           volumeMounts:
-            - name: neo4j-pv
+            - name: zookeeper-pv
               mountPath: /data
       volumes:
-        - name: neo4j-pv
+        - name: zookeeper-pv
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-neo4j-pvc
+            claimName: {{ .Release.Name }}-zookeeper-pvc

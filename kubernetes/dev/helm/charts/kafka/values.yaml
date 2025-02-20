@@ -1,7 +1,9 @@
 replicaCount: 1
 image:
-  repository: neo4j
-  tag: 4.4.10
+  repository: confluentinc/cp-kafka
+  tag: 7.3.1
+zookeeper:
+  connectString: {{ .Release.Name }}-zookeeper-service:2181
 security:
   neo4jUser: neo4j
   neo4jPassword: example-password
@@ -13,8 +15,8 @@ resources:
     cpu: 100m
     memory: 256Mi
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 1000m
+    memory: 1Gi
 pvc:
   storage:
     size: 1Gi
