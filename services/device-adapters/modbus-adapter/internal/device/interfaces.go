@@ -1,5 +1,11 @@
 package device
 
+import "github.com/goburrow/modbus"
+
 type DeviceManager interface {
-	GetDevices() ([]Device, error)
+	ConnectToDevices(devices []Device) (interface{}, error)
+}
+
+type DeviceReader interface {
+	readModbusValue(client modbus.Client, reg DeviceVariableConfig) (float64, error)
 }

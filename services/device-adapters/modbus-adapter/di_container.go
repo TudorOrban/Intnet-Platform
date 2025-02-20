@@ -11,6 +11,7 @@ import (
 func buildContainer() *dig.Container {
 	container := dig.New()
 
+	container.Provide(device.NewStdDeviceReader)
 	container.Provide(device.NewStdDeviceManager)
 	container.Provide(kafka.NewKafkaProducer)
 	container.Provide(core.NewConnectionHandler)
