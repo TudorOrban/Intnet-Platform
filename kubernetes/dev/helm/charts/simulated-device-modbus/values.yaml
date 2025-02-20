@@ -1,0 +1,15 @@
+replicaCount: 1
+image:
+  repository: simulated-device-modbus
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 502
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

@@ -1,0 +1,6 @@
+apiVersion: v3
+name: simulated-device-modbus
+description: A Helm chart for a simulated device with modbus
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
