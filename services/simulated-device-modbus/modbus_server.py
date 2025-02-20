@@ -5,18 +5,22 @@ from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext
 # Initialize data store for holding registers
 store = ModbusSequentialDataBlock(0, [0] * 100)
 
-context = ModbusSlaveContext(di=ModbusSequentialDataBlock(0, [0]*100), # discrete inputs
-                             co=ModbusSequentialDataBlock(0, [0]*100), # coils
-                             hr=store,  # holding registers
-                             ir=ModbusSequentialDataBlock(0, [0]*100)) # input registers
+context = {
+    0: ModbusSlaveContext(
+        di=ModbusSequentialDataBlock(0, [0]*100), # discrete inputs
+        co=ModbusSequentialDataBlock(0, [0]*100), # coils
+        hr=store,  # holding registers
+        ir=ModbusSequentialDataBlock(0, [0]*100) # input registers
+    )
+}
 
 async def run_server():
-    server = ModbusTcpServer(context=context, address=("localhost", 502))
-
-    print("Starting Modbus TCP server on localhost:502...")
+    port = 5020
+    server = ModbusTcpServer(context=context, address=("localhost", port))
+    print(f"Starting Modbus TCP server on localhost:{port}...")
 
     try:
-        server.serve_forever() 
+        await server.serve_forever() 
         print("Server is running. Press Ctrl+C to stop.")
         await asyncio.Future()
     except KeyboardInterrupt:

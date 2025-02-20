@@ -1,6 +1,7 @@
 package core
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -49,18 +50,43 @@ func (h *ConnectionHandler) handleStartConnectionHandler(w http.ResponseWriter, 
 }
 
 func (h *ConnectionHandler) processDevice(device device.Device) {
-	_, handler, err := h.establishConnection(device) // Call separate connection function
+	client, handler, err := h.establishConnection(device) // Call separate connection function
 	if err != nil {
 		log.Printf("Error establishing connection to %s: %v", device.IPAddress, err)
 		return
 	}
 	defer handler.Close()
 
+	// Read holding register
+	results, err := client.ReadHoldingRegisters(1, 1)
+	if err != nil {
+		log.Printf("Error reading register from %s: %v", device.IPAddress, err)
+		return
+	}
+	registerValue := binary.BigEndian.Uint16(results)
+	log.Printf("Read register 1 from %s: %v", device.IPAddress, registerValue)
+
+	// Write coil
+	_, err = client.WriteSingleCoil(5, 0xFF00)
+	if err != nil {
+		log.Printf("Error writing to coil 5 on %s: %v", device.IPAddress, err)
+		return
+	}
+	log.Printf("Successfully wrote to coil 5 on %s", device.IPAddress)
+
+	// Read coil
+	resultsCoil, err := client.ReadCoils(5, 1)
+	if err != nil {
+		log.Printf("Error reading coil 5 from %s: %v", device.IPAddress, err)
+		return
+	}
+	coilValue := binary.BigEndian.Uint16(resultsCoil)
+	log.Printf("Coil 5 value: %v", coilValue)
 }
 
 func (h *ConnectionHandler) establishConnection(device device.Device) (modbus.Client, *modbus.TCPClientHandler, error) {
 	ip := device.IPAddress
-	port := 502
+	port := 5020
 	address := fmt.Sprintf("%s:%d", ip, port)
 
 	handler := modbus.NewTCPClientHandler(address)
