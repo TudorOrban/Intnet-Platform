@@ -39,10 +39,3 @@ spec:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
-          volumeMounts:
-            - name: zookeeper-pv
-              mountPath: /data
-      volumes:
-        - name: zookeeper-pv
-          persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-zookeeper-pvc
