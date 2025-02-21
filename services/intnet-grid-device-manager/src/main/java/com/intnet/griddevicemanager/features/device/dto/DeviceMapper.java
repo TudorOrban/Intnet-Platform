@@ -13,7 +13,7 @@ public interface DeviceMapper {
     @Mapping(source = "device.id", target = "id")
     @Mapping(source = "device.ipAddress", target = "ipAddress")
     @Mapping(source = "device.protocol", target = "protocol")
-    @Mapping(source = "device.dataStructure", target = "dataStructure")
+    @Mapping(source = "device.deviceDataConfig", target = "deviceDataConfig")
     @Mapping(source = "device.status", target = "status")
     @Mapping(source = "device.createdAt", target = "createdAt")
     @Mapping(source = "device.updatedAt", target = "updatedAt")
@@ -24,7 +24,7 @@ public interface DeviceMapper {
 
     @Mapping(source = "ipAddress", target = "ipAddress")
     @Mapping(source = "protocol", target = "protocol")
-    @Mapping(source = "dataStructure", target = "dataStructure")
+    @Mapping(source = "deviceDataConfig", target = "deviceDataConfig")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "latitude", target = "latitude")
     @Mapping(source = "longitude", target = "longitude")

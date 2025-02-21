@@ -45,6 +45,37 @@ public class Device {
     @Column(name = "longitude")
     private Double longitude;
 
+    @Column(name = "device_data_config", columnDefinition = "TEXT")
+    private String deviceDataConfigJson;
+
+    @Transient
+    private DeviceDataConfig deviceDataConfig;
+
+    public DeviceDataConfig getDeviceDataConfig() {
+        if (this.deviceDataConfig != null || this.deviceDataConfigJson == null) {
+            return this.deviceDataConfig;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            this.deviceDataConfig = mapper.readValue(deviceDataConfigJson, DeviceDataConfig.class);
+            return this.deviceDataConfig;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Invalid device data config: " + e.getMessage()); // TODO: Add custom exceptions
+        }
+    }
+
+    public void setDeviceDataConfig(DeviceDataConfig deviceDataConfig) {
+        this.deviceDataConfig = deviceDataConfig;
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            this.deviceDataConfigJson = mapper.writeValueAsString(deviceDataConfig);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Invalid device data config: " + e.getMessage());
+        }
+    }
+
     @Column(name = "metadata", columnDefinition = "JSONB")
     private String metadataJson;
 

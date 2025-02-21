@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DeviceService {
 
-    List<DeviceSearchDto> getDevices();
+    List<DeviceSearchDto> getDevices(Boolean includeAssociations);
     DeviceSearchDto createDevice(CreateDeviceDto deviceDto);
     DeviceSearchDto updateDevice(UpdateDeviceDto updateDeviceDto);
     void deleteDevice(Long id);

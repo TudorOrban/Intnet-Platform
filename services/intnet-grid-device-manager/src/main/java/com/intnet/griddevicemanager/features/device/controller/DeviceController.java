@@ -21,9 +21,11 @@ public class DeviceController {
         this.deviceService = deviceService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<DeviceSearchDto>> getDevices() {
-        List<DeviceSearchDto> devices = deviceService.getDevices();
+    @GetMapping()
+    public ResponseEntity<List<DeviceSearchDto>> getDevices(
+            @RequestParam(required = false, defaultValue = "false") Boolean includeAssociations
+    ) {
+        List<DeviceSearchDto> devices = deviceService.getDevices(includeAssociations);
         return ResponseEntity.ok(devices);
     }
 
