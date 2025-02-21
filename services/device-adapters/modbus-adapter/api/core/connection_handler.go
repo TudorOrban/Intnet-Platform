@@ -38,3 +38,8 @@ func (h *ConnectionHandler) handleStartConnectionHandler(w http.ResponseWriter, 
 
 	w.WriteHeader(http.StatusOK)
 }
+
+func (h *ConnectionHandler) handleStopConnectionHandler(w http.ResponseWriter, r *http.Request) {
+	h.DeviceManager.StopConnection()
+	w.WriteHeader(http.StatusOK)
+}

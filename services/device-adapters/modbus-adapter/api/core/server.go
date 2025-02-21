@@ -26,6 +26,7 @@ func NewServer(
 
 func (s *Server) routes() {
 	s.router.HandleFunc("/start-connection", s.ConnectionHandler.handleStartConnectionHandler).Methods("POST")
+	s.router.HandleFunc("/stop-connection", s.ConnectionHandler.handleStopConnectionHandler).Methods("POST")
 }
 
 func (s *Server) Start() {
