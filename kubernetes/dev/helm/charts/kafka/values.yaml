@@ -15,3 +15,5 @@ resources:
 pvc:
   storage:
     size: 1Gi
+kafka:
+  offsetsTopicReplicationFactor: "1"

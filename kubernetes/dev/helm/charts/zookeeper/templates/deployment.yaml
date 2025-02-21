@@ -30,6 +30,8 @@ spec:
               value: "{{ .Values.zookeeper.initLimit }}"
             - name: ZOOKEEPER_SYNC_LIMIT
               value: "{{ .Values.zookeeper.syncLimit }}"
+            - name: ZOOKEEPER_CONFIG_EXTRA
+              value: "default.replication.factor=1"
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}

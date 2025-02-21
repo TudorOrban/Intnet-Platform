@@ -24,6 +24,12 @@ spec:
               value: PLAINTEXT://{{ .Release.Name }}-kafka:9092
             - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
               value: "true"
+            - name: KAFKA_DEFAULT_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "{{ .Values.kafka.offsetsTopicReplicationFactor }}"
+            - name: KAFKA_METADATA_LOG_DIR
+              value: /var/lib/kafka/meta
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
@@ -34,7 +40,12 @@ spec:
           volumeMounts:
             - name: kafka-pv
               mountPath: /var/lib/kafka/data
+            - name: kafka-meta-pv
+              mountPath: /var/lib/kafka/meta
       volumes:
         - name: kafka-pv
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-kafka-pvc
+        - name: kafka-meta-pv
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-kafka-meta-pvc

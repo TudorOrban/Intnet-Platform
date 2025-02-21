@@ -41,6 +41,8 @@ func (p *StdKafkaProducer) Produce(message ModbusMessage) error {
 		return fmt.Errorf("failed to marshal message: %w", err)
 	}
 
+	log.Printf("Sending JSON: %s\n", string(messageBytes))
+
 	deliveryChan := make(chan kafka.Event)
 	defer close(deliveryChan)
 
@@ -54,10 +56,6 @@ func (p *StdKafkaProducer) Produce(message ModbusMessage) error {
 
 	e := <-deliveryChan
 	m := e.(*kafka.Message)
-
-	// if m.Error != nil {
-	// 	return fmt.Errorf("message delivery failed: %w", m.Error)
-	// }
 
 	log.Printf("Message delivered to topic %s at offset %d\n", *m.TopicPartition.Topic, m.TopicPartition.Offset)
 
