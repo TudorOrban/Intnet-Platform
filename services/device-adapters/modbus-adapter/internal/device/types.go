@@ -1,10 +1,9 @@
 package device
 
 type Device struct {
-	ID               string           `json:"id"`
+	ID               int64            `json:"id"`
 	IPAddress        string           `json:"ipAddress"`
 	Protocol         string           `json:"protocol"`
-	DataStructure    string           `json:"dataStructure"`
 	DeviceDataConfig DeviceDataConfig `json:"deviceDataConfig"`
 	Latitude         float32          `json:"latitude"`
 	Longitude        float32          `json:"longitude"`

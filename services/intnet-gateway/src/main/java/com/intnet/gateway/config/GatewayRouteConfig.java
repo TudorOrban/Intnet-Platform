@@ -35,6 +35,8 @@ public class GatewayRouteConfig {
                         .uri(GRID_DEVICE_MANAGER_SERVICE))
                 .route("grid-element-associations", r -> r.path("/api/v1/grid-element-associations/**")
                         .uri(GRID_DEVICE_MANAGER_SERVICE))
+                .route("adapter-manager", r -> r.path("/api/v1/adapter-manager/**")
+                        .uri(GRID_DEVICE_MANAGER_SERVICE))
                 .build();
     }
 }

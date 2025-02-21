@@ -8,7 +8,7 @@ import (
 
 type ModbusMessage struct {
 	Timestamp time.Time         `json:"timestamp"`
-	DeviceID  string            `json:"deviceId"`
+	DeviceID  int64             `json:"deviceId"`
 	Type      MeasuredValueType `json:"type"`
 	Value     float64           `json:"value"`
 }

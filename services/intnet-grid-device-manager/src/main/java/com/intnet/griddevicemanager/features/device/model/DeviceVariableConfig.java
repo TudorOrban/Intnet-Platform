@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeviceVariableConfig {
 
-    private String type;
-    private Integer address;
-    private DataType dataType;
+    private RegisterType type;
+    private String address;
+    private String dataType;
     private Float scalingFactor;
     private Float pollFrequencySeconds;
 }

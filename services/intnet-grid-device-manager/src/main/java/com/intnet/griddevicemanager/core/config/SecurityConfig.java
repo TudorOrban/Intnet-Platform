@@ -17,6 +17,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/v1/devices/**").permitAll()
                         .requestMatchers("/api/v1/grid-element-associations/**").permitAll()
+                        .requestMatchers("/api/v1/adapter-manager/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

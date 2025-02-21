@@ -69,7 +69,7 @@ func (m *StdDeviceManager) pollModbusValue(
 	handler *modbus.TCPClientHandler,
 	reg DeviceVariableConfig,
 	ipAddress string,
-	deviceID string,
+	deviceID int64,
 	stopChan chan struct{},
 ) {
 	ticker := time.NewTicker(time.Duration(reg.PollFrequencySeconds * float64(time.Second)))
@@ -81,7 +81,7 @@ func (m *StdDeviceManager) pollModbusValue(
 		case <-ticker.C:
 			m.pushToKafka(client, reg, ipAddress, deviceID)
 		case <-stopChan:
-			log.Printf("Stopping polling for device %s (%s)", deviceID, ipAddress)
+			log.Printf("Stopping polling for device %d (%s)", deviceID, ipAddress)
 			handler.Close()
 			return
 		}
@@ -92,7 +92,7 @@ func (m *StdDeviceManager) pushToKafka(
 	client modbus.Client,
 	reg DeviceVariableConfig,
 	ipAddress string,
-	deviceID string,
+	deviceID int64,
 ) {
 	value, err := m.DeviceReader.readModbusValue(client, reg)
 	if err != nil {
