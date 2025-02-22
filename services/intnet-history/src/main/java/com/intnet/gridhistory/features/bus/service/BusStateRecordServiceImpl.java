@@ -4,7 +4,7 @@ import com.intnet.gridhistory.features.bus.dto.BusStateRecordMapper;
 import com.intnet.gridhistory.features.bus.dto.CreateBusStateRecordDto;
 import com.intnet.gridhistory.features.bus.dto.GetBusRecordsRequestDto;
 import com.intnet.gridhistory.features.bus.model.BusStateRecord;
-import com.intnet.gridhistory.features.bus.model.BusStateRecordDto;
+import com.intnet.gridhistory.features.bus.dto.BusStateRecordDto;
 import com.intnet.gridhistory.features.bus.repository.BusStateRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

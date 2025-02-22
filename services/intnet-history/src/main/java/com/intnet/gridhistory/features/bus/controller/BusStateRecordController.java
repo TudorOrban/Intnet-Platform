@@ -2,7 +2,7 @@ package com.intnet.gridhistory.features.bus.controller;
 
 import com.intnet.gridhistory.features.bus.dto.CreateBusStateRecordDto;
 import com.intnet.gridhistory.features.bus.dto.GetBusRecordsRequestDto;
-import com.intnet.gridhistory.features.bus.model.BusStateRecordDto;
+import com.intnet.gridhistory.features.bus.dto.BusStateRecordDto;
 import com.intnet.gridhistory.features.bus.service.BusStateRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

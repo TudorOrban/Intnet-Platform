@@ -1,4 +1,4 @@
-package com.intnet.gridhistory.features.bus.model;
+package com.intnet.gridhistory.features.bus.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

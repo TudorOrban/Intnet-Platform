@@ -2,7 +2,7 @@ package com.intnet.gridhistory.features.bus.service;
 
 import com.intnet.gridhistory.features.bus.dto.CreateBusStateRecordDto;
 import com.intnet.gridhistory.features.bus.dto.GetBusRecordsRequestDto;
-import com.intnet.gridhistory.features.bus.model.BusStateRecordDto;
+import com.intnet.gridhistory.features.bus.dto.BusStateRecordDto;
 
 import java.util.List;
 

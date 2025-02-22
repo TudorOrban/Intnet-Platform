@@ -15,9 +15,9 @@ func NewStdDeviceReader() DeviceReader {
 
 func (r *StdDeviceReader) readModbusValue(client modbus.Client, reg DeviceVariableConfig) (float64, error) {
 	switch reg.Type {
-	case "holdingRegister":
+	case "HOLDING_REGISTER":
 		return r.readHoldingRegister(client, reg)
-	case "inputRegister":
+	case "INPUT_REGISTER":
 		return r.readInputRegister(client, reg)
 	default:
 		return -1, fmt.Errorf("unsupported register type: %s", reg.Type)

@@ -1,7 +1,6 @@
 package com.intnet.gridhistory.features.bus.dto;
 
 import com.intnet.gridhistory.features.bus.model.BusStateRecord;
-import com.intnet.gridhistory.features.bus.model.BusStateRecordDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
