@@ -21,8 +21,9 @@ public class BusState {
     @Column(name = "grid_id", nullable = false)
     private Long gridId;
 
-    @Column(name = "bus_id", nullable = false)
-    private Long busId;
+    @OneToOne
+    @JoinColumn(name = "bus_id", nullable = false, insertable = false, updatable = false)
+    private Bus bus;
 
     @Column(name = "created_at")
     private ZonedDateTime createdAt;

@@ -33,13 +33,16 @@ CREATE INDEX idx_edges_edge_type ON edges (edge_type);
 
 CREATE TABLE edge_states (
     id BIGSERIAL PRIMARY KEY,
+    grid_id BIGINT NOT NULL,
     edge_id BIGINT NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
     line_switching_status BOOLEAN,
 
+    FOREIGN KEY (grid_id) REFERENCES grids(id),
     FOREIGN KEY (edge_id) REFERENCES edges(id)
 );
 
+CREATE INDEX idx_edge_states_grid_id ON edge_states (grid_id);
 CREATE INDEX idx_edge_states_edge_id ON edge_states (edge_id);
 CREATE INDEX idx_edge_states_updated_at ON edge_states (updated_at);

@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BusServiceImpl implements BusService {
 
@@ -35,18 +37,17 @@ public class BusServiceImpl implements BusService {
         this.sanitizerService = sanitizerService;
     }
 
-    public BusSearchDto getBusById(Long id, Boolean attachState) {
+    public List<BusSearchDto> getBusesByGridId(Long gridId) {
+        List<Bus> buses = busRepository.findByGridId(gridId);
+
+        return buses.stream().map(this::mapBusToBusSearchDto).toList();
+    }
+
+    public BusSearchDto getBusById(Long id) {
         Bus bus = busRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id.toString(), ResourceType.BUS, ResourceIdentifierType.ID));
 
-        BusStateDto stateDto = null;
-        if (attachState) {
-            BusState state = busStateRepository.findByBusId(bus.getId())
-                    .orElseThrow(() -> new ResourceNotFoundException(bus.getId().toString(), ResourceType.BUS_STATE, ResourceIdentifierType.BUS_ID));
-            stateDto = this.mapBusStateToBusStateDto(state);
-        }
-
-        return this.mapBusToBusSearchDto(bus, stateDto);
+        return this.mapBusToBusSearchDto(bus);
     }
 
     @Transactional
@@ -55,22 +56,15 @@ public class BusServiceImpl implements BusService {
 
         Bus bus = this.mapCreateBusDtoToBus(sanitizedBusDto);
 
-        Bus savedBus = busRepository.save(bus);
+        BusState busState = new BusState();
+        busState.setGridId(bus.getGridId());
+        bus.setState(busState);
 
-        BusStateDto stateDto = this.createBusState(savedBus);
+        Bus savedBus = busRepository.save(bus);
 
         graphUpdaterService.updateGraph(savedBus);
 
-        return this.mapBusToBusSearchDto(savedBus, stateDto);
-    }
-
-    private BusStateDto createBusState(Bus savedBus) {
-        BusState busState = new BusState();
-        busState.setGridId(savedBus.getGridId());
-        busState.setBusId(savedBus.getId());
-
-        BusState savedState = busStateRepository.save(busState);
-        return this.mapBusStateToBusStateDto(savedState);
+        return this.mapBusToBusSearchDto(savedBus);
     }
 
     public BusSearchDto updateBus(UpdateBusDto busDto) {
@@ -83,19 +77,21 @@ public class BusServiceImpl implements BusService {
 
         Bus savedBus = busRepository.save(bus);
 
-        return this.mapBusToBusSearchDto(savedBus, null);
+        return this.mapBusToBusSearchDto(savedBus);
     }
 
     public void deleteBus(Long id) {
         Bus bus = busRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id.toString(), ResourceType.BUS, ResourceIdentifierType.ID));
 
+        busStateRepository.deleteByBusId(id);
+
         this.busRepository.delete(bus);
     }
 
-    private BusSearchDto mapBusToBusSearchDto(Bus bus, BusStateDto stateDto) {
+    private BusSearchDto mapBusToBusSearchDto(Bus bus) {
         BusSearchDto busDto = BusMapper.INSTANCE.busToBusSearchDto(bus);
-        busDto.setState(stateDto);
+        busDto.setState(this.mapBusStateToBusStateDto(bus.getState()));
         return busDto;
     }
 

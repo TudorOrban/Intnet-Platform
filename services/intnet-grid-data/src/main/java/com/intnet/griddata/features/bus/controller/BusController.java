@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/buses")
 public class BusController {
@@ -19,12 +21,15 @@ public class BusController {
         this.busService = busService;
     }
 
+    @GetMapping("/grid/{gridId}")
+    public ResponseEntity<List<BusSearchDto>> getBusesByGridId(@PathVariable Long gridId) {
+        List<BusSearchDto> buses = busService.getBusesByGridId(gridId);
+        return ResponseEntity.ok(buses);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<BusSearchDto> getBusById(
-            @PathVariable Long id,
-            @RequestParam(name = "attachState", required = false, defaultValue = "false") Boolean attachState
-    ) {
-        BusSearchDto bus = busService.getBusById(id, attachState);
+    public ResponseEntity<BusSearchDto> getBusById(@PathVariable Long id) {
+        BusSearchDto bus = busService.getBusById(id);
         return ResponseEntity.ok(bus);
     }
 

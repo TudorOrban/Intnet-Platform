@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface BusStateRepository extends JpaRepository<BusState, Long> {
 
     Optional<BusState> findByBusId(Long busId);
+    void deleteByBusId(Long busId);
 }
