@@ -13,6 +13,7 @@ public class UpdateBusDto {
 
     private Long id;
     private Long gridId;
+    private String busName;
     private Double latitude;
     private Double longitude;
 }

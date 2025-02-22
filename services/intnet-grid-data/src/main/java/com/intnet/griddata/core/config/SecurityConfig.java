@@ -16,7 +16,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/v1/grids/**").permitAll()
-                        .requestMatchers("/api/v1/substations/**").permitAll()
                         .requestMatchers("/api/v1/buses/**").permitAll()
                         .requestMatchers("/api/v1/transmission-lines/**").permitAll()
                         .anyRequest().authenticated()

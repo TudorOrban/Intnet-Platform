@@ -8,7 +8,6 @@ public enum ResourceIdentifierType {
     NAME,
     TITLE,
 
-    SUBSTATION_ID,
     BUS_ID;
 
     @Override
@@ -20,7 +19,6 @@ public enum ResourceIdentifierType {
             case NAME -> "NAME";
             case TITLE -> "Title";
 
-            case SUBSTATION_ID -> "Substation ID";
             case BUS_ID -> "Bus ID";
         };
     }

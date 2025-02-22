@@ -9,7 +9,7 @@ CREATE TABLE edges (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
     src_bus_id BIGINT NOT NULL,
-    dest_bust_id BIGINT NOT NULL,
+    dest_bus_id BIGINT NOT NULL,
     edge_type edge_type,
 
     line_length DECIMAL,

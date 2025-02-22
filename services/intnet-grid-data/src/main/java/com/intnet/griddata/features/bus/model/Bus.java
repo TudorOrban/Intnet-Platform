@@ -22,6 +22,9 @@ public class Bus {
     @Column(name = "grid_id", nullable = false)
     private Long gridId;
 
+    @Column(name = "bus_name", nullable = false)
+    private String busName;
+
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
 

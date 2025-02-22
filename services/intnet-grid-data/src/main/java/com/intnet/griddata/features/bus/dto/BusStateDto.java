@@ -16,8 +16,10 @@ public class BusStateDto {
     private Long busId;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-    private Double voltage;
-    private Double load;
-    private Double generation;
-    private Double phaseAngle;
+    private Double voltageMagnitude;
+    private Double voltageAngle;
+    private Double activePowerInjection;
+    private Double reactivePowerInjection;
+    private Boolean shuntCapacitorReactorStatus;
+    private Double phaseShiftingTransformerTapPosition;
 }

@@ -13,6 +13,7 @@ public class BusSearchDto {
 
     private Long id;
     private Long gridId;
+    private String busName;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
     private Double latitude;

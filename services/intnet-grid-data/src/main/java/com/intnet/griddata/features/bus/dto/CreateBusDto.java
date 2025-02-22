@@ -12,6 +12,7 @@ import java.util.List;
 public class CreateBusDto {
 
     private Long gridId;
+    private String busName;
     private Double latitude;
     private Double longitude;
 }

@@ -45,9 +45,11 @@ public class BusStateUpdaterServiceImpl implements BusStateUpdaterService {
     }
 
     private void setUpdateBusStateDtoToBusState(BusState state, UpdateBusStateDto stateDto) {
-        state.setVoltage(stateDto.getVoltage());
-        state.setLoad(stateDto.getLoad());
-        state.setGeneration(stateDto.getGeneration());
-        state.setPhaseAngle(stateDto.getPhaseAngle());
+        state.setVoltageMagnitude(stateDto.getVoltageMagnitude());
+        state.setVoltageAngle(stateDto.getVoltageAngle());
+        state.setActivePowerInjection(stateDto.getActivePowerInjection());
+        state.setReactivePowerInjection(stateDto.getReactivePowerInjection());
+        state.setShuntCapacitorReactorStatus(stateDto.getShuntCapacitorReactorStatus());
+        state.setPhaseShiftingTransformerTapPosition(stateDto.getPhaseShiftingTransformerTapPosition());
     }
 }
