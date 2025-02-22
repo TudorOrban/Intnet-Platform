@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BusService {
 
-    List<BusSearchDto> getBusesByGridId(Long gridId);
+    List<BusSearchDto> getBusesByGridId(Long gridId, Boolean attachComponents);
     BusSearchDto getBusById(Long id);
     BusSearchDto createBus(CreateBusDto busDto);
     BusSearchDto updateBus(UpdateBusDto busDto);

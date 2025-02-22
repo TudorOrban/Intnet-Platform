@@ -1,10 +1,12 @@
 package com.intnet.griddata.features.bus.dto;
 
+import com.intnet.griddata.features.generator.dto.GeneratorSearchDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,4 +22,6 @@ public class BusSearchDto {
     private Double longitude;
 
     private BusStateDto state;
+
+    private List<GeneratorSearchDto> generators;
 }

@@ -5,7 +5,8 @@ import com.intnet.griddata.features.bus.dto.*;
 import com.intnet.griddata.features.bus.model.Bus;
 import com.intnet.griddata.features.bus.model.BusState;
 import com.intnet.griddata.features.bus.repository.BusRepository;
-import com.intnet.griddata.features.bus.repository.BusStateRepository;
+import com.intnet.griddata.features.generator.dto.GeneratorSearchDto;
+import com.intnet.griddata.features.generator.model.Generator;
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
@@ -20,34 +21,37 @@ import java.util.List;
 public class BusServiceImpl implements BusService {
 
     private final BusRepository busRepository;
-    private final BusStateRepository busStateRepository;
     private final GridGraphUpdaterService graphUpdaterService;
     private final EntitySanitizerService sanitizerService;
 
     @Autowired
     public BusServiceImpl(
             BusRepository busRepository,
-            BusStateRepository busStateRepository,
             GridGraphUpdaterService graphUpdaterService,
             EntitySanitizerService sanitizerService
     ) {
         this.busRepository = busRepository;
-        this.busStateRepository = busStateRepository;
         this.graphUpdaterService = graphUpdaterService;
         this.sanitizerService = sanitizerService;
     }
 
-    public List<BusSearchDto> getBusesByGridId(Long gridId) {
-        List<Bus> buses = busRepository.findByGridId(gridId);
+    public List<BusSearchDto> getBusesByGridId(Long gridId, Boolean attachComponents) {
+        List<Bus> buses;
 
-        return buses.stream().map(this::mapBusToBusSearchDto).toList();
+        if (attachComponents != null && attachComponents) {
+            buses = busRepository.findByGridIdWithComponents(gridId);
+        } else {
+            buses = busRepository.findByGridId(gridId);
+        }
+
+        return buses.stream().map(bus -> mapBusToBusSearchDto(bus, attachComponents)).toList();
     }
 
     public BusSearchDto getBusById(Long id) {
         Bus bus = busRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id.toString(), ResourceType.BUS, ResourceIdentifierType.ID));
 
-        return this.mapBusToBusSearchDto(bus);
+        return this.mapBusToBusSearchDto(bus, false);
     }
 
     @Transactional
@@ -65,7 +69,7 @@ public class BusServiceImpl implements BusService {
 
 //        graphUpdaterService.updateGraph(savedBus);
 
-        return this.mapBusToBusSearchDto(savedBus);
+        return this.mapBusToBusSearchDto(savedBus, false);
     }
 
     public BusSearchDto updateBus(UpdateBusDto busDto) {
@@ -78,22 +82,40 @@ public class BusServiceImpl implements BusService {
 
         Bus savedBus = busRepository.save(bus);
 
-        return this.mapBusToBusSearchDto(savedBus);
+        return this.mapBusToBusSearchDto(savedBus, false);
     }
 
     public void deleteBus(Long id) {
         Bus bus = busRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id.toString(), ResourceType.BUS, ResourceIdentifierType.ID));
 
-        busStateRepository.deleteByBusId(id);
-
         this.busRepository.delete(bus);
     }
 
-    private BusSearchDto mapBusToBusSearchDto(Bus bus) {
+    private BusSearchDto mapBusToBusSearchDto(Bus bus, Boolean attachComponents) {
         BusSearchDto busDto = BusMapper.INSTANCE.busToBusSearchDto(bus);
         busDto.setState(this.mapBusStateToBusStateDto(bus.getState()));
+
+        if (attachComponents != null && attachComponents) {
+            mapGeneratorsToDto(bus, busDto);
+//            mapLoadsToDto(bus, busDto);
+        }
+
         return busDto;
+    }
+
+    private void mapGeneratorsToDto(Bus bus, BusSearchDto busDto) {
+        if (bus.getGenerators() == null) {
+            return;
+        }
+        busDto.setGenerators(
+                bus.getGenerators().stream().map(this::mapGeneratorToGeneratorSearchDto).toList()
+        );
+    }
+
+    private GeneratorSearchDto mapGeneratorToGeneratorSearchDto(Generator generator) {
+        GeneratorSearchDto generatorDto = new GeneratorSearchDto();
+        return generatorDto;
     }
 
     private Bus mapCreateBusDtoToBus(CreateBusDto busDto) {
