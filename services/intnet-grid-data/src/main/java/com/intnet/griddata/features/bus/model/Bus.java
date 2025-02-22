@@ -38,7 +38,7 @@ public class Bus {
     @Column(name = "longitude")
     private Double longitude;
 
-    @OneToOne(mappedBy = "bus")
+    @OneToOne(mappedBy = "bus", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private BusState state;
 
     @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY)

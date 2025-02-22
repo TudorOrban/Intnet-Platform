@@ -22,7 +22,7 @@ public class BusState {
     private Long gridId;
 
     @OneToOne
-    @JoinColumn(name = "bus_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 
     @Column(name = "created_at")

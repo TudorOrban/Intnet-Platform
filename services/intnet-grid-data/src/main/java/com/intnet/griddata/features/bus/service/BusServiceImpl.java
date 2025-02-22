@@ -58,11 +58,12 @@ public class BusServiceImpl implements BusService {
 
         BusState busState = new BusState();
         busState.setGridId(bus.getGridId());
+        busState.setBus(bus);
         bus.setState(busState);
 
         Bus savedBus = busRepository.save(bus);
 
-        graphUpdaterService.updateGraph(savedBus);
+//        graphUpdaterService.updateGraph(savedBus);
 
         return this.mapBusToBusSearchDto(savedBus);
     }
@@ -104,6 +105,7 @@ public class BusServiceImpl implements BusService {
     }
 
     private void setUpdateBusDtoToBus(Bus bus, UpdateBusDto busDto) {
+        bus.setBusName(busDto.getBusName());
         bus.setLatitude(busDto.getLatitude());
         bus.setLongitude(busDto.getLongitude());
     }
