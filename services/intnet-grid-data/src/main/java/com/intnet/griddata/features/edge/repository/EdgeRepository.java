@@ -13,6 +13,6 @@ public interface EdgeRepository extends JpaRepository<Edge, Long> {
 
     @Query("SELECT e FROM Edge e " +
 //            "LEFT JOIN FETCH e.transformers " +
-            "WHERE b.gridId = :gridId")
+            "WHERE e.gridId = :gridId")
     List<Edge> findByGridIdWithComponents(@Param("gridId") Long gridId);
 }

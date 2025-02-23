@@ -16,5 +16,5 @@ public class EdgeStateDto {
     private Long edgeId;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-    private Double lineSwitchingStatus;
+    private Boolean lineSwitchingStatus;
 }

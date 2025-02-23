@@ -5,7 +5,9 @@ public enum ResourceType {
     BUS,
     BUS_STATE,
     GENERATOR,
-    GENERATOR_STATE;
+    GENERATOR_STATE,
+    EDGE,
+    EDGE_STATE;
 
     @Override
     public String toString() {
@@ -15,6 +17,8 @@ public enum ResourceType {
             case BUS_STATE -> "Bus State";
             case GENERATOR -> "Generator";
             case GENERATOR_STATE -> "Generator State";
+            case EDGE -> "Edge";
+            case EDGE_STATE -> "Edge State";
         };
     }
 }

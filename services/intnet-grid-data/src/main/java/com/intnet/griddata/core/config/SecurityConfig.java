@@ -18,6 +18,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/grids/**").permitAll()
                         .requestMatchers("/api/v1/buses/**").permitAll()
                         .requestMatchers("/api/v1/generators/**").permitAll()
+                        .requestMatchers("/api/v1/edges/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

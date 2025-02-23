@@ -1,6 +1,5 @@
 package com.intnet.griddata.features.edge.model;
 
-import com.intnet.griddata.features.generator.model.Generator;
 import com.intnet.griddata.shared.enums.EdgeType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,13 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "buses")
+@Table(name = "edges")
 public class Edge {
 
     @Id

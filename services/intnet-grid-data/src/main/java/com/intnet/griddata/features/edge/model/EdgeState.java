@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bus_states")
+@Table(name = "edge_states")
 public class EdgeState {
 
     @Id
@@ -29,7 +29,7 @@ public class EdgeState {
     private ZonedDateTime updatedAt;
 
     @Column(name = "line_switching_status")
-    private Double lineSwitchingStatus;
+    private Boolean lineSwitchingStatus;
 
     @PrePersist
     private void onCreate() {

@@ -12,5 +12,5 @@ import java.time.ZonedDateTime;
 public class UpdateEdgeStateDto {
 
     private Long edgeId;
-    private Double lineSwitchingStatus;
+    private Boolean lineSwitchingStatus;
 }

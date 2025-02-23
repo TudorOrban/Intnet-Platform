@@ -45,11 +45,10 @@ public class BusServiceImpl implements BusService {
         if (attachComponents != null && attachComponents) {
             buses = busRepository.findByGridIdWithComponents(gridId);
         } else {
-            System.out.println("Test");
             buses = busRepository.findByGridId(gridId);
         }
 
-        return buses.stream().map(bus -> mapBusToBusSearchDto(bus, attachComponents)).toList();
+        return buses.stream().map(bus -> this.mapBusToBusSearchDto(bus, attachComponents)).toList();
     }
 
     public BusSearchDto getBusById(Long id) {

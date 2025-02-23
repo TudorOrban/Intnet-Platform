@@ -21,6 +21,7 @@ public interface BusMapper {
     BusSearchDto busToBusSearchDto(Bus bus);
 
     @Mapping(source = "gridId", target = "gridId")
+    @Mapping(source = "busName", target = "busName")
     @Mapping(source = "latitude", target = "latitude")
     @Mapping(source = "longitude", target = "longitude")
     Bus createBusDtoToBus(CreateBusDto busDto);
