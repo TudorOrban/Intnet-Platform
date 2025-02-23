@@ -41,7 +41,7 @@ public class Bus {
     @OneToOne(mappedBy = "bus", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private BusState state;
 
-    @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Generator> generators;
 
     @PrePersist

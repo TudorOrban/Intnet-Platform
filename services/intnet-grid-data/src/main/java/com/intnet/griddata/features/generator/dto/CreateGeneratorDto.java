@@ -9,18 +9,13 @@ import java.time.ZonedDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GeneratorSearchDto {
+public class CreateGeneratorDto {
 
-    private Long id;
     private Long gridId;
     private String generatorName;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
     private Double generatorVoltageSetpoint;
     private Double generatorMaxActivePower;
     private Double generatorMinActivePower;
     private Double generatorMaxReactivePower;
     private Double generatorMinReactivePower;
-
-    private GeneratorStateSearchDto state;
 }
