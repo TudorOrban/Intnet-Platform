@@ -114,7 +114,6 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     private void setUpdateGeneratorDtoToGenerator(Generator generator, UpdateGeneratorDto generatorDto) {
         generator.setGeneratorName(generatorDto.getGeneratorName());
-        generator.setGeneratorVoltageSetpoint(generatorDto.getGeneratorVoltageSetpoint());
         generator.setGeneratorMaxActivePower(generatorDto.getGeneratorMaxActivePower());
         generator.setGeneratorMinActivePower(generatorDto.getGeneratorMinActivePower());
         generator.setGeneratorMaxReactivePower(generatorDto.getGeneratorMaxReactivePower());

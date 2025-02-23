@@ -11,7 +11,6 @@ public class UpdateGeneratorDto {
 
     private Long id;
     private String generatorName;
-    private Double generatorVoltageSetpoint;
     private Double generatorMaxActivePower;
     private Double generatorMinActivePower;
     private Double generatorMaxReactivePower;

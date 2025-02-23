@@ -26,7 +26,7 @@ public class Bus {
     @OneToOne(mappedBy = "bus", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private BusState state;
 
-    @Column(name = "bus_name", nullable = false)
+    @Column(name = "bus_name")
     private String busName;
 
     @Column(name = "created_at")

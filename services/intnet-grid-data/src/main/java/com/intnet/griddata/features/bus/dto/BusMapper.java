@@ -17,6 +17,7 @@ public interface BusMapper {
     @Mapping(source = "bus.updatedAt", target = "updatedAt")
     @Mapping(source = "bus.latitude", target = "latitude")
     @Mapping(source = "bus.longitude", target = "longitude")
+    @Mapping(target = "generators", ignore = true)
     BusSearchDto busToBusSearchDto(Bus bus);
 
     @Mapping(source = "gridId", target = "gridId")

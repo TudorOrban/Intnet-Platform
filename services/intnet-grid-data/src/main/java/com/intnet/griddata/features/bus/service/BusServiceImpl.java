@@ -45,6 +45,7 @@ public class BusServiceImpl implements BusService {
         if (attachComponents != null && attachComponents) {
             buses = busRepository.findByGridIdWithComponents(gridId);
         } else {
+            System.out.println("Test");
             buses = busRepository.findByGridId(gridId);
         }
 

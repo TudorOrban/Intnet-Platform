@@ -38,9 +38,6 @@ public class Generator {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    @Column(name = "generator_voltage_setpoint")
-    private Double generatorVoltageSetpoint;
-
     @Column(name = "generator_max_active_power")
     private Double generatorMaxActivePower;
 

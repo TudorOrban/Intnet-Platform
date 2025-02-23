@@ -15,7 +15,6 @@ public interface GeneratorMapper {
     @Mapping(source = "generator.generatorName", target = "generatorName")
     @Mapping(source = "generator.createdAt", target = "createdAt")
     @Mapping(source = "generator.updatedAt", target = "updatedAt")
-    @Mapping(source = "generator.generatorVoltageSetpoint", target = "generatorVoltageSetpoint")
     @Mapping(source = "generator.generatorMaxActivePower", target = "generatorMaxActivePower")
     @Mapping(source = "generator.generatorMinActivePower", target = "generatorMinActivePower")
     @Mapping(source = "generator.generatorMaxReactivePower", target = "generatorMaxReactivePower")
@@ -24,7 +23,6 @@ public interface GeneratorMapper {
 
     @Mapping(source = "gridId", target = "gridId")
     @Mapping(source = "generatorName", target = "generatorName")
-    @Mapping(source = "generatorVoltageSetpoint", target = "generatorVoltageSetpoint")
     @Mapping(source = "generatorMaxActivePower", target = "generatorMaxActivePower")
     @Mapping(source = "generatorMinActivePower", target = "generatorMinActivePower")
     @Mapping(source = "generatorMaxReactivePower", target = "generatorMaxReactivePower")
