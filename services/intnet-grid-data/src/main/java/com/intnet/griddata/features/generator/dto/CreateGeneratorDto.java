@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 public class CreateGeneratorDto {
 
     private Long gridId;
+    private Long busId;
     private String generatorName;
     private Double generatorVoltageSetpoint;
     private Double generatorMaxActivePower;

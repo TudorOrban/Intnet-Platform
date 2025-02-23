@@ -23,6 +23,9 @@ public class Bus {
     @Column(name = "grid_id", nullable = false)
     private Long gridId;
 
+    @OneToOne(mappedBy = "bus", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private BusState state;
+
     @Column(name = "bus_name", nullable = false)
     private String busName;
 
@@ -37,9 +40,6 @@ public class Bus {
 
     @Column(name = "longitude")
     private Double longitude;
-
-    @OneToOne(mappedBy = "bus", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private BusState state;
 
     @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Generator> generators;

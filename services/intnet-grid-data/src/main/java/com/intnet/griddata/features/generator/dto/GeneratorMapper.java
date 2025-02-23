@@ -37,5 +37,5 @@ public interface GeneratorMapper {
     @Mapping(source = "state.activePowerGeneration", target = "activePowerGeneration")
     @Mapping(source = "state.reactivePowerGeneration", target = "reactivePowerGeneration")
     @Mapping(source = "state.generatorVoltageSetpoint", target = "generatorVoltageSetpoint")
-    GeneratorStateSearchDto stateToStateSearchDto(GeneratorState state);
+    GeneratorStateDto stateToStateSearchDto(GeneratorState state);
 }

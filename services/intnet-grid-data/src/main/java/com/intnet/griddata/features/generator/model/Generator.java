@@ -26,8 +26,8 @@ public class Generator {
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 
-    @OneToOne(mappedBy = "generator")
-    private GeneratorState generatorState;
+    @OneToOne(mappedBy = "generator", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private GeneratorState state;
 
     @Column(name = "generator_name", nullable = false)
     private String generatorName;

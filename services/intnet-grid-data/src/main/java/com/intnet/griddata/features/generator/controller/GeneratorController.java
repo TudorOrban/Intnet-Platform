@@ -27,6 +27,12 @@ public class GeneratorController {
         return ResponseEntity.ok(generators);
     }
 
+    @GetMapping("/bus/{busId}")
+    public ResponseEntity<List<GeneratorSearchDto>> getGeneratorsByBusId(@PathVariable Long busId) {
+        List<GeneratorSearchDto> generators = generatorService.getGeneratorsByBusId(busId);
+        return ResponseEntity.ok(generators);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<GeneratorSearchDto> getGeneratorById(@PathVariable Long id) {
         GeneratorSearchDto generator = generatorService.getGeneratorById(id);

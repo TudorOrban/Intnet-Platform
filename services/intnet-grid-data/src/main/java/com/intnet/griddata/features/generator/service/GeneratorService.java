@@ -10,6 +10,7 @@ import java.util.List;
 public interface GeneratorService {
 
     List<GeneratorSearchDto> getGeneratorsByGridId(Long gridId);
+    List<GeneratorSearchDto> getGeneratorsByBusId(Long busId);
     GeneratorSearchDto getGeneratorById(Long id);
     GeneratorSearchDto createGenerator(CreateGeneratorDto generatorDto);
     GeneratorSearchDto updateGenerator(UpdateGeneratorDto generatorDto);

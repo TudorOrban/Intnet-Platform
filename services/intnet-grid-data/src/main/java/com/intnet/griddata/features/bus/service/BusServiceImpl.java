@@ -60,9 +60,9 @@ public class BusServiceImpl implements BusService {
 
     @Transactional
     public BusSearchDto createBus(CreateBusDto busDto) {
-        CreateBusDto sanitizedBusDto = sanitizerService.sanitizeCreateBusDto(busDto);
+        CreateBusDto sanitizedDto = sanitizerService.sanitizeCreateBusDto(busDto);
 
-        Bus bus = this.mapCreateBusDtoToBus(sanitizedBusDto);
+        Bus bus = this.mapCreateBusDtoToBus(sanitizedDto);
 
         BusState busState = new BusState();
         busState.setGridId(bus.getGridId());
@@ -77,12 +77,12 @@ public class BusServiceImpl implements BusService {
     }
 
     public BusSearchDto updateBus(UpdateBusDto busDto) {
-        UpdateBusDto sanitizedBusDto = sanitizerService.sanitizeUpdateBusDto(busDto);
+        UpdateBusDto sanitizedDto = sanitizerService.sanitizeUpdateBusDto(busDto);
 
-        Bus bus = busRepository.findById(sanitizedBusDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(sanitizedBusDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+        Bus bus = busRepository.findById(sanitizedDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(sanitizedDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
 
-        this.setUpdateBusDtoToBus(bus, sanitizedBusDto);
+        this.setUpdateBusDtoToBus(bus, sanitizedDto);
 
         Bus savedBus = busRepository.save(bus);
 

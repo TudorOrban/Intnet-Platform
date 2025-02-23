@@ -22,5 +22,5 @@ public class GeneratorSearchDto {
     private Double generatorMaxReactivePower;
     private Double generatorMinReactivePower;
 
-    private GeneratorStateSearchDto state;
+    private GeneratorStateDto state;
 }

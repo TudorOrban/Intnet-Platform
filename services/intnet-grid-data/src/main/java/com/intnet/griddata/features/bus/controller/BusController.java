@@ -22,8 +22,11 @@ public class BusController {
     }
 
     @GetMapping("/grid/{gridId}")
-    public ResponseEntity<List<BusSearchDto>> getBusesByGridId(@PathVariable Long gridId) {
-        List<BusSearchDto> buses = busService.getBusesByGridId(gridId);
+    public ResponseEntity<List<BusSearchDto>> getBusesByGridId(
+            @PathVariable Long gridId,
+            @RequestParam(name = "attachComponents", required = false, defaultValue = "false") Boolean attachComponents
+    ) {
+        List<BusSearchDto> buses = busService.getBusesByGridId(gridId, attachComponents);
         return ResponseEntity.ok(buses);
     }
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateGeneratorStateDto {
 
-    private Long id;
+    private Long generatorId;
     private Double activePowerGeneration;
     private Double reactivePowerGeneration;
     private Double generatorVoltageSetpoint;

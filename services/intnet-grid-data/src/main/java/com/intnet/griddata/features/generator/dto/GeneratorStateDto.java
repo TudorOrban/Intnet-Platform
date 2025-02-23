@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GeneratorStateSearchDto {
+public class GeneratorStateDto {
 
     private Long id;
     private Long gridId;

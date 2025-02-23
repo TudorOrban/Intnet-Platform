@@ -1,5 +1,7 @@
 package com.intnet.griddata.features.generator.service;
 
+import com.intnet.griddata.features.bus.model.Bus;
+import com.intnet.griddata.features.bus.repository.BusRepository;
 import com.intnet.griddata.features.generator.dto.*;
 import com.intnet.griddata.features.generator.model.Generator;
 import com.intnet.griddata.features.generator.model.GeneratorState;
@@ -7,6 +9,8 @@ import com.intnet.griddata.features.generator.repository.GeneratorRepository;
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
+import com.intnet.griddata.shared.sanitization.service.EntitySanitizerService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +20,28 @@ import java.util.List;
 public class GeneratorServiceImpl implements GeneratorService {
 
     private final GeneratorRepository generatorRepository;
+    private final BusRepository busRepository;
+    private final EntitySanitizerService sanitizerService;
 
     @Autowired
-    public GeneratorServiceImpl(GeneratorRepository generatorRepository) {
+    public GeneratorServiceImpl(
+            GeneratorRepository generatorRepository,
+            BusRepository busRepository,
+            EntitySanitizerService sanitizerService
+    ) {
         this.generatorRepository = generatorRepository;
+        this.busRepository = busRepository;
+        this.sanitizerService = sanitizerService;
     }
 
     public List<GeneratorSearchDto> getGeneratorsByGridId(Long gridId) {
         List<Generator> generators = generatorRepository.findByGridId(gridId);
+
+        return this.mapGeneratorsToGeneratorSearchDtos(generators);
+    }
+
+    public List<GeneratorSearchDto> getGeneratorsByBusId(Long busId) {
+        List<Generator> generators = generatorRepository.findByBusId(busId);
 
         return this.mapGeneratorsToGeneratorSearchDtos(generators);
     }
@@ -35,8 +53,20 @@ public class GeneratorServiceImpl implements GeneratorService {
         return this.mapGeneratorToGeneratorSearchDto(generator);
     }
 
+    @Transactional
     public GeneratorSearchDto createGenerator(CreateGeneratorDto generatorDto) {
-        Generator generator = this.mapCreateGeneratorDtoToGenerator(generatorDto);
+        CreateGeneratorDto sanitizedDto = sanitizerService.sanitizeCreateGeneratorDto(generatorDto);
+
+        Generator generator = this.mapCreateGeneratorDtoToGenerator(sanitizedDto);
+
+        Bus bus = busRepository.findById(generatorDto.getBusId())
+                .orElseThrow(() -> new ResourceNotFoundException(generatorDto.getBusId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+        generator.setBus(bus);
+
+        GeneratorState state = new GeneratorState();
+        state.setGridId(generator.getGridId());
+        state.setGenerator(generator);
+        generator.setState(state);
 
         Generator savedGenerator = generatorRepository.save(generator);
 
@@ -44,10 +74,12 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     public GeneratorSearchDto updateGenerator(UpdateGeneratorDto generatorDto) {
-        Generator existingGenerator = generatorRepository.findById(generatorDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(generatorDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+        UpdateGeneratorDto sanitizedDto = sanitizerService.sanitizeUpdateGeneratorDto(generatorDto);
 
-        this.setUpdateGeneratorDtoToGenerator(existingGenerator, generatorDto);
+        Generator existingGenerator = generatorRepository.findById(sanitizedDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(sanitizedDto.getId().toString(), ResourceType.BUS, ResourceIdentifierType.ID));
+
+        this.setUpdateGeneratorDtoToGenerator(existingGenerator, sanitizedDto);
 
         Generator savedGenerator = generatorRepository.save(existingGenerator);
 
@@ -66,7 +98,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         return generators.stream().map(generator -> {
             GeneratorSearchDto generatorDto = this.mapGeneratorToGeneratorSearchDto(generator);
-            GeneratorStateSearchDto stateDto = this.mapStateToStateSearchDto(generator.getGeneratorState());
+            GeneratorStateDto stateDto = this.mapStateToStateSearchDto(generator.getState());
             generatorDto.setState(stateDto);
             return generatorDto;
         }).toList();
@@ -89,7 +121,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         generator.setGeneratorMinReactivePower(generatorDto.getGeneratorMinReactivePower());
     }
 
-    private GeneratorStateSearchDto mapStateToStateSearchDto(GeneratorState state) {
+    private GeneratorStateDto mapStateToStateSearchDto(GeneratorState state) {
         return GeneratorMapper.INSTANCE.stateToStateSearchDto(state);
     }
 }

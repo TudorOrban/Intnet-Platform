@@ -26,7 +26,6 @@ public interface BusMapper {
 
     @Mapping(source = "state.id", target = "id")
     @Mapping(source = "state.gridId", target = "gridId")
-    @Mapping(source = "state.createdAt", target = "createdAt")
     @Mapping(source = "state.updatedAt", target = "updatedAt")
     @Mapping(source = "state.voltageMagnitude", target = "voltageMagnitude")
     @Mapping(source = "state.voltageAngle", target = "voltageAngle")

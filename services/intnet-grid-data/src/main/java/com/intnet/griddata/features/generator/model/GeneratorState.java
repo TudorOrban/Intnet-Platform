@@ -22,7 +22,7 @@ public class GeneratorState {
     private Long gridId;
 
     @OneToOne
-    @JoinColumn(name = "generator_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "generator_id", nullable = false)
     private Generator generator;
 
     @Column(name = "updated_at")

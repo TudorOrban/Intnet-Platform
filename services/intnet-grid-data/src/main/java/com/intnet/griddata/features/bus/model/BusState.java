@@ -25,9 +25,6 @@ public class BusState {
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 
-    @Column(name = "created_at")
-    private ZonedDateTime createdAt;
-
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
@@ -51,7 +48,6 @@ public class BusState {
 
     @PrePersist
     private void onCreate() {
-        createdAt = ZonedDateTime.now();
         updatedAt = ZonedDateTime.now();
     }
 
