@@ -75,7 +75,6 @@ public class GridGraphServiceImpl implements GridGraphService {
         }
     }
 
-
     private GridNodeDto mapGridNodeToGridNodeDto(GridNode node) {
         return GridMapper.INSTANCE.gridNodeToGridNodeDto(node);
     }

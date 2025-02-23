@@ -13,9 +13,8 @@ public class GridEdge {
     @Id
     private Long id;
     private Long gridId;
-    private Long sourceNodeId;
-    private NodeType sourceNodeType;
-    private Long destinationNodeId;
-    private NodeType destinationNodeType;
+    private String edgeName;
+    private Long srcNodeId;
+    private Long destNodeId;
     private EdgeType edgeType;
 }

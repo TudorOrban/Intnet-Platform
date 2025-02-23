@@ -12,5 +12,5 @@ public class AddGridNodeDto {
 
     private Long id;
     private Long gridId;
-    private NodeType nodeType;
+    private String nodeName;
 }
