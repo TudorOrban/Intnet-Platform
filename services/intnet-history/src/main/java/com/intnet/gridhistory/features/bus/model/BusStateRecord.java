@@ -27,12 +27,23 @@ public class BusStateRecord {
     @Column(name = "time", nullable = false)
     private ZonedDateTime time;
 
-    private Double voltage;
-    private Double load;
-    private Double generation;
+    @Column(name = "voltage_magnitude")
+    private Double voltageMagnitude;
 
-    @Column(name = "phase_angle")
-    private Double phaseAngle;
+    @Column(name = "voltage_angle")
+    private Double voltageAngle;
+
+    @Column(name = "active_power_injection")
+    private Double activePowerInjection;
+
+    @Column(name = "reactive_power_injection")
+    private Double reactivePowerInjection;
+
+    @Column(name = "shunt_capacitor_reactor_status")
+    private Boolean shuntCapacitorReactorStatus;
+
+    @Column(name = "phase_shifting_transformer_tap_position")
+    private Double phaseShiftingTransformerTapPosition;
 
     @PrePersist
     private void beforePersist() {
