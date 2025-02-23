@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 public class UpdateBusStateDto {
 
     private Long busId;
-    private Double voltage;
-    private Double load;
-    private Double generation;
-    private Double phaseAngle;
+    private Double voltageMagnitude;
+    private Double voltageAngle;
+    private Double activePowerInjection;
+    private Double reactivePowerInjection;
+    private Boolean shuntCapacitorReactorStatus;
+    private Double phaseShiftingTransformerTapPosition;
 }

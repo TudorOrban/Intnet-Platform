@@ -1,5 +1,6 @@
 package com.intnet.griddata.features.bus.model;
 
+import com.intnet.griddata.features.generator.model.Generator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,12 @@ public class Bus {
     @Column(name = "grid_id", nullable = false)
     private Long gridId;
 
+    @OneToOne(mappedBy = "bus", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private BusState state;
+
+    @Column(name = "bus_name", nullable = false)
+    private String busName;
+
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
 
@@ -33,6 +40,9 @@ public class Bus {
 
     @Column(name = "longitude")
     private Double longitude;
+
+    @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Generator> generators;
 
     @PrePersist
     private void onCreate() {

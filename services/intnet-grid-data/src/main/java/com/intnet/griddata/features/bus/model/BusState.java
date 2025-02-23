@@ -21,25 +21,33 @@ public class BusState {
     @Column(name = "grid_id", nullable = false)
     private Long gridId;
 
-    @Column(name = "bus_id", nullable = false)
-    private Long busId;
-
-    @Column(name = "created_at")
-    private ZonedDateTime createdAt;
+    @OneToOne
+    @JoinColumn(name = "bus_id", nullable = false)
+    private Bus bus;
 
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    private Double voltage;
-    private Double load;
-    private Double generation;
+    @Column(name = "voltage_magnitude")
+    private Double voltageMagnitude;
 
-    @Column(name = "phase_angle")
-    private Double phaseAngle;
+    @Column(name = "voltage_angle")
+    private Double voltageAngle;
+
+    @Column(name = "active_power_injection")
+    private Double activePowerInjection;
+
+    @Column(name = "reactive_power_injection")
+    private Double reactivePowerInjection;
+
+    @Column(name = "shunt_capacitor_reactor_status")
+    private Boolean shuntCapacitorReactorStatus;
+
+    @Column(name = "phase_shifting_transformer_tap_position")
+    private Double phaseShiftingTransformerTapPosition;
 
     @PrePersist
     private void onCreate() {
-        createdAt = ZonedDateTime.now();
         updatedAt = ZonedDateTime.now();
     }
 

@@ -8,8 +8,8 @@ public enum ResourceIdentifierType {
     NAME,
     TITLE,
 
-    SUBSTATION_ID,
-    BUS_ID;
+    BUS_ID,
+    GENERATOR_ID;
 
     @Override
     public String toString() {
@@ -20,8 +20,8 @@ public enum ResourceIdentifierType {
             case NAME -> "NAME";
             case TITLE -> "Title";
 
-            case SUBSTATION_ID -> "Substation ID";
             case BUS_ID -> "Bus ID";
+            case GENERATOR_ID -> "Generator ID";
         };
     }
 }

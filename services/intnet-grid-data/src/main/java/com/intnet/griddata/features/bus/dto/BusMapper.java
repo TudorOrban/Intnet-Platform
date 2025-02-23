@@ -12,6 +12,7 @@ public interface BusMapper {
 
     @Mapping(source = "bus.id", target = "id")
     @Mapping(source = "bus.gridId", target = "gridId")
+    @Mapping(source = "bus.busName", target = "busName")
     @Mapping(source = "bus.createdAt", target = "createdAt")
     @Mapping(source = "bus.updatedAt", target = "updatedAt")
     @Mapping(source = "bus.latitude", target = "latitude")
@@ -25,12 +26,12 @@ public interface BusMapper {
 
     @Mapping(source = "state.id", target = "id")
     @Mapping(source = "state.gridId", target = "gridId")
-    @Mapping(source = "state.busId", target = "busId")
-    @Mapping(source = "state.createdAt", target = "createdAt")
     @Mapping(source = "state.updatedAt", target = "updatedAt")
-    @Mapping(source = "state.voltage", target = "voltage")
-    @Mapping(source = "state.load", target = "load")
-    @Mapping(source = "state.generation", target = "generation")
-    @Mapping(source = "state.phaseAngle", target = "phaseAngle")
+    @Mapping(source = "state.voltageMagnitude", target = "voltageMagnitude")
+    @Mapping(source = "state.voltageAngle", target = "voltageAngle")
+    @Mapping(source = "state.activePowerInjection", target = "activePowerInjection")
+    @Mapping(source = "state.reactivePowerInjection", target = "reactivePowerInjection")
+    @Mapping(source = "state.shuntCapacitorReactorStatus", target = "shuntCapacitorReactorStatus")
+    @Mapping(source = "state.phaseShiftingTransformerTapPosition", target = "phaseShiftingTransformerTapPosition")
     BusStateDto busStateToBusStateDto(BusState state);
 }

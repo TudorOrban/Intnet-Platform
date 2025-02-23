@@ -15,27 +15,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class BusStateUpdaterServiceImpl implements BusStateUpdaterService {
 
-    private final BusStateRepository busStateRepository;
+    private final BusStateRepository stateRepository;
     private final EntitySanitizerService sanitizerService;
 
     @Autowired
     public BusStateUpdaterServiceImpl(
-            BusStateRepository busStateRepository,
+            BusStateRepository stateRepository,
             EntitySanitizerService sanitizerService
     ) {
-        this.busStateRepository = busStateRepository;
+        this.stateRepository = stateRepository;
         this.sanitizerService = sanitizerService;
     }
 
     public BusStateDto updateBusState(UpdateBusStateDto stateDto) {
         UpdateBusStateDto sanitizedStateDto = sanitizerService.sanitizeUpdateBusStateDto(stateDto);
 
-        BusState state = busStateRepository.findByBusId(stateDto.getBusId())
+        BusState state = stateRepository.findByBusId(stateDto.getBusId())
                 .orElseThrow(() -> new ResourceNotFoundException(stateDto.getBusId().toString(), ResourceType.BUS_STATE, ResourceIdentifierType.BUS_ID));
 
         this.setUpdateBusStateDtoToBusState(state, sanitizedStateDto);
 
-        BusState savedState = busStateRepository.save(state);
+        BusState savedState = stateRepository.save(state);
 
         return this.mapBusStateToBusStateDto(savedState);
     }
@@ -45,9 +45,11 @@ public class BusStateUpdaterServiceImpl implements BusStateUpdaterService {
     }
 
     private void setUpdateBusStateDtoToBusState(BusState state, UpdateBusStateDto stateDto) {
-        state.setVoltage(stateDto.getVoltage());
-        state.setLoad(stateDto.getLoad());
-        state.setGeneration(stateDto.getGeneration());
-        state.setPhaseAngle(stateDto.getPhaseAngle());
+        state.setVoltageMagnitude(stateDto.getVoltageMagnitude());
+        state.setVoltageAngle(stateDto.getVoltageAngle());
+        state.setActivePowerInjection(stateDto.getActivePowerInjection());
+        state.setReactivePowerInjection(stateDto.getReactivePowerInjection());
+        state.setShuntCapacitorReactorStatus(stateDto.getShuntCapacitorReactorStatus());
+        state.setPhaseShiftingTransformerTapPosition(stateDto.getPhaseShiftingTransformerTapPosition());
     }
 }

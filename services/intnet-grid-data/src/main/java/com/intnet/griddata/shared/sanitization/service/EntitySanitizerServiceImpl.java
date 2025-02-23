@@ -5,12 +5,9 @@ import com.intnet.griddata.core.internal.out.gridtopology.dto.AddGridNodeDto;
 import com.intnet.griddata.features.bus.dto.CreateBusDto;
 import com.intnet.griddata.features.bus.dto.UpdateBusDto;
 import com.intnet.griddata.features.bus.dto.UpdateBusStateDto;
-import com.intnet.griddata.features.substation.dto.CreateSubstationDto;
-import com.intnet.griddata.features.substation.dto.UpdateSubstationDto;
-import com.intnet.griddata.features.substation.dto.UpdateSubstationStateDto;
-import com.intnet.griddata.features.transmissionline.dto.CreateTransmissionLineDto;
-import com.intnet.griddata.features.transmissionline.dto.UpdateTransmissionLineDto;
-import com.intnet.griddata.features.transmissionline.dto.UpdateTransmissionLineStateDto;
+import com.intnet.griddata.features.generator.dto.CreateGeneratorDto;
+import com.intnet.griddata.features.generator.dto.UpdateGeneratorDto;
+import com.intnet.griddata.features.generator.dto.UpdateGeneratorStateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,23 +21,13 @@ public class EntitySanitizerServiceImpl implements EntitySanitizerService {
         this.sanitizationService = sanitizationService;
     }
 
-    public CreateSubstationDto sanitizeCreateSubstationDto(CreateSubstationDto substationDto) {
-        return substationDto;
-    }
-
-    public UpdateSubstationDto sanitizeUpdateSubstationDto(UpdateSubstationDto substationDto) {
-        return substationDto;
-    }
-
-    public UpdateSubstationStateDto sanitizeUpdateSubstationStateDto(UpdateSubstationStateDto stateDto) {
-        return stateDto;
-    }
-
     public CreateBusDto sanitizeCreateBusDto(CreateBusDto busDto) {
+        busDto.setBusName(sanitizationService.sanitize(busDto.getBusName()));
         return busDto;
     }
 
     public UpdateBusDto sanitizeUpdateBusDto(UpdateBusDto busDto) {
+        busDto.setBusName(sanitizationService.sanitize(busDto.getBusName()));
         return busDto;
     }
 
@@ -48,15 +35,17 @@ public class EntitySanitizerServiceImpl implements EntitySanitizerService {
         return stateDto;
     }
 
-    public CreateTransmissionLineDto sanitizeCreateTransmissionLineDto(CreateTransmissionLineDto lineDto) {
-        return lineDto;
+    public CreateGeneratorDto sanitizeCreateGeneratorDto(CreateGeneratorDto generatorDto) {
+        generatorDto.setGeneratorName(sanitizationService.sanitize(generatorDto.getGeneratorName()));
+        return generatorDto;
     }
 
-    public UpdateTransmissionLineDto sanitizeUpdateTransmissionLineDto(UpdateTransmissionLineDto lineDto) {
-        return lineDto;
+    public UpdateGeneratorDto sanitizeUpdateGeneratorDto(UpdateGeneratorDto generatorDto) {
+        generatorDto.setGeneratorName(sanitizationService.sanitize(generatorDto.getGeneratorName()));
+        return generatorDto;
     }
 
-    public UpdateTransmissionLineStateDto sanitizeUpdateTransmissionLineStateDto(UpdateTransmissionLineStateDto stateDto) {
+    public UpdateGeneratorStateDto sanitizeUpdateGeneratorStateDto(UpdateGeneratorStateDto stateDto) {
         return stateDto;
     }
 
