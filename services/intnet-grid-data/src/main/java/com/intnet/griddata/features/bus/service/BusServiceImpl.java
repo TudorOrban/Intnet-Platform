@@ -7,6 +7,7 @@ import com.intnet.griddata.features.bus.model.BusState;
 import com.intnet.griddata.features.bus.repository.BusRepository;
 import com.intnet.griddata.features.generator.dto.GeneratorSearchDto;
 import com.intnet.griddata.features.generator.model.Generator;
+import com.intnet.griddata.features.generator.service.GeneratorService;
 import com.intnet.griddata.shared.exception.types.ResourceIdentifierType;
 import com.intnet.griddata.shared.exception.types.ResourceNotFoundException;
 import com.intnet.griddata.shared.exception.types.ResourceType;
@@ -21,16 +22,19 @@ import java.util.List;
 public class BusServiceImpl implements BusService {
 
     private final BusRepository busRepository;
+    private final GeneratorService generatorService;
     private final GridGraphUpdaterService graphUpdaterService;
     private final EntitySanitizerService sanitizerService;
 
     @Autowired
     public BusServiceImpl(
             BusRepository busRepository,
+            GeneratorService generatorService,
             GridGraphUpdaterService graphUpdaterService,
             EntitySanitizerService sanitizerService
     ) {
         this.busRepository = busRepository;
+        this.generatorService = generatorService;
         this.graphUpdaterService = graphUpdaterService;
         this.sanitizerService = sanitizerService;
     }
@@ -97,25 +101,10 @@ public class BusServiceImpl implements BusService {
         busDto.setState(this.mapBusStateToBusStateDto(bus.getState()));
 
         if (attachComponents != null && attachComponents) {
-            mapGeneratorsToDto(bus, busDto);
-//            mapLoadsToDto(bus, busDto);
+            busDto.setGenerators(generatorService.mapGeneratorsToGeneratorSearchDtos(bus.getGenerators()));
         }
 
         return busDto;
-    }
-
-    private void mapGeneratorsToDto(Bus bus, BusSearchDto busDto) {
-        if (bus.getGenerators() == null) {
-            return;
-        }
-        busDto.setGenerators(
-                bus.getGenerators().stream().map(this::mapGeneratorToGeneratorSearchDto).toList()
-        );
-    }
-
-    private GeneratorSearchDto mapGeneratorToGeneratorSearchDto(Generator generator) {
-        GeneratorSearchDto generatorDto = new GeneratorSearchDto();
-        return generatorDto;
     }
 
     private Bus mapCreateBusDtoToBus(CreateBusDto busDto) {
