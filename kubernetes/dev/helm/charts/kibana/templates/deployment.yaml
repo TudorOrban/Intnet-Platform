@@ -19,7 +19,7 @@ spec:
             - containerPort: 5601
           env:
             - name: ELASTICSEARCH_HOSTS
-              value: http://{{ include "elasticsearch.fullname" . }}:9200
+              value: http://{{ .Release.Name }}-elasticsearch:9200
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}

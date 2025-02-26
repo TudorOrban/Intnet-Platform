@@ -7,11 +7,11 @@ service:
   port: 5601
 resources:
   requests:
-    cpu: 100m
+    cpu: 300m
     memory: 256Mi
   limits:
     cpu: 500m
-    memory: 512Mi
+    memory: 1Gi
 pvc:
   storage:
     size: 1Gi

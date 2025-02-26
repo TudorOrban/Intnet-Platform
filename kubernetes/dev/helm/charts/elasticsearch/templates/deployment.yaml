@@ -29,9 +29,15 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
           volumeMounts:
+            - name: elasticsearch-config-volume
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
             - name: elasticsearch-pv
               mountPath: /var/lib/postgresql/data
       volumes:
+        - name: elasticsearch-config-volume
+          configMap:
+            name: {{ .Release.Name }}-elasticsearch-config
         - name: elasticsearch-pv
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-elasticsearch-pvc
