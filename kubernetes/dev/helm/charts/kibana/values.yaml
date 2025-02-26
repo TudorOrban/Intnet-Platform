@@ -1,0 +1,17 @@
+replicaCount: 1
+image:
+  repository: docker.elastic.co/kibana/kibana
+  tag: 8.11.1
+service:
+  type: ClusterIP
+  port: 5601
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+pvc:
+  storage:
+    size: 1Gi

@@ -1,5 +1,6 @@
 imagePullPolicy: IfNotPresent
 
+# Microservices
 intnet-gateway:
   replicaCount: 1
 intnet-tenant:
@@ -11,20 +12,30 @@ intnet-grid-topology:
 intnet-grid-history:
   replicaCount: 0
 intnet-grid-device-manager:
-  replicaCount: 1
+  replicaCount: 0
 
+# Device adapters
 modbus-adapter:
-  replicaCount: 1
+  replicaCount: 0
 simulated-device-modbus:
-  replicaCount: 1
+  replicaCount: 0
 
+# External services
 keycloak:
   replicaCount: 0
 timescale-db:
   replicaCount: 0
 neo4j:
   replicaCount: 0
+zookeeper:
+  replicaCount: 0
 kafka:
-  replicaCount: 1
+  replicaCount: 0
 grafana:
   replicaCount: 0
+elasticsearch:
+  replicaCount: 1
+kibana:
+  replicaCount: 1
+
+

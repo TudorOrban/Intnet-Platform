@@ -1,0 +1,9 @@
+dependencies:
+- name: elasticsearch
+  repository: file://./charts/elasticsearch
+  version: 0.1.0
+- name: kibana
+  repository: file://./charts/kibana
+  version: 0.1.0
+digest: sha256:7e10bf8d8e64ee10c4a1793f098f9f3dc1fac3885aa3accde7e60214faac0ada
+generated: "2025-02-26T18:43:47.881791349+02:00"

@@ -29,7 +29,7 @@ public class Generator {
     @OneToOne(mappedBy = "generator", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private GeneratorState state;
 
-    @Column(name = "generator_name", nullable = false)
+    @Column(name = "generator_name")
     private String generatorName;
 
     @Column(name = "created_at")

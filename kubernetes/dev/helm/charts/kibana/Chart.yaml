@@ -1,0 +1,6 @@
+apiVersion: v3
+name: kibana
+description: A Helm chart for Kibana
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
