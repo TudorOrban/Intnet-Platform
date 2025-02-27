@@ -34,8 +34,8 @@ kafka:
 grafana:
   replicaCount: 0
 elasticsearch:
-  replicaCount: 1
+  replicaCount: 0
 kibana:
-  replicaCount: 1
-
-
+  replicaCount: 0
+logstash:
+  replicaCount: 0

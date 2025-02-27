@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-logstash
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "..selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "..labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: logstash
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - name: beats
+              containerPort: {{ .Values.service.port }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          volumeMounts:
+            - name: logstash-config
+              mountPath: /usr/share/logstash/pipeline/ 
+      volumes:
+        - name: logstash-config
+          configMap:
+            name: {{ .Release.Name }}-logstash-config
