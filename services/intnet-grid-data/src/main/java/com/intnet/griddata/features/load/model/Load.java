@@ -1,6 +1,7 @@
 package com.intnet.griddata.features.load.model;
 
 import com.intnet.griddata.features.bus.model.Bus;
+import com.intnet.griddata.features.generator.model.GeneratorState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,8 +27,11 @@ public class Load {
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 
-    @Column(name = "generator_name")
-    private String generatorName;
+    @OneToOne(mappedBy = "load", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private LoadState state;
+
+    @Column(name = "load_name")
+    private String loadName;
 
     @Column(name = "created_at")
     private ZonedDateTime createdAt;

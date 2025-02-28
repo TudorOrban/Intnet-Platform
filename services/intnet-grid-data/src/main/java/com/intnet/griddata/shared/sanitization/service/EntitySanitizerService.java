@@ -11,6 +11,9 @@ import com.intnet.griddata.features.edge.dto.UpdateEdgeStateDto;
 import com.intnet.griddata.features.generator.dto.CreateGeneratorDto;
 import com.intnet.griddata.features.generator.dto.UpdateGeneratorDto;
 import com.intnet.griddata.features.generator.dto.UpdateGeneratorStateDto;
+import com.intnet.griddata.features.load.dto.CreateLoadDto;
+import com.intnet.griddata.features.load.dto.UpdateLoadDto;
+import com.intnet.griddata.features.load.dto.UpdateLoadStateDto;
 
 public interface EntitySanitizerService {
 
@@ -21,6 +24,10 @@ public interface EntitySanitizerService {
     CreateGeneratorDto sanitizeCreateGeneratorDto(CreateGeneratorDto generatorDto);
     UpdateGeneratorDto sanitizeUpdateGeneratorDto(UpdateGeneratorDto generatorDto);
     UpdateGeneratorStateDto sanitizeUpdateGeneratorStateDto(UpdateGeneratorStateDto stateDto);
+
+    CreateLoadDto sanitizeCreateLoadDto(CreateLoadDto generatorDto);
+    UpdateLoadDto sanitizeUpdateLoadDto(UpdateLoadDto generatorDto);
+    UpdateLoadStateDto sanitizeUpdateLoadStateDto(UpdateLoadStateDto stateDto);
 
     CreateEdgeDto sanitizeCreateEdgeDto(CreateEdgeDto busDto);
     UpdateEdgeDto sanitizeUpdateEdgeDto(UpdateEdgeDto busDto);

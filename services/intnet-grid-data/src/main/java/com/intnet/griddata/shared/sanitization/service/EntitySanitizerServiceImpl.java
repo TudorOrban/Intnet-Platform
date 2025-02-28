@@ -11,6 +11,9 @@ import com.intnet.griddata.features.edge.dto.UpdateEdgeStateDto;
 import com.intnet.griddata.features.generator.dto.CreateGeneratorDto;
 import com.intnet.griddata.features.generator.dto.UpdateGeneratorDto;
 import com.intnet.griddata.features.generator.dto.UpdateGeneratorStateDto;
+import com.intnet.griddata.features.load.dto.CreateLoadDto;
+import com.intnet.griddata.features.load.dto.UpdateLoadDto;
+import com.intnet.griddata.features.load.dto.UpdateLoadStateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ public class EntitySanitizerServiceImpl implements EntitySanitizerService {
         this.sanitizationService = sanitizationService;
     }
 
+    // Bus
     public CreateBusDto sanitizeCreateBusDto(CreateBusDto busDto) {
         busDto.setBusName(sanitizationService.sanitize(busDto.getBusName()));
         return busDto;
@@ -38,6 +42,7 @@ public class EntitySanitizerServiceImpl implements EntitySanitizerService {
         return stateDto;
     }
 
+    // Generator
     public CreateGeneratorDto sanitizeCreateGeneratorDto(CreateGeneratorDto generatorDto) {
         generatorDto.setGeneratorName(sanitizationService.sanitize(generatorDto.getGeneratorName()));
         return generatorDto;
@@ -52,7 +57,22 @@ public class EntitySanitizerServiceImpl implements EntitySanitizerService {
         return stateDto;
     }
 
+    // Load
+    public CreateLoadDto sanitizeCreateLoadDto(CreateLoadDto lanceDto) {
+        lanceDto.setLoadName(sanitizationService.sanitize(lanceDto.getLoadName()));
+        return lanceDto;
+    }
 
+    public UpdateLoadDto sanitizeUpdateLoadDto(UpdateLoadDto lanceDto) {
+        lanceDto.setLoadName(sanitizationService.sanitize(lanceDto.getLoadName()));
+        return lanceDto;
+    }
+
+    public UpdateLoadStateDto sanitizeUpdateLoadStateDto(UpdateLoadStateDto stateDto) {
+        return stateDto;
+    }
+
+    // Edge
     public CreateEdgeDto sanitizeCreateEdgeDto(CreateEdgeDto busDto) {
         busDto.setEdgeName(sanitizationService.sanitize(busDto.getEdgeName()));
         return busDto;
@@ -67,6 +87,7 @@ public class EntitySanitizerServiceImpl implements EntitySanitizerService {
         return stateDto;
     }
 
+    // Graph
     public AddGridNodeDto sanitizeAddGridNodeDto(AddGridNodeDto nodeDto) {
         return nodeDto;
     }
