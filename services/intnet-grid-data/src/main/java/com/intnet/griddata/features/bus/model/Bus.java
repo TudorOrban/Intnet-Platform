@@ -1,6 +1,7 @@
 package com.intnet.griddata.features.bus.model;
 
 import com.intnet.griddata.features.generator.model.Generator;
+import com.intnet.griddata.features.load.model.Load;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,6 +44,9 @@ public class Bus {
 
     @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Generator> generators;
+
+    @OneToMany(mappedBy = "bus", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Load> loads;
 
     @PrePersist
     private void onCreate() {
