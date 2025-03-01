@@ -41,9 +41,9 @@ deploymentSpec:
           '
         - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
           \ *\n\ndef train_gnn(hyperparameters: Dict[str, Any]):\n    import os\n\
-          \    from dotenv import load_dotenv\n    import mlflow\n    from core.data\
-          \ import generate_synthetic_graph\n    from core.models import SimpleGCN\n\
-          \    from torch_geometric.data import Data\n    from core.training import\
+          \    from dotenv import load_dotenv\n    import mlflow\n    from example.data\
+          \ import generate_synthetic_graph\n    from example.models import SimpleGCN\n\
+          \    from torch_geometric.data import Data\n    from example.training import\
           \ train_model\n\n    load_dotenv()\n    mlflow.set_tracking_uri(os.getenv(\"\
           MLFLOW_TRACKING_URI\"))\n\n    with mlflow.start_run():\n        mlflow.log_params(hyperparameters)\n\
           \n        graph: Data = generate_synthetic_graph()\n        model: SimpleGCN\

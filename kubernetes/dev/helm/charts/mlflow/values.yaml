@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: mlflow
+  repository: ghcr.io/mlflow/mlflow
   tag: latest
 security:
   neo4jUser: neo4j

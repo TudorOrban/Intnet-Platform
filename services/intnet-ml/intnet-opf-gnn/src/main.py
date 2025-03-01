@@ -4,11 +4,11 @@ from typing import Any, Dict
 from dotenv import load_dotenv
 import mlflow # type: ignore
 
-from core.data import generate_synthetic_graph
-from core.models import SimpleGCN
+from example.data import generate_synthetic_graph
+from example.models import SimpleGCN
 from torch_geometric.data import Data
 
-from core.training import train_model
+from example.training import train_model
 
 load_dotenv()
 

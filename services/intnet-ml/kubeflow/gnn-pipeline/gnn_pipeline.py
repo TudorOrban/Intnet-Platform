@@ -9,10 +9,10 @@ def train_gnn(hyperparameters: Dict[str, Any]):
     import os
     from dotenv import load_dotenv
     import mlflow
-    from core.data import generate_synthetic_graph
-    from core.models import SimpleGCN
+    from example.data import generate_synthetic_graph
+    from example.models import SimpleGCN
     from torch_geometric.data import Data
-    from core.training import train_model
+    from example.training import train_model
 
     load_dotenv()
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
