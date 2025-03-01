@@ -1,0 +1,99 @@
+# PIPELINE DEFINITION
+# Name: gnn-training-pipeline
+# Description: A pipeline for training a GNN model.
+# Inputs:
+#    epochs: int [Default: 100.0]
+#    hidden_channels: int [Default: 16.0]
+#    learning_rate: float [Default: 0.01]
+components:
+  comp-train-gnn:
+    executorLabel: exec-train-gnn
+    inputDefinitions:
+      parameters:
+        hyperparameters:
+          parameterType: STRUCT
+deploymentSpec:
+  executors:
+    exec-train-gnn:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_gnn
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_gnn(hyperparameters: Dict[str, Any]):\n    import os\n\
+          \    from dotenv import load_dotenv\n    import mlflow\n    from core.data\
+          \ import generate_synthetic_graph\n    from core.models import SimpleGCN\n\
+          \    from torch_geometric.data import Data\n    from core.training import\
+          \ train_model\n\n    load_dotenv()\n    mlflow.set_tracking_uri(os.getenv(\"\
+          MLFLOW_TRACKING_URI\"))\n\n    with mlflow.start_run():\n        mlflow.log_params(hyperparameters)\n\
+          \n        graph: Data = generate_synthetic_graph()\n        model: SimpleGCN\
+          \ = SimpleGCN(in_channels=1, hidden_channels=hyperparameters[\"hidden_channels\"\
+          ], out_channels=1)\n        train_model(model, graph, epochs=hyperparameters[\"\
+          epochs\"], learning_rate=hyperparameters[\"learning_rate\"])\n        mlflow.pytorch.log_model(model,\
+          \ \"model\")\n        mlflow.set_tags({\"model_type\": \"GCN\", \"dataset\"\
+          : \"synthetic\"})\n\n"
+        image: intnet-opf-gnn:latest
+        imagePullPolicy: IfNotPresent
+pipelineInfo:
+  description: A pipeline for training a GNN model.
+  name: gnn-training-pipeline
+root:
+  dag:
+    tasks:
+      train-gnn:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-gnn
+        inputs:
+          parameters:
+            hyperparameters:
+              runtimeValue:
+                constant:
+                  epochs: '{{$.inputs.parameters[''pipelinechannel--epochs'']}}'
+                  hidden_channels: '{{$.inputs.parameters[''pipelinechannel--hidden_channels'']}}'
+                  learning_rate: '{{$.inputs.parameters[''pipelinechannel--learning_rate'']}}'
+            pipelinechannel--epochs:
+              componentInputParameter: epochs
+            pipelinechannel--hidden_channels:
+              componentInputParameter: hidden_channels
+            pipelinechannel--learning_rate:
+              componentInputParameter: learning_rate
+        taskInfo:
+          name: train-gnn
+  inputDefinitions:
+    parameters:
+      epochs:
+        defaultValue: 100.0
+        isOptional: true
+        parameterType: NUMBER_INTEGER
+      hidden_channels:
+        defaultValue: 16.0
+        isOptional: true
+        parameterType: NUMBER_INTEGER
+      learning_rate:
+        defaultValue: 0.01
+        isOptional: true
+        parameterType: NUMBER_DOUBLE
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.12.1

@@ -25,3 +25,21 @@ def train_gnn(hyperparameters: Dict[str, Any]):
         train_model(model, graph, epochs=hyperparameters["epochs"], learning_rate=hyperparameters["learning_rate"])
         mlflow.pytorch.log_model(model, "model")
         mlflow.set_tags({"model_type": "GCN", "dataset": "synthetic"})
+
+
+@dsl.pipeline(
+    name="GNN Training Pipeline",
+    description="A pipeline for training a GNN model."
+)
+def gnn_training_pipeline(
+    learning_rate: float = 0.01,
+    hidden_channels: int = 16,
+    epochs: int = 100
+):
+    train_gnn(hyperparameters={"learning_rate": learning_rate, "hidden_channels": hidden_channels, "epochs": epochs})
+
+if __name__ == "__main__":
+    kfp.compiler.Compiler().compile(
+        pipeline_func=gnn_training_pipeline,
+        package_path="gnn_pipeline.yaml"
+    )

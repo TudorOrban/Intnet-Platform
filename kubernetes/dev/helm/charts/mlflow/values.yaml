@@ -1,0 +1,20 @@
+replicaCount: 1
+image:
+  repository: mlflow
+  tag: latest
+security:
+  neo4jUser: neo4j
+  neo4jPassword: example-password
+service:
+  type: ClusterIP
+  port: 7687
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+pvc:
+  storage:
+    size: 1Gi
