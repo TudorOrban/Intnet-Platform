@@ -10,6 +10,7 @@ class GridSample:
     gen_p_mw: float
     adj_matrix: np.ndarray
     node_features: np.ndarray
+    edge_features: np.ndarray
 
 
 def generate_synthetic_data(num_samples=10) -> List[GridSample]:
@@ -37,6 +38,7 @@ def generate_synthetic_data(num_samples=10) -> List[GridSample]:
         adj_matrix = nx.adjacency_matrix(graph).todense()
         adj_matrix = np.array(adj_matrix)
 
+        # Extract node features
         node_features = []
         for bus_idx in net.bus.index:
             bus_type = 1.0 if net.bus.at[bus_idx, "type"] == "b" else 0.0
@@ -45,14 +47,35 @@ def generate_synthetic_data(num_samples=10) -> List[GridSample]:
             vm_pu = net.res_bus.at[bus_idx, "vm_pu"]
 
             load_power = 0.0
+            load_q_mvar = 0.0
             if load_present == 1.0:
                 load_index = net.load.bus.values.tolist().index(bus_idx)
                 load_power = load_p_mw[load_index]
+                load_q_mvar = net.load.at[load_index, "q_mvar"]
 
-            node_features.append([bus_type, load_present, gen_present, vm_pu, load_power])
+            gen_max_p = 0.0
+            gen_min_q = 0.0
+            gen_max_q = 0.0
+            if gen_present == 1.0:
+                gen_index = net.gen.bus.values.tolist().index(bus_idx)
+                gen_max_p = net.gen.at[net.gen.bus.values[gen_index], "max_p_mw"]
+                gen_min_q = net.gen.at[net.gen.bus.values[gen_index], "min_q_mvar"]
+                gen_max_q = net.gen.at[net.gen.bus.values[gen_index], "max_q_mvar"]
+
+            node_features.append([bus_type, load_present, gen_present, vm_pu, load_power, load_q_mvar, gen_max_p, gen_min_q, gen_max_q])
+
         node_features = np.array(node_features)
 
-        sample = GridSample(load_p_mw, gen_p_mw, adj_matrix, node_features)
+        # Extract edge features
+        edge_features = []
+        for _, row in net.line.iterrows():
+            r_ohm_per_km = row["r_ohm_per_km"]
+            x_ohm_per_km = row["x_ohm_per_km"]
+            edge_features.append([r_ohm_per_km, x_ohm_per_km])
+        edge_features = np.array(edge_features)
+
+        # Append sample
+        sample = GridSample(load_p_mw, gen_p_mw, adj_matrix, node_features, edge_features)
         data.append(sample)
 
     return data
@@ -85,7 +108,10 @@ def generate_random_network(p_mw_load_1: float, p_mw_load_2: float, p_mw_load_3:
 
     return net
 
-generate_synthetic_data(5)
+
+
+
+
 
 # net = generate_random_network()
 
