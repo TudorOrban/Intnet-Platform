@@ -18,9 +18,9 @@ def generate_synthetic_data(num_samples=10) -> List[GridSample]:
     data: List[GridSample] = []
 
     for _ in range(num_samples):
-        p_mw_load_1 = np.random.uniform(2, 20)
-        p_mw_load_2 = np.random.uniform(2, 20)
-        p_mw_load_3 = np.random.uniform(2, 20)
+        p_mw_load_1 = np.random.uniform(2, 30)
+        p_mw_load_2 = np.random.uniform(2, 30)
+        p_mw_load_3 = np.random.uniform(2, 30)
 
         net = generate_random_network(p_mw_load_1, p_mw_load_2, p_mw_load_3)
 
@@ -75,7 +75,7 @@ def generate_random_network(p_mw_load_1: float, p_mw_load_2: float, p_mw_load_3:
 
     # Generators
     # (Slack)
-    pp.create_gen(net, bus=bus1, p_mw=5., min_p_mw=0., max_p_mw=80., q_mvar=0., max_q_mvar=100., slack=True)
+    pp.create_gen(net, bus=bus1, p_mw=50., min_p_mw=0., max_p_mw=150., q_mvar=0., max_q_mvar=150., slack=True)
     pp.create_poly_cost(net, element=0, et="gen", cp1_eur_per_mw=10.) 
     
     # Loads
