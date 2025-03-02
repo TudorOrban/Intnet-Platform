@@ -1,7 +1,13 @@
+
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple
+from typing import List
 import pandapower as pp
 import networkx as nx
+import torch
+from torch_geometric.data import Data
+import torch.nn.functional as F
+from torch_geometric.nn import GCNConv
+from torch_geometric.data import Data
 import numpy as np
 
 @dataclass
@@ -12,6 +18,55 @@ class GridSample:
     node_features: np.ndarray
 
 
+def prepare_data_for_gnn(samples: List[GridSample]) -> List[Data]:
+    """Prepares data for Pytorch Geometric"""
+
+    graph_data_list: List[Data] = []
+
+    for sample in samples:
+        edge_index = torch.tensor(np.array(np.where(sample.adj_matrix == 1)), dtype=torch.long)
+        x = torch.tensor(sample.node_features, dtype=torch.float)
+        y = torch.tensor([sample.gen_p_mw], dtype=torch.float)
+        data = Data(x, edge_index, y)
+        graph_data_list.append(data)
+
+    return graph_data_list
+
+class SimpleGCN(torch.nn.Module):
+    def __init__(self, num_node_features):
+        super(SimpleGCN, self).__init__()
+        self.conv1 = GCNConv(num_node_features, 16)
+        self.conv2 = GCNConv(16, 1)
+
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index
+        x = self.conv1(x, edge_index)
+        x = F.relu(x)
+        x = self.conv2(x, edge_index)
+        x = torch.mean(x, dim=0, keepdim=True)
+        return x
+    
+def train_gnn(data_list: List[Data], epochs=100, lr=0.01):
+    """Trains the GNN model."""
+    model = SimpleGCN(num_node_features=data_list[0].x.shape[1])
+    optimizer = torch.optim.Adam(model.parameters(), lr)
+    criterion = torch.nn.MSELoss()
+
+    model.train()
+    for epoch in range(epochs):
+        total_loss = 0
+        for data in data_list:
+            optimizer.zero_grad()
+            out = model(data)
+            loss = criterion(out, data.y)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        
+        if (epoch + 1) % 10 == 0:
+            print(f"Epoch {epoch + 1}, Loss: {total_loss / len(data_list)}")
+    
+    return model
 
 def generate_synthetic_data(num_samples=10) -> List[GridSample]:
     """Generates data points for GNN training."""
@@ -77,21 +132,7 @@ def generate_random_network(p_mw_load_1: float, p_mw_load_2: float, p_mw_load_3:
 
     return net
 
-generate_synthetic_data(5)
 
-# net = generate_random_network()
-
-# # pp.runpp(net)
-# pp.runopp(net)
-
-# print(net.res_bus)
-# # print(net.res_line)
-# print(net.res_gen)
-
-# max_i_ka = net.line.max_i_ka.at[0]
-# print(f"Max i_ka: {max_i_ka}")
-
-# loading_percent = (net.res_line.i_ka.at[0] / max_i_ka) * 100
-# print(f"Loading percentage: {loading_percent}%")
-#     # pp.create_ext_grid(net, bus=bus1)
-    
+samples = generate_synthetic_data(10)
+graph_data = prepare_data_for_gnn(samples)
+trained_model = train_gnn(graph_data)
