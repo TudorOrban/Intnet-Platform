@@ -1,5 +1,5 @@
 import torch
-from core.types import BusData, GeneratorData, TransmissionLineData
+from core.data_types import BusData, GeneratorData, TransmissionLineData
 
 
 def extract_bus_features(bus: BusData) -> torch.Tensor:
