@@ -48,7 +48,16 @@ def create_loads(net: pandapowerNet, bus: Bus, bus_index: int):
 
 def create_edges(net: pandapowerNet, edges: List[Edge], node_id_to_index_dict: Dict[int, int]):
     for edge in edges:
-        if edge.edge_type == EdgeType.TRANSFORMER:
+        if edge.edge_type == EdgeType.TRANSFORMER: 
+            # print("Adding transformer")
+            # pp.create_transformer(
+            #     net,
+            #     hv_bus=node_id_to_index_dict[edge.src_bus_id],
+            #     lv_bus=node_id_to_index_dict[edge.dest_bus_id],
+            #     std_type="160 MVA 380/110 kV",
+            # )
+
+
             continue
 
         line_index = pp.create_line(
@@ -60,3 +69,4 @@ def create_edges(net: pandapowerNet, edges: List[Edge], node_id_to_index_dict: D
         )
         net.line.at[line_index, "r_ohm_per_km"] = edge.r_ohm_per_km
         net.line.at[line_index, "x_ohm_per_km"] = edge.x_ohm_per_km
+        net.line.at[line_index, "max_i_ka"] = 1000

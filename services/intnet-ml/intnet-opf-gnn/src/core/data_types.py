@@ -8,6 +8,7 @@ from typing import List, Optional
 # Generators
 @dataclass
 class GeneratorState:
+    generator_id: int
     p_mw: float
     q_mvar: float
     cp1_eur_per_mw: float
@@ -31,6 +32,7 @@ class Generator:
 # Loads
 @dataclass
 class LoadState:
+    load_id: int
     p_mw: float
     q_mvar: float
 
@@ -47,6 +49,7 @@ class Load:
 # Buses
 @dataclass
 class BusState:
+    bus_id: int
     vm_pu: float
     va_deg: float
     p_inj_mw: float
@@ -75,6 +78,7 @@ class Bus:
 # Edges
 @dataclass
 class EdgeState:
+    edge_id: int
     p_flow_mw: float
     q_flow_mvar: float
     i_ka: float

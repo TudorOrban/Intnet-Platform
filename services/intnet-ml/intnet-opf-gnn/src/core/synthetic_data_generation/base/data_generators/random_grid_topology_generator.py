@@ -57,26 +57,26 @@ def generate_random_bus(id: int) -> Bus:
     return Bus(
         id=id, bus_type=BusType.PQ, latitude=random.uniform(0, 100), longitude=random.uniform(0, 100), 
         min_vm_pu=0, max_vm_pu=0, vn_kv=0, 
-        generators=[], loads=[], state=BusState(vm_pu=0, va_deg=0, p_inj_mw=0, q_inj_mvar=0, tap_pos=None)
+        generators=[], loads=[], state=BusState(bus_id=id, vm_pu=0, va_deg=0, p_inj_mw=0, q_inj_mvar=0, tap_pos=None)
     )
 
 def generate_random_edge(id: int, u: int, v: int) -> Edge:
     return Edge(
-        id=id, src_bus_id=u, dest_bus_id=v, edge_type=random.choice(list(EdgeType)),
+        id=id, src_bus_id=u, dest_bus_id=v, edge_type=EdgeType.TRANSMISSION_LINE,
         length_km=0, r_ohm_per_km=0, x_ohm_per_km=0,
-        state=EdgeState(p_flow_mw=0, q_flow_mvar=0, i_ka=0, in_service=False)
+        state=EdgeState(edge_id=id, p_flow_mw=0, q_flow_mvar=0, i_ka=0, in_service=False)
     )
 
 def generate_random_generator(id: int, bus_id: int, slack: bool) -> Generator:
     return Generator(
         id=id, bus_id=bus_id, 
         min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0, slack=slack,
-        state=GeneratorState(p_mw=0, q_mvar=0, cp1_eur_per_mw=0)
+        state=GeneratorState(generator_id=id, p_mw=0, q_mvar=0, cp1_eur_per_mw=0)
     )
 
 def generate_random_load(id: int, bus_id: int) -> Load:
     return Load(
         id=id, bus_id=bus_id, 
         min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0,
-        state=LoadState(p_mw=0, q_mvar=0)
+        state=LoadState(load_id=id, p_mw=0, q_mvar=0)
     )

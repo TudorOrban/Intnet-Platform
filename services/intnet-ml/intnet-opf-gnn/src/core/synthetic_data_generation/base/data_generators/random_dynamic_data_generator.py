@@ -24,6 +24,7 @@ def generate_random_generator_dynamic_data(graph_data: GridGraphData) -> GridGra
         for gen in bus.generators:
             gen.state.p_mw = random.uniform(gen.min_p_mw, gen.max_p_mw)
             gen.state.q_mvar = random.uniform(gen.min_q_mvar, gen.max_q_mvar)
+            gen.state.cp1_eur_per_mw = random.uniform(10, 20)
     return graph_data
 
 def generate_random_bus_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
@@ -38,7 +39,7 @@ def generate_random_bus_dynamic_data(graph_data: GridGraphData) -> GridGraphData
 def generate_random_edge_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
     for edge in graph_data.edges:
         edge.state.p_flow_mw = random.uniform(-100, 100)
-        edge.state.q_flow_mvar = random.uniform(-50, 50)
+        edge.state.q_flow_mvar = random.uniform(-10, 10)
         edge.state.i_ka = random.uniform(0, 1.0)
         edge.state.in_service = random.choice([True, False])
     return graph_data
