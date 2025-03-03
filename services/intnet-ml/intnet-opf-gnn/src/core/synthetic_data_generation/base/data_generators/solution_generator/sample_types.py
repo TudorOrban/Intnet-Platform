@@ -1,8 +1,8 @@
 
 from dataclasses import dataclass
-from typing import Dict, Generator, List
+from typing import Dict, List
 
-from core.data_types import Bus, BusState, Edge, EdgeState, GeneratorState, GridGraphData, Load, LoadState
+from core.data_types import Bus, BusState, Edge, EdgeState, Generator, GeneratorState, GridGraphData, Load, LoadState
 
 @dataclass
 class BusFixedSpecificationSamples:
@@ -26,10 +26,10 @@ class LoadFixedSpecificationSamples:
 
 @dataclass
 class FixedSpecificationSample:
-    bus_samples: Dict[int, BusFixedSpecificationSamples]
-    edge_samples: Dict[int, EdgeFixedSpecificationSamples]
-    generator_samples: Dict[int, GeneratorFixedSpecificationSamples]
-    load_samples: Dict[int, LoadFixedSpecificationSamples]
+    bus_samples: Dict[int, BusFixedSpecificationSamples] # key: bus_id
+    edge_samples: Dict[int, EdgeFixedSpecificationSamples] # key: edge_id
+    generator_samples: Dict[int, GeneratorFixedSpecificationSamples] # key: generator_id
+    load_samples: Dict[int, LoadFixedSpecificationSamples] # key: load_id
 
 @dataclass
 class FixedTopologySample:
