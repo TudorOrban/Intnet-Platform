@@ -1,8 +1,9 @@
+import datetime
 import json
 from typing import List
 from pathlib import Path
 
-from core.data_types import GridGraph, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType
+from core.data_types import GridGraph, GridGraphData, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType
 
 class SyntheticGraphRepository:
     def __init__(self, file_path: str = "synthetic_data/base_graph_data.json"):
@@ -16,22 +17,36 @@ class SyntheticGraphRepository:
         with open(self.file_path, "r") as f:
             data = json.load(f)
 
+
         graphs = []
-        for graph_data in data:
-            buses = [self._deserialize_bus(bus_data) for bus_data in graph_data["buses"]]
-            edges = [self._deserialize_edge(edge_data) for edge_data in graph_data["edges"]]
-            graphs.append(GridGraph(buses=buses, edges=edges))
+        for graph in data:
+            id = graph["id"]
+            created_at = graph["created_at"]
+            graph_data = self._deserialize_graph_data(graph["graph_data"])
+            
+            graphs.append(GridGraph(id=id, created_at=created_at, graph_data=graph_data))
 
         return graphs
 
-    def add_graph(self, graph: GridGraph):
+    def add_graph(self, graph_data: GridGraphData):
         graphs = self.read_graphs()
-        graphs.append(graph)
+
+        max_id = max((g.id for g in graphs), default=0)
+
+        new_graph = GridGraph(id=max_id + 1, created_at=datetime.datetime.now(), graph_data=graph_data)
+
+        graphs.append(new_graph)
 
         data = [self._serialize_graph(g) for g in graphs]
 
         with open(self.file_path, "w") as f:
             json.dump(data, f, indent=4)
+
+    def _deserialize_graph_data(self, graph_data: dict) -> GridGraphData:
+        return GridGraphData(
+            buses=[self._deserialize_bus(bus_data) for bus_data in graph_data["buses"]],
+            edges=[self._deserialize_edge(edge_data) for edge_data in graph_data["edges"]]
+        )
 
     def _deserialize_bus(self, bus_data: dict) -> Bus:
         return Bus(
@@ -101,8 +116,15 @@ class SyntheticGraphRepository:
 
     def _serialize_graph(self, graph: GridGraph) -> dict:
         return {
-            "buses": [self._serialize_bus(bus) for bus in graph.buses],
-            "edges": [self._serialize_edge(edge) for edge in graph.edges]
+            "id": graph.id,
+            "created_at": graph.created_at.isoformat(),
+            "graph_data": self._serialize_graph_data(graph.graph_data)
+        }
+
+    def _serialize_graph_data(self, graph_data: GridGraphData) -> dict:
+        return {
+            "buses": [self._serialize_bus(bus) for bus in graph_data.buses],
+            "edges": [self._serialize_edge(edge) for edge in graph_data.edges]
         }
 
     def _serialize_bus(self, bus: Bus) -> dict:

@@ -1,5 +1,6 @@
 
 from dataclasses import dataclass
+import datetime
 from enum import Enum
 from typing import List, Optional
 
@@ -96,6 +97,12 @@ class Edge:
     state: EdgeState
 
 @dataclass
-class GridGraph:
+class GridGraphData:
     buses: List[Bus]
     edges: List[Edge]
+
+@dataclass
+class GridGraph:
+    id: int
+    created_at: datetime
+    graph_data: GridGraphData

@@ -2,11 +2,11 @@
 
 import random
 from typing import List
-from core.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, GeneratorState, GridGraph, Generator, Load, LoadState
+from core.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, GeneratorState, GridGraphData, Generator, Load, LoadState
 import networkx as nx
 
-def generate_random_topology(num_buses: int, num_generators: int, num_loads: int, edge_density: float=0.5) -> GridGraph:
-    """Generates a random, solvable power network topology."""
+def generate_random_topology(num_buses: int, num_generators: int, num_loads: int, edge_density: float=0.5) -> GridGraphData:
+    """Generates a random, solvable power grid topology."""
 
     buses: List[Bus] = []
     edges: List[Edge] = []
@@ -51,7 +51,7 @@ def generate_random_topology(num_buses: int, num_generators: int, num_loads: int
             generate_random_load(id=i, bus_id=bus_id)
         )
 
-    return GridGraph(buses=buses, edges=edges)
+    return GridGraphData(buses=buses, edges=edges)
 
 def generate_random_bus(id: int) -> Bus:
     return Bus(
