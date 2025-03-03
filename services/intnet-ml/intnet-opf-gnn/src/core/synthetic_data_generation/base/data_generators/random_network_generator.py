@@ -1,8 +1,8 @@
 
 
 import random
-from typing import Generator, List
-from core.data_types import Bus, BusState, BusType, Edge, GridGraph, Load
+from typing import List
+from core.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, GeneratorState, GridGraph, Generator, Load, LoadState
 import networkx as nx
 
 def generate_random_topology(num_buses: int, num_generators: int, num_loads: int, edge_density: float=0.5) -> GridGraph:
@@ -56,24 +56,27 @@ def generate_random_topology(num_buses: int, num_generators: int, num_loads: int
 def generate_random_bus(id: int) -> Bus:
     return Bus(
         id=id, bus_type=BusType.PQ, latitude=random.uniform(0, 100), longitude=random.uniform(0, 100), 
-        min_vm_pu=0.9, max_vm_pu=1.1, vn_kv=20.0, 
+        min_vm_pu=0, max_vm_pu=0, vn_kv=0, 
         generators=[], loads=[], state=BusState(vm_pu=0, va_deg=0, p_inj_mw=0, q_inj_mvar=0, tap_pos=None)
     )
 
 def generate_random_edge(id: int, u: int, v: int) -> Edge:
     return Edge(
-        id=id, src_bus_id=u, dest_bus_id=v, edge_type=random.choice(["TRANSMISSION_LINE", "DISTRIBUTION_LINE", "TRANSFORMER"]),
-        length_km=random.uniform(1, 50), r_ohm_per_km=0.01, x_ohm_per_km=0.1
+        id=id, src_bus_id=u, dest_bus_id=v, edge_type=random.choice(list(EdgeType)),
+        length_km=0, r_ohm_per_km=0, x_ohm_per_km=0,
+        state=EdgeState(p_flow_mw=0, q_flow_mvar=0, i_ka=0, in_service=False)
     )
 
 def generate_random_generator(id: int, bus_id: int, slack: bool) -> Generator:
     return Generator(
         id=id, bus_id=bus_id, 
-        min_p_mw=0, max_p_mw=100, min_q_mvar=-50, max_q_mvar=50, slack=slack, p_mw=0, q_mvar=0
+        min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0, slack=slack,
+        state=GeneratorState(p_mw=0, q_mvar=0, cp1_eur_per_mw=0)
     )
 
 def generate_random_load(id: int, bus_id: int) -> Load:
     return Load(
         id=id, bus_id=bus_id, 
-        p_mw=0, q_mvar=0, max_p_mw=100, max_q_mvar=50
+        min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0,
+        state=LoadState(p_mw=0, q_mvar=0)
     )
