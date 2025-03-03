@@ -11,6 +11,8 @@ def generate_random_static_data(graph_data: GridGraphData) -> GridGraphData:
     graph_data = generate_random_bus_data(graph_data)
     graph_data = generate_random_edge_data(graph_data)
 
+    return graph_data
+
 def generate_random_load_data(graph_data: GridGraphData) -> GridGraphData:
     for bus in graph_data.buses:
         for load in bus.loads:
@@ -18,7 +20,6 @@ def generate_random_load_data(graph_data: GridGraphData) -> GridGraphData:
             load.max_p_mw = random.uniform(10, 200)
             load.min_q_mvar = -random.uniform(5, 100)
             load.max_q_mvar = random.uniform(5, 100)
-
     return graph_data
 
 def generate_random_generator_data(graph_data: GridGraphData) -> GridGraphData:
@@ -47,6 +48,7 @@ def generate_random_generator_data(graph_data: GridGraphData) -> GridGraphData:
             gen.max_p_mw = random.uniform(max_p_mw_per_gen * (1 - variation), max_p_mw_per_gen * (1 + variation))
             gen.min_q_mvar = random.uniform(min_q_mvar_per_gen * (1 - variation), min_q_mvar_per_gen * (1 + variation))
             gen.max_q_mvar = random.uniform(max_q_mvar_per_gen * (1 - variation), max_q_mvar_per_gen * (1 + variation))
+    return graph_data
 
 def determine_generator_specification(specification: float, safety_margin: float, total_generators: int) -> float:
     return specification * safety_margin / total_generators
@@ -56,6 +58,7 @@ def generate_random_bus_data(graph_data: GridGraphData) -> GridGraphData:
         bus.vn_kv = random.choice([110, 220, 400])
         bus.min_vm_pu = 0.95
         bus.max_vm_pu = 1.05
+    return graph_data
 
 def generate_random_edge_data(graph_data: GridGraphData) -> GridGraphData:
     for edge in graph_data.edges:
@@ -71,3 +74,4 @@ def generate_random_edge_data(graph_data: GridGraphData) -> GridGraphData:
             edge.r_ohm_per_km = random.uniform(0.001, 0.01)
             edge.x_ohm_per_km = random.uniform(0.01, 0.05)
             edge.length_km = 0
+    return graph_data
