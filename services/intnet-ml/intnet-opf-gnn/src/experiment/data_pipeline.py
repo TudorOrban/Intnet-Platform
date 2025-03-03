@@ -3,7 +3,7 @@ from typing import List
 import torch
 from torch_geometric.data import Data
 import numpy as np
-from core.synthetic_data import GridSample
+from experiment.synthetic_data import GridSample
 
 
 def prepare_data_for_gnn(samples: List[GridSample]) -> List[Data]:
@@ -16,9 +16,10 @@ def prepare_data_for_gnn(samples: List[GridSample]) -> List[Data]:
     load_power_values = np.array([sample.node_features[:, 4] for sample in samples]).flatten()
     gen_p_mw_values = np.array([sample.gen_p_mw for sample in samples])
     load_q_mvar_values = np.array([sample.node_features[:, 5] for sample in samples]).flatten()
-    gen_max_p_values = np.array([sample.node_features[:, 6] for sample in samples]).flatten()
-    gen_min_q_values = np.array([sample.node_features[:, 7] for sample in samples]).flatten()
-    gen_max_q_values = np.array([sample.node_features[:, 8] for sample in samples]).flatten()
+    gen_min_p_values = np.array([sample.node_features[:, 6] for sample in samples]).flatten()
+    gen_max_p_values = np.array([sample.node_features[:, 7] for sample in samples]).flatten()
+    gen_min_q_values = np.array([sample.node_features[:, 8] for sample in samples]).flatten()
+    gen_max_q_values = np.array([sample.node_features[:, 9] for sample in samples]).flatten()
 
     # Extract edge float features
     r_ohm_per_km_values = np.array([sample.edge_features[:, 0] for sample in samples]).flatten()
@@ -33,18 +34,22 @@ def prepare_data_for_gnn(samples: List[GridSample]) -> List[Data]:
     std_gen_p_mw = np.std(gen_p_mw_values)
     mean_load_q_mvar = np.mean(load_q_mvar_values)
     std_load_q_mvar = np.std(load_q_mvar_values)
+    mean_gen_min_p = np.mean(gen_min_p_values)
+    std_gen_min_p = np.std(gen_min_p_values)
     mean_gen_max_p = np.mean(gen_max_p_values)
     std_gen_max_p = np.std(gen_max_p_values)
     mean_gen_min_q = np.mean(gen_min_q_values)
     std_gen_min_q = np.std(gen_min_q_values)
     mean_gen_max_q = np.mean(gen_max_q_values)
     std_gen_max_q = np.std(gen_max_q_values)
-
+    print("Max min", mean_load_q_mvar, std_load_q_mvar, mean_gen_min_q, mean_gen_max_q)
     # Calculate normalization parameters for edge features
     mean_r_ohm_per_km = np.mean(r_ohm_per_km_values)
     std_r_ohm_per_km = np.std(r_ohm_per_km_values)
     mean_x_ohm_per_km = np.mean(x_ohm_per_km_values)
     std_x_ohm_per_km = np.std(x_ohm_per_km_values)
+
+    print("R ohm", mean_r_ohm_per_km, std_r_ohm_per_km, mean_x_ohm_per_km, std_x_ohm_per_km)
 
     epsilon = 1e-7
 
@@ -56,23 +61,28 @@ def prepare_data_for_gnn(samples: List[GridSample]) -> List[Data]:
         normalized_vm_pu = (sample.node_features[:, 3] - mean_vm_pu) / (std_vm_pu if std_vm_pu != 0 else epsilon)
         normalized_load_power = (sample.node_features[:, 4] - mean_load_power) / (std_load_power if std_load_power != 0 else epsilon)
         normalized_load_q_mvar = (sample.node_features[:, 5] - mean_load_q_mvar) / (std_load_q_mvar if std_load_q_mvar != 0 else epsilon)
-        normalized_gen_max_p = (sample.node_features[:, 6] - mean_gen_max_p) / (std_gen_max_p if std_gen_max_p != 0 else epsilon)
-        normalized_gen_min_q = (sample.node_features[:, 7] - mean_gen_min_q) / (std_gen_min_q if std_gen_min_q != 0 else epsilon)
-        normalized_gen_max_q = (sample.node_features[:, 8] - mean_gen_max_q) / (std_gen_max_q if std_gen_max_q != 0 else epsilon)
+        normalized_gen_min_p = (sample.node_features[:, 6] - mean_gen_min_p) / (std_gen_min_p if std_gen_min_p != 0 else epsilon)
+        normalized_gen_max_p = (sample.node_features[:, 7] - mean_gen_max_p) / (std_gen_max_p if std_gen_max_p != 0 else epsilon)
+        normalized_gen_min_q = (sample.node_features[:, 8] - mean_gen_min_q) / (std_gen_min_q if std_gen_min_q != 0 else epsilon)
+        normalized_gen_max_q = (sample.node_features[:, 9] - mean_gen_max_q) / (std_gen_max_q if std_gen_max_q != 0 else epsilon)
 
         normalized_features = np.copy(sample.node_features)
         normalized_features[:, 3] = normalized_vm_pu
         normalized_features[:, 4] = normalized_load_power
         normalized_features[:, 5] = normalized_load_q_mvar
-        normalized_features[:, 6] = normalized_gen_max_p
-        normalized_features[:, 7] = normalized_gen_min_q
-        normalized_features[:, 8] = normalized_gen_max_q
+        normalized_features[:, 6] = normalized_gen_min_p
+        normalized_features[:, 7] = normalized_gen_max_p
+        normalized_features[:, 8] = normalized_gen_min_q
+        normalized_features[:, 9] = normalized_gen_max_q
 
         x = torch.tensor(normalized_features, dtype=torch.float)
         y = torch.tensor([(sample.gen_p_mw - mean_gen_p_mw) / (std_gen_p_mw if std_gen_p_mw != 0 else epsilon)], dtype=torch.float)
 
         normalized_r_ohm_per_km = (sample.edge_features[:, 0] - mean_r_ohm_per_km) / (std_r_ohm_per_km if std_r_ohm_per_km != 0 else epsilon)
-        normalized_x_ohm_per_km = (sample.edge_features[:, 1] - mean_x_ohm_per_km) / (std_x_ohm_per_km if std_x_ohm_per_km != 0 else epsilon)
+        if std_x_ohm_per_km != 0:
+            normalized_x_ohm_per_km = (sample.edge_features[:, 1] - mean_x_ohm_per_km) / (std_x_ohm_per_km if std_x_ohm_per_km != 0 else epsilon)
+        else:
+            normalized_x_ohm_per_km = np.zeros_like(sample.edge_features[:, 1])
 
         normalized_edge_features = np.stack((normalized_r_ohm_per_km, normalized_x_ohm_per_km), axis=1)
         edge_attr = torch.tensor(normalized_edge_features, dtype=torch.float)

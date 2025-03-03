@@ -28,7 +28,7 @@ class SimpleGCN(torch.nn.Module):
         x = torch.mean(x, dim=0)
         return x
     
-def train_gnn(data_list: List[Data], epochs=100, hidden_channels=64, lr=0.01, patience=10, weight_decay=1e-5):
+def train_gnn(data_list: List[Data], epochs=100, hidden_channels=64, lr=0.01, patience=10, weight_decay=1e-5, dropout_rate=0.5):
     """Trains the GNN model."""
 
     train_test_ratio = 0.8
@@ -36,7 +36,7 @@ def train_gnn(data_list: List[Data], epochs=100, hidden_channels=64, lr=0.01, pa
     train_data = data_list[:train_size]
     val_data = data_list[train_size:]
 
-    model = SimpleGCN(num_node_features=train_data[0].x.shape[1], hidden_channels=hidden_channels)
+    model = SimpleGCN(num_node_features=train_data[0].x.shape[1], hidden_channels=hidden_channels, dropout_rate=dropout_rate)
     optimizer = torch.optim.Adam(model.parameters(), lr, weight_decay=weight_decay)
     criterion = torch.nn.MSELoss()
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=patience // 2, factor=0.5, verbose=True)

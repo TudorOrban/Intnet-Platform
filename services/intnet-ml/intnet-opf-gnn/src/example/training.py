@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import mlflow # type: ignore
 import torch
 
-from core.models import SimpleGCN
+from experiment.models import SimpleGCN
 from torch_geometric.data import Data
 from torch.nn import MSELoss
 from torch.optim import Adam

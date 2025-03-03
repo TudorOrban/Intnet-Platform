@@ -53,16 +53,18 @@ def generate_synthetic_data(num_samples=10) -> List[GridSample]:
                 load_power = load_p_mw[load_index]
                 load_q_mvar = net.load.at[load_index, "q_mvar"]
 
+            gen_min_p = 0.0
             gen_max_p = 0.0
             gen_min_q = 0.0
             gen_max_q = 0.0
             if gen_present == 1.0:
                 gen_index = net.gen.bus.values.tolist().index(bus_idx)
+                gen_min_p = net.gen.at[net.gen.bus.values[gen_index], "min_p_mw"]
                 gen_max_p = net.gen.at[net.gen.bus.values[gen_index], "max_p_mw"]
                 gen_min_q = net.gen.at[net.gen.bus.values[gen_index], "min_q_mvar"]
                 gen_max_q = net.gen.at[net.gen.bus.values[gen_index], "max_q_mvar"]
 
-            node_features.append([bus_type, load_present, gen_present, vm_pu, load_power, load_q_mvar, gen_max_p, gen_min_q, gen_max_q])
+            node_features.append([bus_type, load_present, gen_present, vm_pu, load_power, load_q_mvar, gen_min_p, gen_max_p, gen_min_q, gen_max_q])
 
         node_features = np.array(node_features)
 
@@ -98,7 +100,7 @@ def generate_random_network(p_mw_load_1: float, p_mw_load_2: float, p_mw_load_3:
 
     # Generators
     # (Slack)
-    pp.create_gen(net, bus=bus1, p_mw=50., min_p_mw=0., max_p_mw=150., q_mvar=0., max_q_mvar=150., slack=True)
+    pp.create_gen(net, bus=bus1, p_mw=50., min_p_mw=0., max_p_mw=150., q_mvar=0., min_q_mvar=0., max_q_mvar=150., slack=True)
     pp.create_poly_cost(net, element=0, et="gen", cp1_eur_per_mw=10.) 
     
     # Loads

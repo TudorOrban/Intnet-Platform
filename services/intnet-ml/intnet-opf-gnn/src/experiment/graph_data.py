@@ -2,8 +2,8 @@ from typing import Dict
 import torch
 from torch_geometric.data import Data
 
-from core.feature_extractor import extract_bus_features, extract_line_features
-from core.data_types import BusData, GeneratorData, TransmissionLineData
+from experiment.feature_extractor import extract_bus_features, extract_line_features
+from experiment.data_types import BusData, GeneratorData, TransmissionLineData
 
 
 def construct_graph_data(
