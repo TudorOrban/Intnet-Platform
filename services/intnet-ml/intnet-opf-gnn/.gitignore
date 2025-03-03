@@ -6,3 +6,5 @@ mlartifacts
 mlruns
 
 best_model.pth
+
+synthetic_data

@@ -8,9 +8,9 @@ from torch_geometric.nn import GCNConv
 from torch_geometric.data import Data
 
 
-class SimpleGCN(torch.nn.Module):
+class ExperimentalGCN(torch.nn.Module):
     def __init__(self, num_node_features, hidden_channels=64, dropout_rate=0.5):
-        super(SimpleGCN, self).__init__()
+        super(ExperimentalGCN, self).__init__()
         self.conv1 = GCNConv(num_node_features, hidden_channels)
         self.conv2 = GCNConv(hidden_channels, 1)
         self.dropout_rate = dropout_rate
@@ -36,7 +36,7 @@ def train_gnn(data_list: List[Data], epochs=100, hidden_channels=64, lr=0.01, pa
     train_data = data_list[:train_size]
     val_data = data_list[train_size:]
 
-    model = SimpleGCN(num_node_features=train_data[0].x.shape[1], hidden_channels=hidden_channels, dropout_rate=dropout_rate)
+    model = ExperimentalGCN(num_node_features=train_data[0].x.shape[1], hidden_channels=hidden_channels, dropout_rate=dropout_rate)
     optimizer = torch.optim.Adam(model.parameters(), lr, weight_decay=weight_decay)
     criterion = torch.nn.MSELoss()
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=patience // 2, factor=0.5, verbose=True)
