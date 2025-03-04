@@ -1,4 +1,5 @@
 import pandapower as pp
+import structlog
 
 from typing import Dict, List
 from core.synthetic_data_generation.base.data_generators.solution_generator.network_builder import build_pandapower_network
@@ -8,25 +9,28 @@ from core.synthetic_data_generation.base.data_generators.random_grid_topology_ge
 from core.synthetic_data_generation.base.data_generators.random_static_data_generator import generate_random_static_data
 from core.synthetic_data_generation.base.data_generators.solution_generator.sample_types import BusFixedSpecificationSamples, EdgeFixedSpecificationSamples, FixedSpecificationSample, FixedTopologySample, GeneratorFixedSpecificationSamples, LoadFixedSpecificationSamples
 
+logger = structlog.get_logger(__name__)
 
 def generate_samples(topologies=3, specifications=5, records=10) -> List[FixedTopologySample]:
     """Generates synthetic data samples"""
 
     samples: List[FixedTopologySample] = []
+    logger.info("Starting sample generation", topologies=topologies, specifications=specifications, records=records)
 
-    for _ in range(topologies):
+    for topology_index in range(topologies):
+        logger.info(f"Generating topology {topology_index + 1}/{topologies}")
         graph_topology = generate_random_topology(num_buses=8, num_generators=2, num_loads=3, edge_density=0.4)
         sample = generate_fixed_topology_sample(graph_topology=graph_topology, specifications=specifications, records=records)
         samples.append(sample)
-    
-    print("len", len(samples))
 
+    logger.info("Finished sample generation", num_samples=len(samples))
     return samples
 
 def generate_fixed_topology_sample(graph_topology: GridGraphData, specifications=5, records=10) -> FixedTopologySample:
     fixed_specification_samples: List[FixedSpecificationSample] = []
 
-    for _ in range(specifications):
+    for specification_index in range(specifications):
+        logger.info(f"Generating specification {specification_index + 1}/{specifications}")
         graph_specification = generate_random_static_data(graph_topology)
         fixed_specification_sample = generate_fixed_specification_sample(graph_specification=graph_specification, records=records)
         fixed_specification_samples.append(fixed_specification_sample)
@@ -51,7 +55,8 @@ def generate_fixed_specification_sample(graph_specification: GridGraphData, reco
         edge_samples[edge.id] = EdgeFixedSpecificationSamples(edge=edge, edge_states=[])
 
     # Generate records
-    for _ in range(records):
+    for record_index in range(records):
+        logger.info(f"Generating record {record_index + 1}/{records}")
         graph_data = generate_random_dynamic_data(graph_specification)
 
         graph_data = generate_opf_sample(graph_data)
@@ -79,20 +84,17 @@ def generate_opf_sample(graph_data: GridGraphData) -> GridGraphData:
     try:
         pp.runopp(net)
         has_converged = True
+        logger.info("OPF converged")
     except Exception as e:
-        print(f"OPP didnt converge: {e}")
+        logger.error(f"OPF didn't converge: {e}")
     if not has_converged:
         return graph_data
-    
-    print("net gen", net.gen)
-    print("has converged", has_converged)
     
     for bus in graph_data.buses:
         for generator in bus.generators:
             generator_index = net.gen.index[net.gen["name"] == str(generator.id)].tolist()[0]
             
             generator_p_mw = net.res_gen.p_mw.values[generator_index]
-            print("Generator P MW", generator_p_mw)
 
             generator.state.p_mw = generator_p_mw
 

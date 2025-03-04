@@ -55,3 +55,5 @@ torch_spline_conv
 
 pandapower
 numba
+
+structlog=25.1.0
