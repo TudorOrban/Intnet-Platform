@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import List
 
-from core.synthetic_data_generation.base.data_generators.solution_generator.sample_types import FixedTopologySample
+from core.synthetic_data_generation.base.data_generators.sample_manager.sample_types import FixedTopologySample
 from core.synthetic_data_generation.common.graph_data_deserializer import GraphDataDeserializer
 
 

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import mlflow
 
 from config.logger_config import configure_logging
-from core.synthetic_data_generation.base.data_generators.solution_generator.sample_generator import generate_samples
+from core.synthetic_data_generation.base.data_generators.sample_manager.sample_generator import generate_samples
 from core.synthetic_data_generation.base.data_repository.training_sample_repository import TrainingSampleRepository
 
 load_dotenv()
@@ -14,7 +14,7 @@ def main():
     configure_logging()
 
     samples = generate_samples(topologies=2, specifications=2, records=2)
-    
+
     # sampleRepository = TrainingSampleRepository()
     # sampleRepository.add_samples(samples)
 
