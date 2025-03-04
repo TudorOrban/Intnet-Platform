@@ -22,15 +22,20 @@ class GraphDataDeserializer:
             min_vm_pu=bus_data["min_vm_pu"],
             max_vm_pu=bus_data["max_vm_pu"],
             vn_kv=bus_data["vn_kv"],
-            state=BusState(
-                vm_pu=bus_data["state"]["vm_pu"],
-                va_deg=bus_data["state"]["va_deg"],
-                p_inj_mw=bus_data["state"]["p_inj_mw"],
-                q_inj_mvar=bus_data["state"]["q_inj_mvar"],
-                tap_pos=bus_data["state"]["tap_pos"]
-            ),
+            state=GraphDataDeserializer.deserialize_bus_state(bus_data["state"]),
             generators=[GraphDataDeserializer.deserialize_generator(gen_data) for gen_data in bus_data["generators"]],
             loads=[GraphDataDeserializer.deserialize_load(load_data) for load_data in bus_data["loads"]]
+        )
+
+    @staticmethod
+    def deserialize_bus_state(state_data: dict) -> BusState:
+        return BusState(
+            bus_id=state_data["bus_id"],
+            vm_pu=state_data["vm_pu"],
+            va_deg=state_data["va_deg"],
+            p_inj_mw=state_data["p_inj_mw"],
+            q_inj_mvar=state_data["q_inj_mvar"],
+            tap_pos=state_data["tap_pos"]
         )
 
     @staticmethod
@@ -43,12 +48,17 @@ class GraphDataDeserializer:
             length_km=edge_data["length_km"],
             r_ohm_per_km=edge_data["r_ohm_per_km"],
             x_ohm_per_km=edge_data["x_ohm_per_km"],
-            state=EdgeState(
-                p_flow_mw=edge_data["state"]["p_flow_mw"],
-                q_flow_mvar=edge_data["state"]["q_flow_mvar"],
-                i_ka=edge_data["state"]["i_ka"],
-                in_service=edge_data["state"]["in_service"]
-            )
+            state=GraphDataDeserializer.deserialize_edge_state(edge_data["state"])
+        )
+    
+    @staticmethod
+    def deserialize_edge_state(state_data: dict) -> EdgeState:
+        return EdgeState(
+            edge_id=state_data["edge_id"],
+            p_flow_mw=state_data["p_flow_mw"],
+            q_flow_mvar=state_data["q_flow_mvar"],
+            i_ka=state_data["i_ka"],
+            in_service=state_data["in_service"]
         )
 
     @staticmethod
@@ -61,10 +71,16 @@ class GraphDataDeserializer:
             min_q_mvar=gen_data["min_q_mvar"],
             max_q_mvar=gen_data["max_q_mvar"],
             slack=gen_data["slack"],
-            state=GeneratorState(
-                p_mw=gen_data["state"]["p_mw"],
-                q_mvar=gen_data["state"]["q_mvar"]
-            )
+            state=GraphDataDeserializer.deserialize_generator_state(gen_data["state"])
+        )
+    
+    @staticmethod
+    def deserialize_generator_state(state_data: dict) -> Generator:
+        return GeneratorState(
+            generator_id=state_data["generator_id"],
+            p_mw=state_data["p_mw"],
+            q_mvar=state_data["q_mvar"],
+            cp1_eur_per_mw=state_data["cp1_eur_per_mw"]
         )
 
     @staticmethod
@@ -76,10 +92,15 @@ class GraphDataDeserializer:
             max_p_mw=load_data["max_p_mw"],
             min_q_mvar=load_data["min_q_mvar"],
             max_q_mvar=load_data["max_q_mvar"],
-            state=LoadState(
-                p_mw=load_data["state"]["p_mw"],
-                q_mvar=load_data["state"]["q_mvar"]
-            )
+            state=GraphDataDeserializer.deserialize_load_state(load_data["state"])
+        )
+
+    @staticmethod
+    def deserialize_load_state(state_data: dict) -> LoadState:
+        return LoadState(
+            load_id=state_data["load_id"],
+            p_mw=state_data["p_mw"],
+            q_mvar=state_data["q_mvar"]
         )
 
     @staticmethod

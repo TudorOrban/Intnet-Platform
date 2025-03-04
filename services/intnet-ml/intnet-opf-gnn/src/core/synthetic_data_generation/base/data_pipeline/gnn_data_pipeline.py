@@ -20,13 +20,20 @@ def prepare_data_for_gnn(samples: List[FixedTopologySample]):
 
     for graph_data in flat_samples:
         adj_matrix = get_adjacency_matrix(graph_data)
-        edge_index = torch.tensor(np.array(np.where(adj_matrix == 1)), dtype=torch.long)
-
         node_features = extract_node_features(graph_data)
         edge_features = extract_edge_features(graph_data)
+        generator_powers = extract_generator_powers(graph_data)
+        
+        x = torch.tensor(node_features, dtype=torch.float)
+        edge_index = torch.tensor(np.array(np.where(adj_matrix == 1)), dtype=torch.long)
+        edge_attr = torch.tensor(edge_features, dtype=torch.float)
+        y = torch.tensor(generator_powers, dtype=torch.float)
 
+        data = Data(x=x, edge_index=edge_index, edge_attr=edge_attr, y=y)
 
+        graph_data_list.append(data)
 
+    return graph_data_list
 
 
 def extract_node_features(graph_data: GridGraphData) -> np.ndarray:
@@ -75,16 +82,19 @@ def extract_edge_features(graph_data: GridGraphData) -> np.ndarray:
 
     return np.array(edge_features)
 
+def extract_generator_powers(graph_data: GridGraphData) -> np.ndarray:
+    generator_powers = []
+    for bus in graph_data.buses:
+        for generator in bus.generators:
+            generator_powers.append(generator.state.p_mw)
+
+    return np.array(generator_powers)
 
 def get_adjacency_matrix(graph_data: GridGraphData) -> np.ndarray:
-    """Constructs an adjacency matrix from GridGraphData."""
-
     graph = nx.Graph()
 
-    # Add edges from GridGraphData
     for edge in graph_data.edges:
         graph.add_edge(edge.src_bus_id, edge.dest_bus_id)
 
-    # Create adjacency matrix
     adj_matrix = nx.adjacency_matrix(graph).todense()
     return np.array(adj_matrix)

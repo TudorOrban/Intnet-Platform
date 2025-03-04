@@ -26,6 +26,7 @@ def rebuild_graph_data(samples: List[FixedTopologySample], topology_index: int, 
         
     for i, bus in enumerate(graph_topology.buses):
         bus_specification_samples = fixed_specification_sample.bus_samples[bus.id]
+        print(topology_index, specification_index, record_index)
         bus_state_sample = bus_specification_samples.bus_states[record_index]
 
         sample_bus = bus_specification_samples.bus
