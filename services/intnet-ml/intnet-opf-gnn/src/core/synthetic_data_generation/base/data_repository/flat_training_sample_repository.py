@@ -13,7 +13,7 @@ class FlatTrainingSampleRepository:
         self.file_path = Path(file_path)
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def read_samples(self) -> List[GridGraphData]:
+    def read_samples(self, limit=1000) -> List[GridGraphData]:
         if not self.file_path.exists():
             return []
 
@@ -21,7 +21,10 @@ class FlatTrainingSampleRepository:
             data = json.load(f)
 
         samples = []
-        for sample_data in data:
+        for i, sample_data in enumerate(data):
+            if i > limit:
+                break
+            
             samples.append(GraphDataDeserializer.deserialize_graph_data(sample_data))
 
         return samples

@@ -17,7 +17,7 @@ def generate_flat_samples(topologies=3, specifications=5, records=10) -> List[Gr
 
     for topology_index in range(topologies):
         logger.info(f"Generating topology {topology_index + 1}/{topologies}")
-        graph_topology = generate_random_topology(num_buses=8, num_generators=2, num_loads=3, edge_density=0.4)
+        graph_topology = generate_random_topology(num_buses=12, num_generators=2, num_loads=5, edge_density=0.3)
         
         for specification_index in range(specifications):
             logger.info(f"Generating specification {specification_index + 1}/{specifications}")

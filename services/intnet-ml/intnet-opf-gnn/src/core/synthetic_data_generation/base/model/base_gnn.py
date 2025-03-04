@@ -1,4 +1,5 @@
 from typing import List
+import mlflow
 import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
@@ -16,7 +17,12 @@ class BaseGNN(torch.nn.Module):
         x = self.conv1(x, edge_index)
         x = F.relu(x)
         x = self.conv2(x, edge_index)
-        return x
+
+        generator_mask = (data.x[:, 0] == 1)
+
+        generator_outputs = x[generator_mask].squeeze(1)
+        
+        return generator_outputs
     
 def train_gnn(input_data: List[Data], epochs=100, hidden_channels=64, lr=0.01):
     """Trains the GNN model."""
@@ -53,3 +59,8 @@ def train_gnn(input_data: List[Data], epochs=100, hidden_channels=64, lr=0.01):
         avg_val_loss = total_val_loss / len(val_data)
 
         print(f"Epoch {epoch + 1}, Train Loss: {avg_train_loss}, Val Loss: {avg_val_loss}")
+        
+        mlflow.log_metric("train_loss", avg_train_loss, step=epoch)
+        mlflow.log_metric("val_loss", avg_val_loss, step=epoch)
+
+    return model

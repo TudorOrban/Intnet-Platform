@@ -10,6 +10,7 @@ from core.synthetic_data_generation.base.data_pipeline.gnn_data_pipeline import 
 from core.synthetic_data_generation.base.data_repository.flat_training_sample_repository import FlatTrainingSampleRepository
 from core.synthetic_data_generation.base.data_repository.training_sample_repository import TrainingSampleRepository
 from core.synthetic_data_generation.base.model.base_gnn import train_gnn
+from core.synthetic_data_generation.base.model.mlflow_run import run_mlflow_train_gnn
 
 load_dotenv()
 
@@ -18,39 +19,13 @@ def main():
     configure_logging()
 
     # Flat samples
-    flatSampleRepository = FlatTrainingSampleRepository()
+    # flatSampleRepository = FlatTrainingSampleRepository()
 
-    # samples = generate_flat_samples(topologies=2, specifications=2, records=3)
+    # samples = generate_flat_samples(topologies=4, specifications=3, records=6)
 
     # flatSampleRepository.add_samples(samples)
 
-    samples = flatSampleRepository.read_samples()
-
-    input_data = map_flat_samples_to_pytorch_data(samples)
-
-    epochs = 100
-    hidden_channels = 64
-    lr = 0.01
-
-    train_gnn(input_data=input_data, epochs=epochs, hidden_channels=hidden_channels, lr=lr)
-
-
-    # Nested samples
-
-    # samples = generate_samples(topologies=2, specifications=2, records=2)
-
-    # sampleRepository = TrainingSampleRepository()
-
-    # sampleRepository.add_samples(samples)
-    # samples = sampleRepository.read_samples()
-
-    # input_data = map_samples_to_pytorch_data(samples)
-
-    # epochs = 100
-    # hidden_channels = 64
-    # lr = 0.01
-
-    # train_gnn(input_data=input_data, epochs=epochs, hidden_channels=hidden_channels, lr=lr)
-
+    run_mlflow_train_gnn()
+    
 if __name__ == "__main__":
     main()

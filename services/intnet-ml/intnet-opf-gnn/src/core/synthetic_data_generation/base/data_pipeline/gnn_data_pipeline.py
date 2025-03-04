@@ -19,6 +19,8 @@ def map_samples_to_pytorch_data(samples: List[FixedTopologySample]) -> List[Data
     return map_flat_samples_to_pytorch_data(flat_samples)
 
 def map_flat_samples_to_pytorch_data(flat_samples: List[GridGraphData]) -> List[Data]:
+    """Prepares flat data for Pytorch Geometric"""
+    
     graph_data_list: List[Data] = []
 
     for graph_data in flat_samples:
