@@ -1,6 +1,6 @@
 
 import random
-from core.data_types import EdgeType, GridGraphData
+from core.synthetic_data_generation.common.data_types import EdgeType, GridGraphData
 
 
 def generate_random_static_data(graph_data: GridGraphData) -> GridGraphData:
@@ -20,7 +20,7 @@ def generate_random_load_data(graph_data: GridGraphData) -> GridGraphData:
             load.max_p_mw = random.uniform(1, 20)
             load.min_q_mvar = -random.uniform(1, 5)
             load.max_q_mvar = random.uniform(1, 5)
-            
+
     return graph_data
 
 def generate_random_generator_data(graph_data: GridGraphData) -> GridGraphData:

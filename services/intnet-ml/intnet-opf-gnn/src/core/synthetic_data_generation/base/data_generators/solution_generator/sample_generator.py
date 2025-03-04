@@ -2,7 +2,7 @@
 
 
 from typing import Dict, List
-from core.data_types import GridGraphData
+from core.synthetic_data_generation.common.data_types import GridGraphData
 from core.synthetic_data_generation.base.data_generators.random_dynamic_data_generator import generate_random_dynamic_data
 from core.synthetic_data_generation.base.data_generators.random_grid_topology_generator import generate_random_topology
 from core.synthetic_data_generation.base.data_generators.random_static_data_generator import generate_random_static_data

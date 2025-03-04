@@ -1,6 +1,6 @@
 
 from typing import Dict, List
-from core.data_types import Bus, Edge, EdgeType, GridGraphData
+from core.synthetic_data_generation.common.data_types import Bus, Edge, EdgeType, GridGraphData
 from pandapower import pandapowerNet
 import pandapower as pp
 

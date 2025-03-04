@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
-from core.data_types import Bus, BusState, Edge, EdgeState, Generator, GeneratorState, GridGraphData, Load, LoadState
+from core.synthetic_data_generation.common.data_types import Bus, BusState, Edge, EdgeState, Generator, GeneratorState, GridGraphData, Load, LoadState
 
 @dataclass
 class BusFixedSpecificationSamples:
