@@ -16,7 +16,6 @@ class BaseGNN(torch.nn.Module):
         x = self.conv1(x, edge_index)
         x = F.relu(x)
         x = self.conv2(x, edge_index)
-        x = torch.mean(x, dim=0)
         return x
     
 def train_gnn(input_data: List[Data], epochs=100, hidden_channels=64, lr=0.01):
@@ -48,7 +47,7 @@ def train_gnn(input_data: List[Data], epochs=100, hidden_channels=64, lr=0.01):
             for data in val_data:
                 out = model(data)
                 loss = criterion(out, data.y)
-                total_val_loss += loss.item
+                total_val_loss += loss.item()
 
         avg_train_loss = total_train_loss / len(train_data)
         avg_val_loss = total_val_loss / len(val_data)

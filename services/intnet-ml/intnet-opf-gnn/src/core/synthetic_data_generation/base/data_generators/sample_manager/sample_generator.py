@@ -1,8 +1,8 @@
-import pandapower as pp
 import structlog
 
 from typing import Dict, List
 from core.synthetic_data_generation.base.data_generators.solution_generator.network_builder import build_pandapower_network
+from core.synthetic_data_generation.base.data_generators.solution_generator.opf_solution_generator import generate_opf_sample
 from core.synthetic_data_generation.common.data_types import GridGraphData
 from core.synthetic_data_generation.base.data_generators.random_data_generator.random_dynamic_data_generator import generate_random_dynamic_data
 from core.synthetic_data_generation.base.data_generators.random_data_generator.random_grid_topology_generator import generate_random_topology
@@ -59,7 +59,9 @@ def generate_fixed_specification_sample(graph_specification: GridGraphData, reco
         logger.info(f"Generating record {record_index + 1}/{records}")
         graph_data = generate_random_dynamic_data(graph_specification)
 
-        graph_data = generate_opf_sample(graph_data)
+        graph_data, has_converged = generate_opf_sample(graph_data)
+        if not has_converged:
+            continue
 
         for bus in graph_data.buses:
             bus_samples[bus.id].bus_states.append(bus.state)
@@ -74,28 +76,3 @@ def generate_fixed_specification_sample(graph_specification: GridGraphData, reco
             edge_samples[edge.id].edge_states.append(edge.state)
 
     return FixedSpecificationSample(bus_samples, edge_samples, generator_samples, load_samples)
-
-def generate_opf_sample(graph_data: GridGraphData) -> GridGraphData:
-    """Uses pandapower's OPP to determine generator states"""
-    net = build_pandapower_network(graph_data)
-
-    has_converged = False
-
-    try:
-        pp.runopp(net)
-        has_converged = True
-        logger.info("OPF converged")
-    except Exception as e:
-        logger.error(f"OPF didn't converge: {e}")
-    if not has_converged:
-        return graph_data
-    
-    for bus in graph_data.buses:
-        for generator in bus.generators:
-            generator_index = net.gen.index[net.gen["name"] == str(generator.id)].tolist()[0]
-            
-            generator_p_mw = net.res_gen.p_mw.values[generator_index]
-
-            generator.state.p_mw = generator_p_mw
-
-    return graph_data

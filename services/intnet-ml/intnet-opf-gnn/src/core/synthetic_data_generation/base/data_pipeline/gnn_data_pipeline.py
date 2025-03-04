@@ -11,11 +11,14 @@ from core.synthetic_data_generation.base.data_generators.sample_manager.sample_t
 from core.synthetic_data_generation.common.data_types import GridGraphData
 
 
-def prepare_data_for_gnn(samples: List[FixedTopologySample]):
+def map_samples_to_pytorch_data(samples: List[FixedTopologySample]) -> List[Data]:
     """Prepares data for Pytorch Geometric"""
 
     flat_samples: List[GridGraphData] = get_graph_data_flat_samples(samples)
 
+    return map_flat_samples_to_pytorch_data(flat_samples)
+
+def map_flat_samples_to_pytorch_data(flat_samples: List[GridGraphData]) -> List[Data]:
     graph_data_list: List[Data] = []
 
     for graph_data in flat_samples:
@@ -67,6 +70,7 @@ def extract_node_features(graph_data: GridGraphData) -> np.ndarray:
         ])
 
     return np.array(node_features)
+
 
 def extract_edge_features(graph_data: GridGraphData) -> np.ndarray:
     edge_features = []
