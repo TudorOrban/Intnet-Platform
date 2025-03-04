@@ -1,7 +1,7 @@
 import mlflow
 
 from core.synthetic_data_generation.base.data_pipeline.gnn_data_pipeline import map_flat_samples_to_pytorch_data
-from core.synthetic_data_generation.base.data_repository.flat_training_sample_repository import FlatTrainingSampleRepository
+from core.synthetic_data_generation.base.data_repository.json.flat_training_sample_repository import FlatTrainingSampleRepository
 from core.synthetic_data_generation.base.model.base_gnn import train_gnn
 
 def run_mlflow_train_gnn():

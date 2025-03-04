@@ -56,4 +56,7 @@ torch_spline_conv
 pandapower
 numba
 
-structlog=25.1.0
+structlog==25.1.0
+
+dnspython==2.7.0
+pymongo==4.11.2

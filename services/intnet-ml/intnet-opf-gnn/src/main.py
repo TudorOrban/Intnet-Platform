@@ -1,4 +1,5 @@
 
+from datetime import datetime
 import os
 from dotenv import load_dotenv
 import mlflow
@@ -7,10 +8,12 @@ from config.logger_config import configure_logging
 from core.synthetic_data_generation.base.data_generators.sample_manager.flat_sample_generator import generate_flat_samples
 from core.synthetic_data_generation.base.data_generators.sample_manager.sample_generator import generate_samples
 from core.synthetic_data_generation.base.data_pipeline.gnn_data_pipeline import map_flat_samples_to_pytorch_data, map_samples_to_pytorch_data
-from core.synthetic_data_generation.base.data_repository.flat_training_sample_repository import FlatTrainingSampleRepository
-from core.synthetic_data_generation.base.data_repository.training_sample_repository import TrainingSampleRepository
+from core.synthetic_data_generation.base.data_repository.json.flat_training_sample_repository import FlatTrainingSampleRepository
+from core.synthetic_data_generation.base.data_repository.json.training_sample_repository import TrainingSampleRepository
+from core.synthetic_data_generation.base.data_repository.mongo.grid_graph_repository import GridGraphRepository
 from core.synthetic_data_generation.base.model.base_gnn import train_gnn
 from core.synthetic_data_generation.base.model.mlflow_run import run_mlflow_train_gnn
+from core.synthetic_data_generation.common.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, Generator, GeneratorState, GridGraph, GridGraphData
 
 load_dotenv()
 
@@ -25,7 +28,15 @@ def main():
 
     # flatSampleRepository.add_samples(samples)
 
-    run_mlflow_train_gnn()
-    
+    # run_mlflow_train_gnn()
+
+    repository = GridGraphRepository()
+    if not repository.client:
+        print("Failed to establish connection to MongoDB!")
+        return
+
+    graphs = repository.find_all()
+    print(graphs)
+
 if __name__ == "__main__":
     main()
