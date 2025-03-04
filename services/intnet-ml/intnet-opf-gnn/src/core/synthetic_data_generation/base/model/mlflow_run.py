@@ -8,7 +8,7 @@ def run_mlflow_train_gnn():
     with mlflow.start_run():
         samples_count = 72
         epochs = 100
-        hidden_channels = 4096
+        hidden_channels = 256
         lr = 0.01
 
         mlflow.log_param("samples_count", samples_count)

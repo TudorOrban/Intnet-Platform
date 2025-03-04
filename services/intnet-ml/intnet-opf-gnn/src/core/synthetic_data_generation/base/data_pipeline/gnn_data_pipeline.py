@@ -1,5 +1,6 @@
 
 
+import random
 from typing import List
 import torch
 import numpy as np
@@ -18,17 +19,101 @@ def map_samples_to_pytorch_data(samples: List[FixedTopologySample]) -> List[Data
 
     return map_flat_samples_to_pytorch_data(flat_samples)
 
+
 def map_flat_samples_to_pytorch_data(flat_samples: List[GridGraphData]) -> List[Data]:
     """Prepares flat data for Pytorch Geometric"""
-    
-    graph_data_list: List[Data] = []
+
+    # Shuffle the samples
+    random.shuffle(flat_samples)
+
+    node_features_list, edge_features_list, generator_powers_list, adj_matrices_list = extract_and_collect_features(flat_samples)
+
+    node_mean, node_std, edge_mean, edge_std = calculate_normalization_parameters(
+        node_features_list, edge_features_list
+    )
+
+    normalized_node_features_list, normalized_edge_features_list = normalize_features(
+        node_features_list, edge_features_list, node_mean, node_std, edge_mean, edge_std
+    )
+
+    graph_data_list = create_pytorch_data_list(
+        flat_samples,
+        normalized_node_features_list,
+        normalized_edge_features_list,
+        generator_powers_list,
+        adj_matrices_list,
+    )
+
+    return graph_data_list
+
+
+def extract_and_collect_features(flat_samples: List[GridGraphData]):
+    node_features_list = []
+    edge_features_list = []
+    generator_powers_list = []
+    adj_matrices_list = []
 
     for graph_data in flat_samples:
-        adj_matrix = get_adjacency_matrix(graph_data)
-        node_features = extract_node_features(graph_data)
-        edge_features = extract_edge_features(graph_data)
-        generator_powers = extract_generator_powers(graph_data)
-        
+        node_features_list.append(extract_node_features(graph_data))
+        edge_features_list.append(extract_edge_features(graph_data))
+        generator_powers_list.append(extract_generator_powers(graph_data))
+        adj_matrices_list.append(get_adjacency_matrix(graph_data))
+
+    return node_features_list, edge_features_list, generator_powers_list, adj_matrices_list
+
+
+def calculate_normalization_parameters(node_features_list: List[np.ndarray], edge_features_list: List[np.ndarray]):
+    all_node_features = np.concatenate(node_features_list, axis=0)
+    all_node_features_to_normalize = all_node_features[:, 2:]
+    all_edge_features = np.concatenate(edge_features_list, axis=0)
+
+    node_mean = np.mean(all_node_features_to_normalize, axis=0)
+    node_std = np.std(all_node_features_to_normalize, axis=0)
+    edge_mean = np.mean(all_edge_features, axis=0)
+    edge_std = np.std(all_edge_features, axis=0)
+
+    return node_mean, node_std, edge_mean, edge_std
+
+
+def normalize_features(
+    node_features_list: List[np.ndarray],
+    edge_features_list: List[np.ndarray],
+    node_mean: np.ndarray,
+    node_std: np.ndarray,
+    edge_mean: np.ndarray,
+    edge_std: np.ndarray,
+):
+    normalized_node_features_list = []
+    normalized_edge_features_list = []
+
+    for node_features in node_features_list:
+        node_features_to_normalize = node_features[:, 2:]
+        normalized_node_features_to_normalize = (node_features_to_normalize - node_mean) / (node_std + 1e-7)
+        normalized_node_features = np.concatenate([node_features[:, :2], normalized_node_features_to_normalize], axis=1)
+        normalized_node_features_list.append(normalized_node_features)
+
+    for edge_features in edge_features_list:
+        normalized_edge_features = (edge_features - edge_mean) / (edge_std + 1e-7)
+        normalized_edge_features_list.append(normalized_edge_features)
+
+    return normalized_node_features_list, normalized_edge_features_list
+
+
+def create_pytorch_data_list(
+    flat_samples: List[GridGraphData],
+    normalized_node_features_list: List[np.ndarray],
+    normalized_edge_features_list: List[np.ndarray],
+    generator_powers_list: List[np.ndarray],
+    adj_matrices_list: List[np.ndarray],
+):
+    graph_data_list = []
+
+    for i, _ in enumerate(flat_samples):
+        adj_matrix = adj_matrices_list[i]
+        node_features = normalized_node_features_list[i]
+        edge_features = normalized_edge_features_list[i]
+        generator_powers = generator_powers_list[i]
+
         x = torch.tensor(node_features, dtype=torch.float)
         edge_index = torch.tensor(np.array(np.where(adj_matrix == 1)), dtype=torch.long)
         edge_attr = torch.tensor(edge_features, dtype=torch.float)
