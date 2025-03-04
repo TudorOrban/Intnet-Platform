@@ -107,13 +107,7 @@ class GraphDataDeserializer:
             "min_vm_pu": bus.min_vm_pu,
             "max_vm_pu": bus.max_vm_pu,
             "vn_kv": bus.vn_kv,
-            "state": {
-                "vm_pu": bus.state.vm_pu,
-                "va_deg": bus.state.va_deg,
-                "p_inj_mw": bus.state.p_inj_mw,
-                "q_inj_mvar": bus.state.q_inj_mvar,
-                "tap_pos": bus.state.tap_pos
-            },
+            "state": GraphDataDeserializer.serialize_bus_state(bus.state),
             "generators": [GraphDataDeserializer.serialize_generator(gen) for gen in bus.generators],
             "loads": [GraphDataDeserializer.serialize_load(load) for load in bus.loads]
         }
@@ -128,12 +122,7 @@ class GraphDataDeserializer:
             "length_km": edge.length_km,
             "r_ohm_per_km": edge.r_ohm_per_km,
             "x_ohm_per_km": edge.x_ohm_per_km,
-            "state": {
-                "p_flow_mw": edge.state.p_flow_mw,
-                "q_flow_mvar": edge.state.q_flow_mvar,
-                "i_ka": edge.state.i_ka,
-                "in_service": edge.state.in_service
-            }
+            "state": GraphDataDeserializer.serialize_edge_state(edge.state)
         }
 
     @staticmethod
@@ -146,10 +135,7 @@ class GraphDataDeserializer:
             "min_q_mvar": gen.min_q_mvar,
             "max_q_mvar": gen.max_q_mvar,
             "slack": gen.slack,
-            "state": {
-                "p_mw": gen.state.p_mw,
-                "q_mvar": gen.state.q_mvar
-            }
+            "state": GraphDataDeserializer.serialize_generator_state(gen.state)
         }
 
     @staticmethod
@@ -161,10 +147,45 @@ class GraphDataDeserializer:
             "max_p_mw": load.max_p_mw,
             "min_q_mvar": load.min_q_mvar,
             "max_q_mvar": load.max_q_mvar,
-            "state": {
-                "p_mw": load.state.p_mw,
-                "q_mvar": load.state.q_mvar
-            }
+            "state": GraphDataDeserializer.serialize_load_state(load.state)
+        }
+    
+    @staticmethod
+    def serialize_bus_state(state: BusState) -> dict:
+        return {
+            "bus_id": state.bus_id,
+            "vm_pu": state.vm_pu,
+            "va_deg": state.va_deg,
+            "p_inj_mw": state.p_inj_mw,
+            "q_inj_mvar": state.q_inj_mvar,
+            "tap_pos": state.tap_pos,
+        }
+
+    @staticmethod
+    def serialize_edge_state(state: EdgeState) -> dict:
+        return {
+            "edge_id": state.edge_id,
+            "p_flow_mw": state.p_flow_mw,
+            "q_flow_mvar": state.q_flow_mvar,
+            "i_ka": state.i_ka,
+            "in_service": state.in_service,
+        }
+
+    @staticmethod
+    def serialize_generator_state(state: GeneratorState) -> dict:
+        return {
+            "generator_id": state.generator_id,
+            "p_mw": state.p_mw,
+            "q_mvar": state.q_mvar,
+            "cp1_eur_per_mw": state.cp1_eur_per_mw,
+        }
+
+    @staticmethod
+    def serialize_load_state(state: LoadState) -> dict:
+        return {
+            "load_id": state.load_id,
+            "p_mw": state.p_mw,
+            "q_mvar": state.q_mvar,
         }
     
     # Samples
@@ -207,3 +228,64 @@ class GraphDataDeserializer:
         load = GraphDataDeserializer.deserialize_load(load_data["load"])
         load_states = [GraphDataDeserializer.deserialize_load_state(state_data) for state_data in load_data["load_states"]]
         return LoadFixedSpecificationSamples(load=load, load_states=load_states)
+
+    @staticmethod
+    def serialize_fixed_topology_sample(sample: FixedTopologySample) -> dict:
+        return {
+            "graph_topology": GraphDataDeserializer.serialize_graph_data(sample.graph_topology),
+            "fixed_specification_samples": [
+                GraphDataDeserializer.serialize_fixed_specification_sample(spec)
+                for spec in sample.fixed_specification_samples
+            ],
+        }
+
+    @staticmethod
+    def serialize_fixed_specification_sample(spec: FixedSpecificationSample) -> dict:
+        return {
+            "bus_samples": {
+                bus_id: GraphDataDeserializer.serialize_bus_fixed_specification_samples(bus_spec)
+                for bus_id, bus_spec in spec.bus_samples.items()
+            },
+            "edge_samples": {
+                edge_id: GraphDataDeserializer.serialize_edge_fixed_specification_samples(edge_spec)
+                for edge_id, edge_spec in spec.edge_samples.items()
+            },
+            "generator_samples": {
+                gen_id: GraphDataDeserializer.serialize_generator_fixed_specification_samples(gen_spec)
+                for gen_id, gen_spec in spec.generator_samples.items()
+            },
+            "load_samples": {
+                load_id: GraphDataDeserializer.serialize_load_fixed_specification_samples(load_spec)
+                for load_id, load_spec in spec.load_samples.items()
+            },
+        }
+
+    @staticmethod
+    def serialize_bus_fixed_specification_samples(bus_spec: BusFixedSpecificationSamples) -> dict:
+        return {
+            "bus": GraphDataDeserializer.serialize_bus(bus_spec.bus),
+            "bus_states": [GraphDataDeserializer.serialize_bus_state(state) for state in bus_spec.bus_states],
+        }
+
+    @staticmethod
+    def serialize_edge_fixed_specification_samples(edge_spec: EdgeFixedSpecificationSamples) -> dict:
+        return {
+            "edge": GraphDataDeserializer.serialize_edge(edge_spec.edge),
+            "edge_states": [GraphDataDeserializer.serialize_edge_state(state) for state in edge_spec.edge_states],
+        }
+
+    @staticmethod
+    def serialize_generator_fixed_specification_samples(gen_spec: GeneratorFixedSpecificationSamples) -> dict:
+        return {
+            "generator": GraphDataDeserializer.serialize_generator(gen_spec.generator),
+            "generator_states": [
+                GraphDataDeserializer.serialize_generator_state(state) for state in gen_spec.generator_states
+            ],
+        }
+
+    @staticmethod
+    def serialize_load_fixed_specification_samples(load_spec: LoadFixedSpecificationSamples) -> dict:
+        return {
+            "load": GraphDataDeserializer.serialize_load(load_spec.load),
+            "load_states": [GraphDataDeserializer.serialize_load_state(state) for state in load_spec.load_states],
+        }

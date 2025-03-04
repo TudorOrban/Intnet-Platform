@@ -8,7 +8,9 @@ from core.synthetic_data_generation.base.data_generators.random_dynamic_data_gen
 from core.synthetic_data_generation.base.data_generators.random_grid_topology_generator import generate_random_topology
 from core.synthetic_data_generation.base.data_generators.random_static_data_generator import generate_random_static_data
 from core.synthetic_data_generation.base.data_generators.solution_generator.network_builder import build_pandapower_network
+from core.synthetic_data_generation.base.data_generators.solution_generator.sample_generator import generate_samples
 from core.synthetic_data_generation.base.data_repository.synthetic_graph_repository import SyntheticGraphRepository
+from core.synthetic_data_generation.base.data_repository.training_sample_repository import TrainingSampleRepository
 
 load_dotenv()
 
@@ -17,27 +19,32 @@ def main():
 
     # experiment_mlflow_run()
 
-    graph_data = generate_random_topology(num_buses=20, num_generators=2, num_loads=9, edge_density=0.4)
+    samples = generate_samples(topologies=2, specifications=2, records=2)
 
-    samples = 15
-    convergent = 0
+    sampleRepository = TrainingSampleRepository()
+    sampleRepository.add_samples(samples)
 
-    for i in range(samples):
-        graph_data = generate_random_static_data(graph_data)
+    # graph_data = generate_random_topology(num_buses=20, num_generators=2, num_loads=9, edge_density=0.4)
 
-        graph_data = generate_random_dynamic_data(graph_data)
+    # samples = 15
+    # convergent = 0
 
-        net = build_pandapower_network(graph_data)
+    # for i in range(samples):
+    #     graph_data = generate_random_static_data(graph_data)
 
-        try:
-            pp.runopp(net)
-            convergent = convergent + 1
-        except Exception as e:
-            print(f"OPP didnt converge: {e}")
+    #     graph_data = generate_random_dynamic_data(graph_data)
 
-    print(f"Convergence: {convergent / samples}")
+    #     net = build_pandapower_network(graph_data)
 
-    print(net.res_gen)
+    #     try:
+    #         pp.runopp(net)
+    #         convergent = convergent + 1
+    #     except Exception as e:
+    #         print(f"OPP didnt converge: {e}")
+
+    # print(f"Convergence: {convergent / samples}")
+
+    # print(net.res_gen)
     
     # graphRepository = SyntheticGraphRepository()
     # graphRepository.add_graph(graph_data)

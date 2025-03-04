@@ -1,5 +1,5 @@
 
-from typing import Dict, List
+from typing import List
 from core.synthetic_data_generation.common.data_types import Bus, Edge, EdgeType, GridGraphData
 from pandapower import pandapowerNet
 import pandapower as pp
@@ -9,36 +9,38 @@ def build_pandapower_network(graph_data: GridGraphData) -> pandapowerNet:
 
     net = pp.create_empty_network()
 
-    node_id_to_index_dict = create_buses(net=net, buses=graph_data.buses)
+    create_buses(net=net, buses=graph_data.buses)
 
-    create_edges(net=net, edges=graph_data.edges, node_id_to_index_dict=node_id_to_index_dict)
+    create_edges(net=net, edges=graph_data.edges)
 
     return net
 
 
-def create_buses(net: pandapowerNet, buses: List[Bus]) -> Dict[int, int]:
-    id_to_index_dict: Dict[int, int] = {}
-
+def create_buses(net: pandapowerNet, buses: List[Bus]):
     for bus in buses:
-        bus_index = pp.create_bus(net, vn_kv=bus.vn_kv, type="b", min_vm_pu=bus.min_vm_pu, max_vm_pu=bus.max_vm_pu)
-        id_to_index_dict[bus.id] = bus_index
+        pp.create_bus(
+            net, name=str(bus.id),
+            vn_kv=bus.vn_kv, type="b", min_vm_pu=bus.min_vm_pu, max_vm_pu=bus.max_vm_pu
+        )
 
-        create_generators(net, bus, bus_index)
-        create_loads(net, bus, bus_index)
+        create_generators(net, bus)
+        create_loads(net, bus)
 
-    return id_to_index_dict
+def create_generators(net: pandapowerNet, bus: Bus):
+    bus_index = net.bus.index[net.bus["name"] == str(bus.id)].tolist()[0]
 
-def create_generators(net: pandapowerNet, bus: Bus, bus_index: int):
     for generator in bus.generators:
         generator_index = pp.create_gen(
-            net, bus=bus_index, 
+            net, bus=bus_index, name=str(generator.id),
             min_p_mw=generator.min_p_mw, max_p_mw=generator.max_p_mw, min_q_mvar=generator.min_q_mvar, max_q_mvar=generator.max_q_mvar,
             p_mw=generator.state.p_mw, q_mvar=generator.state.q_mvar,
             slack=generator.slack
         )
         pp.create_poly_cost(net, element=generator_index, et="gen", cp1_eur_per_mw=generator.state.cp1_eur_per_mw)
 
-def create_loads(net: pandapowerNet, bus: Bus, bus_index: int):
+def create_loads(net: pandapowerNet, bus: Bus):
+    bus_index = net.bus.index[net.bus["name"] == str(bus.id)].tolist()[0]
+
     for load in bus.loads:
         pp.create_load(
             net, bus=bus_index,
@@ -46,24 +48,18 @@ def create_loads(net: pandapowerNet, bus: Bus, bus_index: int):
             p_mw=load.state.p_mw, q_mvar=load.state.q_mvar,
         )
 
-def create_edges(net: pandapowerNet, edges: List[Edge], node_id_to_index_dict: Dict[int, int]):
+def create_edges(net: pandapowerNet, edges: List[Edge]):
     for edge in edges:
         if edge.edge_type == EdgeType.TRANSFORMER: 
-            # print("Adding transformer")
-            # pp.create_transformer(
-            #     net,
-            #     hv_bus=node_id_to_index_dict[edge.src_bus_id],
-            #     lv_bus=node_id_to_index_dict[edge.dest_bus_id],
-            #     std_type="160 MVA 380/110 kV",
-            # )
-
-
             continue
+
+        src_bus_index = net.bus.index[net.bus["name"] == str(edge.src_bus_id)].tolist()[0]
+        dest_bus_index = net.bus.index[net.bus["name"] == str(edge.dest_bus_id)].tolist()[0]
 
         line_index = pp.create_line(
             net,
-            from_bus=node_id_to_index_dict[edge.src_bus_id],
-            to_bus=node_id_to_index_dict[edge.dest_bus_id],
+            from_bus=src_bus_index,
+            to_bus=dest_bus_index,
             length_km=edge.length_km,
             std_type="NAYY 4x150 SE"
         )

@@ -33,3 +33,12 @@ class TrainingSampleRepository:
 
         with open(self.file_path, "w") as f:
             json.dump(data, f, indent=4)
+
+    def add_samples(self, new_samples: List[FixedTopologySample]):
+        samples = self.read_samples()
+        samples.extend(new_samples)
+
+        data = [GraphDataDeserializer.serialize_fixed_topology_sample(s) for s in samples]
+
+        with open(self.file_path, "w") as f:
+            json.dump(data, f, indent=4)

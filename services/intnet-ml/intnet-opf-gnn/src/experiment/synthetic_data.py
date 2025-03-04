@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple
+from typing import List
 import pandapower as pp
 import networkx as nx
 import numpy as np
@@ -109,25 +109,3 @@ def generate_random_network(p_mw_load_1: float, p_mw_load_2: float, p_mw_load_3:
     pp.create_load(net, bus=bus4, p_mw=p_mw_load_3, q_mvar=3.)
 
     return net
-
-
-
-
-
-
-# net = generate_random_network()
-
-# # pp.runpp(net)
-# pp.runopp(net)
-
-# print(net.res_bus)
-# # print(net.res_line)
-# print(net.res_gen)
-
-# max_i_ka = net.line.max_i_ka.at[0]
-# print(f"Max i_ka: {max_i_ka}")
-
-# loading_percent = (net.res_line.i_ka.at[0] / max_i_ka) * 100
-# print(f"Loading percentage: {loading_percent}%")
-#     # pp.create_ext_grid(net, bus=bus1)
-    
