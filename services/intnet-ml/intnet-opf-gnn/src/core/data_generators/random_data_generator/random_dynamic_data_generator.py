@@ -1,5 +1,5 @@
 import random
-from core.synthetic_data_generation.common.data_types import GridGraphData
+from core.common.data_types import GridGraphData
 
 
 def generate_random_dynamic_data(graph_data: GridGraphData) -> GridGraphData:

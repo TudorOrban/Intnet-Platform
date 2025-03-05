@@ -1,8 +1,8 @@
 
 from typing import List
 
-from core.synthetic_data_generation.base.data_generators.sample_manager.sample_types import FixedTopologySample
-from core.synthetic_data_generation.common.data_types import GridGraphData
+from core.data_generators.sample_manager.sample_types import FixedTopologySample
+from core.common.data_types import GridGraphData
 
 
 def get_graph_data_flat_samples(samples: List[FixedTopologySample]) -> List[GridGraphData]:

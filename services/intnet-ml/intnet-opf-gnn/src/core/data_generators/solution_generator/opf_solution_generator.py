@@ -3,8 +3,8 @@ from typing import Tuple
 import structlog
 import pandapower as pp
 
-from core.synthetic_data_generation.base.data_generators.solution_generator.network_builder import build_pandapower_network
-from core.synthetic_data_generation.common.data_types import GridGraphData
+from core.data_generators.solution_generator.network_builder import build_pandapower_network
+from core.common.data_types import GridGraphData
 
 logger = structlog.get_logger(__name__)
 

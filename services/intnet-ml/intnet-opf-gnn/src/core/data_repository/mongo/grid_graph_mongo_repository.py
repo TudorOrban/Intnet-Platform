@@ -6,9 +6,9 @@ from typing import List, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
-from core.synthetic_data_generation.base.data_repository.grid_graph_repository import GridGraphRepository
-from core.synthetic_data_generation.common.data_types import GridGraph
-from core.synthetic_data_generation.common.json_serializer import JsonSerializer
+from core.data_repository.grid_graph_repository import GridGraphRepository
+from core.common.data_types import GridGraph
+from core.common.json_serializer import JsonSerializer
 
 logger = structlog.get_logger(__name__)
 

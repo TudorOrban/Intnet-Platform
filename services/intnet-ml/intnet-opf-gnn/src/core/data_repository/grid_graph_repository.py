@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from core.synthetic_data_generation.common.data_types import GridGraph
+from core.common.data_types import GridGraph
 
 
 class GridGraphRepository(ABC):

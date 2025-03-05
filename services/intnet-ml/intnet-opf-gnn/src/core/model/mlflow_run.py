@@ -1,15 +1,15 @@
 import mlflow
 
-from core.synthetic_data_generation.base.data_pipeline.gnn_data_pipeline import map_flat_samples_to_pytorch_data
-from core.synthetic_data_generation.base.data_repository.grid_graph_repository_creator import create_grid_graph_repository
-from core.synthetic_data_generation.base.data_repository.json.grid_graph_json_repository import GridGraphJsonRepository
-from core.synthetic_data_generation.base.model.base_gnn import train_gnn
+from core.data_pipeline.gnn_data_pipeline import map_flat_samples_to_pytorch_data
+from core.data_repository.grid_graph_repository_creator import create_grid_graph_repository
+from core.data_repository.json.grid_graph_json_repository import GridGraphJsonRepository
+from core.model.base_gnn import train_gnn
 
 def run_mlflow_train_gnn():
     with mlflow.start_run():
         samples_count = 72
         epochs = 100
-        hidden_channels = 256
+        hidden_channels = 128
         lr = 0.01
         weight_decay=1e-5
         dropout_rate=0

@@ -1,6 +1,6 @@
 
 import random
-from core.synthetic_data_generation.common.data_types import EdgeType, GridGraphData
+from core.common.data_types import EdgeType, GridGraphData
 
 
 def generate_random_static_data(graph_data: GridGraphData) -> GridGraphData:

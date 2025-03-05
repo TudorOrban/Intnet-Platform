@@ -1,10 +1,11 @@
 
 import json
 from pathlib import Path
+import random
 from typing import List, Optional
 
-from core.synthetic_data_generation.common.data_types import GridGraph
-from core.synthetic_data_generation.common.graph_data_deserializer import GraphDataDeserializer
+from core.common.data_types import GridGraph
+from core.common.graph_data_deserializer import GraphDataDeserializer
 
 
 class GridGraphJsonRepository:
@@ -40,6 +41,9 @@ class GridGraphJsonRepository:
 
     def save(self, graph: GridGraph):
         graphs = self.find_all()
+        existing_ids = {g.id for g in graphs}
+        graph.id = self._generate_unique_integer_id(existing_ids)
+
         graphs.append(graph)
 
         data = [GraphDataDeserializer.serialize_grid_graph(s) for s in graphs]
@@ -49,6 +53,11 @@ class GridGraphJsonRepository:
 
     def save_all(self, new_graphs: List[GridGraph]):
         graphs = self.find_all()
+        existing_ids = {g.id for g in graphs}
+        for graph in new_graphs:
+            graph.id = self._generate_unique_integer_id(existing_ids)
+            existing_ids.add(graph.id) 
+
         graphs.extend(new_graphs)
 
         data = [GraphDataDeserializer.serialize_grid_graph(s) for s in graphs]
@@ -68,3 +77,10 @@ class GridGraphJsonRepository:
     def delete_all(self):
         with open(self.file_path, "w") as f:
             json.dump([], f, indent=4)
+
+
+    def _generate_unique_integer_id(self, existing_ids: set) -> int:
+        while True:
+            new_id = random.randint(1, 2147483647)
+            if new_id not in existing_ids:
+                return new_id

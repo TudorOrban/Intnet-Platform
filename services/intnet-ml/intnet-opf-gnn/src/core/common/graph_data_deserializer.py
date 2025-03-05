@@ -1,5 +1,5 @@
-from core.synthetic_data_generation.base.data_generators.sample_manager.sample_types import BusFixedSpecificationSamples, EdgeFixedSpecificationSamples, FixedSpecificationSample, FixedTopologySample, GeneratorFixedSpecificationSamples, LoadFixedSpecificationSamples
-from core.synthetic_data_generation.common.data_types import GridGraph, GridGraphData, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType
+from core.data_generators.sample_manager.sample_types import BusFixedSpecificationSamples, EdgeFixedSpecificationSamples, FixedSpecificationSample, FixedTopologySample, GeneratorFixedSpecificationSamples, LoadFixedSpecificationSamples
+from core.common.data_types import GridGraph, GridGraphData, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType
 
 
 class GraphDataDeserializer:

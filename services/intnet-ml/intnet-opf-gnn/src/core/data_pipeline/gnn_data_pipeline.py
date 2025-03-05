@@ -7,9 +7,9 @@ import numpy as np
 import networkx as nx
 from torch_geometric.data import Data
 
-from core.synthetic_data_generation.base.data_generators.sample_manager.sample_reconstructor import get_graph_data_flat_samples
-from core.synthetic_data_generation.base.data_generators.sample_manager.sample_types import FixedTopologySample
-from core.synthetic_data_generation.common.data_types import GridGraphData
+from core.data_generators.sample_manager.sample_reconstructor import get_graph_data_flat_samples
+from core.data_generators.sample_manager.sample_types import FixedTopologySample
+from core.common.data_types import GridGraphData
 
 
 def map_samples_to_pytorch_data(samples: List[FixedTopologySample]) -> List[Data]:

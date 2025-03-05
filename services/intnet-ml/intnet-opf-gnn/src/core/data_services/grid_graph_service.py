@@ -1,8 +1,8 @@
 
 from datetime import datetime
 from typing import List
-from core.synthetic_data_generation.base.data_repository.grid_graph_repository_creator import create_grid_graph_repository
-from core.synthetic_data_generation.common.data_types import GridGraph, GridGraphData
+from core.data_repository.grid_graph_repository_creator import create_grid_graph_repository
+from core.common.data_types import GridGraph, GridGraphData
 
 
 class GridGraphService:

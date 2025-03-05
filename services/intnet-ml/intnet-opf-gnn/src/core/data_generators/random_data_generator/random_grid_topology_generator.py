@@ -2,7 +2,7 @@
 
 import random
 from typing import List
-from core.synthetic_data_generation.common.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, GeneratorState, GridGraphData, Generator, Load, LoadState
+from core.common.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, GeneratorState, GridGraphData, Generator, Load, LoadState
 import networkx as nx
 
 def generate_random_topology(num_buses: int, num_generators: int, num_loads: int, edge_density: float=0.5) -> GridGraphData:
