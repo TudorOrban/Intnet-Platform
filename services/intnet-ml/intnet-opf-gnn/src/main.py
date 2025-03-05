@@ -1,28 +1,34 @@
 
 from datetime import datetime
-import os
-from typing import List
-from dotenv import load_dotenv
-import mlflow
+from core.common.data_types import GridGraph
+from core.data_generators.random_data_generator.random_dynamic_data_generator import generate_random_dynamic_data
+from core.data_generators.random_data_generator.random_grid_topology_generator import generate_random_topology
+from core.data_generators.random_data_generator.random_static_data_generator import generate_random_static_data
+from finetuning.data_repositories.real_grid_graph_repository_creator import create_real_grid_graph_repository
+from initializer import initialize
 
-from config.logger_config import configure_logging
-from core.data_generators.sample_manager.flat_sample_generator import generate_flat_samples
-from core.data_generators.sample_manager.sample_generator import generate_samples
-from core.data_pipeline.gnn_data_pipeline import map_flat_samples_to_pytorch_data, map_samples_to_pytorch_data
-from core.data_repository.grid_graph_repository_creator import create_grid_graph_repository
-from core.data_repository.json.grid_graph_json_repository import GridGraphJsonRepository
-from core.data_repository.json.training_sample_repository import TrainingSampleRepository
-from core.data_repository.mongo.grid_graph_mongo_repository import GridGraphMongoRepository
-from core.data_services.grid_graph_service import GridGraphService
-from core.model.base_gnn import train_gnn
-from core.model.mlflow_run import run_mlflow_train_gnn
-from core.common.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, Generator, GeneratorState, GridGraph, GridGraphData
-
-load_dotenv()
 
 def main():
-    mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-    configure_logging()
+    initialize()
+
+    graph_topology = generate_random_topology(num_buses=8, num_generators=2, num_loads=4, edge_density=0.3)
+    graph_specification = generate_random_static_data(graph_topology)
+    graph_data = generate_random_dynamic_data(graph_specification)
+
+    grid_graph = GridGraph(id=0, created_at=datetime.now(), graph_data=graph_data)
+
+    graph_repository = create_real_grid_graph_repository()
+
+    graph_repository.save(grid_graph)
+
+
+
+
+if __name__ == "__main__":
+    main()
+
+
+
 
     # Flat samples
     # flatSampleRepository = FlatTrainingSampleRepository()
@@ -31,7 +37,7 @@ def main():
 
     # flatSampleRepository.add_samples(samples)
 
-    run_mlflow_train_gnn()
+    # run_mlflow_train_gnn()
 
     # repository = create_grid_graph_repository()
     # service = GridGraphService()
@@ -42,6 +48,3 @@ def main():
 
     # graphs = repository.find_all()
     # print(graphs[0])
-
-if __name__ == "__main__":
-    main()

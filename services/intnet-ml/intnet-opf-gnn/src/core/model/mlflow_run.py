@@ -1,8 +1,8 @@
 import mlflow
 
 from core.data_pipeline.gnn_data_pipeline import map_flat_samples_to_pytorch_data
-from core.data_repository.grid_graph_repository_creator import create_grid_graph_repository
-from core.data_repository.json.grid_graph_json_repository import GridGraphJsonRepository
+from core.data_repositories.grid_graph_repository_creator import create_grid_graph_repository
+from core.data_repositories.json.grid_graph_json_repository import GridGraphJsonRepository
 from core.model.base_gnn import train_gnn
 
 def run_mlflow_train_gnn():

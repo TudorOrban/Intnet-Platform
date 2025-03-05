@@ -6,7 +6,7 @@ from typing import List, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
-from core.data_repository.grid_graph_repository import GridGraphRepository
+from core.data_repositories.grid_graph_repository import GridGraphRepository
 from core.common.data_types import GridGraph
 from core.common.json_serializer import JsonSerializer
 

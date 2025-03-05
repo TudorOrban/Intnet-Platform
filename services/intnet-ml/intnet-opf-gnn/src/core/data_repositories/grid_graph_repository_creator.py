@@ -1,8 +1,8 @@
 
 import os
-from core.data_repository.grid_graph_repository import GridGraphRepository
-from core.data_repository.json.grid_graph_json_repository import GridGraphJsonRepository
-from core.data_repository.mongo.grid_graph_mongo_repository import GridGraphMongoRepository
+from core.data_repositories.grid_graph_repository import GridGraphRepository
+from core.data_repositories.json.grid_graph_json_repository import GridGraphJsonRepository
+from core.data_repositories.mongo.grid_graph_mongo_repository import GridGraphMongoRepository
 
 
 def create_grid_graph_repository() -> GridGraphRepository:

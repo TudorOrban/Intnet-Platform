@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from typing import List
-from core.data_repository.grid_graph_repository_creator import create_grid_graph_repository
+from core.data_repositories.grid_graph_repository_creator import create_grid_graph_repository
 from core.common.data_types import GridGraph, GridGraphData
 
 
