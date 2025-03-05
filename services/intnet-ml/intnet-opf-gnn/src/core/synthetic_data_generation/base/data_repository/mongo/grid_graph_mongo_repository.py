@@ -9,11 +9,12 @@ from typing import Any, Dict, List, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
+from core.synthetic_data_generation.base.data_repository.grid_graph_repository import GridGraphRepository
 from core.synthetic_data_generation.common.data_types import GridGraph
 
 logger = structlog.get_logger(__name__)
 
-class GridGraphRepository:
+class GridGraphMongoRepository(GridGraphRepository):
     def __init__(self):
         connection_string = os.getenv("MONGODB_CONNECTION_STRING")
         database_name = os.getenv("MONGODB_DATABASE_NAME")
@@ -32,6 +33,33 @@ class GridGraphRepository:
             self.collection = None
 
     
+    def find_by_id(self, graph_id: int) -> Optional[GridGraph]:
+        if self.collection is None:
+            logger.error("MongoDB connection is not established.")
+            return None
+
+        result = self.collection.find_one({"id": graph_id})
+        if result:
+            result.pop("_id", None) 
+            return self._deserialize_dataclass(result, GridGraph)
+        else:
+            return None
+
+    def find_all(self, limit=1000) -> List[GridGraph]:
+        if self.collection is None:
+            logger.error("MongoDB connection is not established.")
+            return []
+
+        results = self.collection.find()
+        grid_graphs = []
+        for i, result in enumerate(results):
+            if limit != -1 and i > limit:
+                break
+
+            result.pop("_id", None) 
+            grid_graphs.append(self._deserialize_dataclass(result, GridGraph))
+        return grid_graphs
+
     def save(self, grid_graph: GridGraph):
         if self.collection is None:
             logger.error("MongoDB connection is not established.")
@@ -47,30 +75,6 @@ class GridGraphRepository:
         
         graphs_dict = self._serialize_dataclass(grid_graphs)
         self.collection.insert_many(graphs_dict)
-
-    def find_by_id(self, graph_id: int) -> Optional[GridGraph]:
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return None
-
-        result = self.collection.find_one({"id": graph_id})
-        if result:
-            result.pop("_id", None) 
-            return self._deserialize_dataclass(result, GridGraph)
-        else:
-            return None
-
-    def find_all(self) -> List[GridGraph]:
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return []
-
-        results = self.collection.find()
-        grid_graphs = []
-        for result in results:
-            result.pop("_id", None) 
-            grid_graphs.append(self._deserialize_dataclass(result, GridGraph))
-        return grid_graphs
 
     def delete_by_id(self, graph_id: int):
         if self.collection is None:

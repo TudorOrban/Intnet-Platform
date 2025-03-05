@@ -1,7 +1,7 @@
 import mlflow
 
 from core.synthetic_data_generation.base.data_pipeline.gnn_data_pipeline import map_flat_samples_to_pytorch_data
-from core.synthetic_data_generation.base.data_repository.json.flat_training_sample_repository import FlatTrainingSampleRepository
+from core.synthetic_data_generation.base.data_repository.json.grid_graph_json_repository import GridGraphJsonRepository
 from core.synthetic_data_generation.base.model.base_gnn import train_gnn
 
 def run_mlflow_train_gnn():
@@ -22,8 +22,8 @@ def run_mlflow_train_gnn():
         mlflow.log_param("dropout_rate", dropout_rate)
         mlflow.log_param("patience", patience)
 
-        flatSampleRepository = FlatTrainingSampleRepository()
-        samples = flatSampleRepository.read_samples(limit=samples_count)
+        flatSampleRepository = GridGraphJsonRepository()
+        samples = flatSampleRepository.find_all(limit=samples_count)
         
         input_data = map_flat_samples_to_pytorch_data(samples)
         

@@ -6,6 +6,14 @@ class GraphDataDeserializer:
 
     # Graph Data
     @staticmethod
+    def deserialize_grid_graph(grid_graph: dict) -> GridGraph:
+        return GridGraph(
+            id=grid_graph["id"],
+            created_at=grid_graph["created_at"],
+            graph_data=GraphDataDeserializer.deserialize_graph_data(grid_graph["graph_data"])
+        )
+
+    @staticmethod
     def deserialize_graph_data(graph_data: dict) -> GridGraphData:
         return GridGraphData(
             buses=[GraphDataDeserializer.deserialize_bus(bus_data) for bus_data in graph_data["buses"]],
@@ -104,7 +112,7 @@ class GraphDataDeserializer:
         )
 
     @staticmethod
-    def serialize_graph(graph: GridGraph) -> dict:
+    def serialize_grid_graph(graph: GridGraph) -> dict:
         return {
             "id": graph.id,
             "created_at": graph.created_at.isoformat(),
