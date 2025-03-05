@@ -1,6 +1,7 @@
 from finetuning.data_generators.dynamic_data_record_generator import generate_dynamic_data_records
 from finetuning.data_repositories.dynamic_data_record_repository_creator import create_dynamic_data_record_repository
 from finetuning.data_repositories.real_grid_graph_repository_creator import create_real_grid_graph_repository
+from finetuning.model.model_finetuner import finetune_model
 from initializer import initialize
 
 
@@ -32,9 +33,11 @@ def main():
 
     graph = graph_repository.find()
 
-    records = generate_dynamic_data_records(graph_data=graph.graph_data, record_count=50)
+    # records = generate_dynamic_data_records(graph_data=graph.graph_data, record_count=50)
     
-    record_repository.save_all(records)
+    records = record_repository.find_all()
+
+    finetune_model(base_graph=graph.graph_data, records=records)
 
 
 if __name__ == "__main__":
