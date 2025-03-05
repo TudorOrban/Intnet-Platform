@@ -1,12 +1,5 @@
-
-from datetime import datetime
-from core.common.data_types import GridGraph
-from core.data_generators.random_data_generator.random_dynamic_data_generator import generate_random_dynamic_data
-from core.data_generators.random_data_generator.random_grid_topology_generator import generate_random_topology
-from core.data_generators.random_data_generator.random_static_data_generator import generate_random_static_data
-from core.data_generators.random_data_generator.realistic_grid_topology_generator import generate_realistic_grid_topology
-from core.data_generators.solution_generator.opf_solution_generator import generate_opf_sample
 from finetuning.data_generators.dynamic_data_record_generator import generate_dynamic_data_records
+from finetuning.data_repositories.dynamic_data_record_repository_creator import create_dynamic_data_record_repository
 from finetuning.data_repositories.real_grid_graph_repository_creator import create_real_grid_graph_repository
 from initializer import initialize
 
@@ -35,11 +28,13 @@ def main():
     #     try_no = try_no + 1
 
     graph_repository = create_real_grid_graph_repository()
+    record_repository = create_dynamic_data_record_repository()
 
     graph = graph_repository.find()
 
     records = generate_dynamic_data_records(graph_data=graph.graph_data, record_count=50)
-    print(records)
+    
+    record_repository.save_all(records)
 
 
 if __name__ == "__main__":

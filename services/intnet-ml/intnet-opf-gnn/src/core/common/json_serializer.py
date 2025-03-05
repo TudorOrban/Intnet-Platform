@@ -4,7 +4,7 @@ from dataclasses import asdict
 import dataclasses
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, get_args, get_origin
 
 
 class JsonSerializer:
@@ -26,10 +26,18 @@ class JsonSerializer:
 
     @staticmethod
     def deserialize_dataclass(data: Dict[str, Any], cls: type) -> Any:
+        if get_origin(cls) is list:
+            element_type = get_args(cls)[0]
+            if dataclasses.is_dataclass(element_type):
+                return [JsonSerializer.deserialize_dataclass(item, element_type) for item in data]
+            else:
+                return data
+
         if not dataclasses.is_dataclass(cls):
             if issubclass(cls, Enum):
                 return cls(data)
             return data
+        
         field_types = {f.name: f.type for f in dataclasses.fields(cls)}
         kwargs: Dict[str, Any] = {}
         for k, v in data.items():
