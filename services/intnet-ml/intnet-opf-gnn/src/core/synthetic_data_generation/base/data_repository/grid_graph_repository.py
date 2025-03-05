@@ -8,7 +8,7 @@ from core.synthetic_data_generation.common.data_types import GridGraph
 class GridGraphRepository(ABC):
     
     @abstractmethod
-    def find_by_id(self, graph_id: int) -> Optional[GridGraph]:
+    def find_by_id(self, id: int) -> Optional[GridGraph]:
         pass
 
     @abstractmethod
@@ -24,5 +24,9 @@ class GridGraphRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_by_id(self, graph_id: int):
+    def delete_by_id(self, id: int):
+        pass
+
+    @abstractmethod
+    def delete_all(self):
         pass

@@ -1,16 +1,14 @@
 
-from dataclasses import asdict
-import dataclasses
-from datetime import datetime
-from enum import Enum
 import os
 import structlog
-from typing import Any, Dict, List, Optional
+from bson.objectid import ObjectId
+from typing import List, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
 from core.synthetic_data_generation.base.data_repository.grid_graph_repository import GridGraphRepository
 from core.synthetic_data_generation.common.data_types import GridGraph
+from core.synthetic_data_generation.common.json_serializer import JsonSerializer
 
 logger = structlog.get_logger(__name__)
 
@@ -33,15 +31,15 @@ class GridGraphMongoRepository(GridGraphRepository):
             self.collection = None
 
     
-    def find_by_id(self, graph_id: int) -> Optional[GridGraph]:
+    def find_by_id(self, id: int) -> Optional[GridGraph]:
         if self.collection is None:
             logger.error("MongoDB connection is not established.")
             return None
 
-        result = self.collection.find_one({"id": graph_id})
+        result = self.collection.find_one({"id": id})
         if result:
             result.pop("_id", None) 
-            return self._deserialize_dataclass(result, GridGraph)
+            return JsonSerializer.deserialize_dataclass(result, GridGraph)
         else:
             return None
 
@@ -57,7 +55,7 @@ class GridGraphMongoRepository(GridGraphRepository):
                 break
 
             result.pop("_id", None) 
-            grid_graphs.append(self._deserialize_dataclass(result, GridGraph))
+            grid_graphs.append(JsonSerializer.deserialize_dataclass(result, GridGraph))
         return grid_graphs
 
     def save(self, grid_graph: GridGraph):
@@ -65,7 +63,10 @@ class GridGraphMongoRepository(GridGraphRepository):
             logger.error("MongoDB connection is not established.")
             return
 
-        graph_dict = self._serialize_dataclass(grid_graph)
+        graph_dict = JsonSerializer.serialize_dataclass(grid_graph)
+        new_object_id = ObjectId()
+        graph_dict["_id"] = new_object_id
+        graph_dict["id"] = self.generate_unique_integer_id()
         self.collection.insert_one(graph_dict)
 
     def save_all(self, grid_graphs: List[GridGraph]):
@@ -73,47 +74,40 @@ class GridGraphMongoRepository(GridGraphRepository):
             logger.error("MongoDB connection is not established.")
             return
         
-        graphs_dict = self._serialize_dataclass(grid_graphs)
-        self.collection.insert_many(graphs_dict)
+        graph_dicts = [JsonSerializer.serialize_dataclass(graph) for graph in grid_graphs]
+        for graph_dict in graph_dicts:
+            new_object_id = ObjectId()
+            graph_dict["_id"] = new_object_id
+        graph_dict["id"] = self.generate_unique_integer_id()
+        self.collection.insert_many(graph_dicts)
 
-    def delete_by_id(self, graph_id: int):
+    def delete_by_id(self, id: int):
         if self.collection is None:
             logger.error("MongoDB connection is not established.")
             return
 
-        self.collection.delete_one({"id": graph_id})
+        self.collection.delete_one({"id": id})
     
-    
-    def _serialize_dataclass(self, obj: Any) -> Any:
-        if isinstance(obj, Enum):
-            return obj.value
-        elif dataclasses.is_dataclass(obj):
-            return {k: self._serialize_dataclass(v) for k, v in asdict(obj).items()}
-        elif isinstance(obj, list):
-            return [self._serialize_dataclass(item) for item in obj]
-        elif isinstance(obj, datetime):
-            return obj
-        elif isinstance(obj, dict):
-            return {k: self._serialize_dataclass(v) for k, v in obj.items()}
-        else:
-            return obj
+    def delete_all(self):
+        if self.collection is None:
+            logger.error("MongoDB connection is not established.")
+            return
+        
+        self.collection.delete_many({})
 
-    def _deserialize_dataclass(self, data: Dict[str, Any], cls: type) -> Any:
-        if not dataclasses.is_dataclass(cls):
-            if issubclass(cls, Enum):
-                return cls(data)
-            return data
-        field_types = {f.name: f.type for f in dataclasses.fields(cls)}
-        kwargs: Dict[str, Any] = {}
-        for k, v in data.items():
-            field_type = field_types.get(k)
-            if dataclasses.is_dataclass(field_type) or (hasattr(field_type, '__origin__') and field_type.__origin__ is list and dataclasses.is_dataclass(field_type.__args__[0])):
-                if isinstance(v, list):
-                    kwargs[k] = [self._deserialize_dataclass(item, field_type.__args__[0]) for item in v]
-                else:
-                    kwargs[k] = self._deserialize_dataclass(v, field_type)
-            elif isinstance(field_type, type) and issubclass(field_type, Enum):
-                kwargs[k] = field_type(v)
-            else:
-                kwargs[k] = v
-        return cls(**kwargs)
+    
+    def _get_existing_ids(self) -> set:
+        if self.collection is None:
+            logger.error("MongoDB connection is not established.")
+            return set()
+
+        existing_ids = self.collection.distinct("id")
+        return set(existing_ids)
+
+    def generate_unique_integer_id(self) -> int:
+        existing_ids = self._get_existing_ids()
+        import random
+        while True:
+            new_id = random.randint(1, 2147483647)
+            if new_id not in existing_ids:
+                return new_id

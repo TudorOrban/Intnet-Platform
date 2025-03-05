@@ -14,13 +14,13 @@ class GridGraphJsonRepository:
 
 
     def find_by_id(self, id: int) -> Optional[GridGraph]:
-        if not self.file_path.exists():
-            return None
-        
-        with open(self.file_path, "r") as f:
-            data = json.load(f)
+        grid_graphs = self.find_all()
 
-        return GraphDataDeserializer.deserialize_grid_graph(data)
+        for graph in grid_graphs:
+            if graph.id == id:
+                return graph
+            
+        return None
 
     def find_all(self, limit=1000) -> List[GridGraph]:
         if not self.file_path.exists():
@@ -29,29 +29,42 @@ class GridGraphJsonRepository:
         with open(self.file_path, "r") as f:
             data = json.load(f)
 
-        samples = []
-        for i, sample_data in enumerate(data):
+        graphs = []
+        for i, grid_graph in enumerate(data):
             if limit != -1 and i > limit:
                 break
             
-            samples.append(GraphDataDeserializer.deserialize_grid_graph(sample_data))
+            graphs.append(GraphDataDeserializer.deserialize_grid_graph(grid_graph))
 
-        return samples
+        return graphs
 
-    def save(self, sample: GridGraph):
-        samples = self.find_all()
-        samples.append(sample)
+    def save(self, graph: GridGraph):
+        graphs = self.find_all()
+        graphs.append(graph)
 
-        data = [GraphDataDeserializer.serialize_grid_graph(s) for s in samples]
+        data = [GraphDataDeserializer.serialize_grid_graph(s) for s in graphs]
+
+        with open(self.file_path, "w") as f:
+            json.dump(data, f, indent=4)
+
+    def save_all(self, new_graphs: List[GridGraph]):
+        graphs = self.find_all()
+        graphs.extend(new_graphs)
+
+        data = [GraphDataDeserializer.serialize_grid_graph(s) for s in graphs]
 
         with open(self.file_path, "w") as f:
             json.dump(data, f, indent=4)
 
-    def save_all(self, new_samples: List[GridGraph]):
-        samples = self.find_all()
-        samples.extend(new_samples)
-
-        data = [GraphDataDeserializer.serialize_grid_graph(s) for s in samples]
+    def delete_by_id(self, id: int):
+        data = self.find_all()
+        updated_data = [item for item in data if item.get("id") != id]
+        
+        data = [GraphDataDeserializer.serialize_grid_graph(s) for s in updated_data]
 
         with open(self.file_path, "w") as f:
             json.dump(data, f, indent=4)
+
+    def delete_all(self):
+        with open(self.file_path, "w") as f:
+            json.dump([], f, indent=4)
