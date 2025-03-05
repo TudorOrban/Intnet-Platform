@@ -4,6 +4,7 @@ from core.common.data_types import GridGraph
 from core.data_generators.random_data_generator.random_dynamic_data_generator import generate_random_dynamic_data
 from core.data_generators.random_data_generator.random_grid_topology_generator import generate_random_topology
 from core.data_generators.random_data_generator.random_static_data_generator import generate_random_static_data
+from core.data_generators.solution_generator.opf_solution_generator import generate_opf_sample
 from finetuning.data_repositories.real_grid_graph_repository_creator import create_real_grid_graph_repository
 from initializer import initialize
 
@@ -11,17 +12,25 @@ from initializer import initialize
 def main():
     initialize()
 
-    graph_topology = generate_random_topology(num_buses=8, num_generators=2, num_loads=4, edge_density=0.3)
-    graph_specification = generate_random_static_data(graph_topology)
-    graph_data = generate_random_dynamic_data(graph_specification)
+    tries = 20
+    try_no = 0
 
-    grid_graph = GridGraph(id=0, created_at=datetime.now(), graph_data=graph_data)
+    while try_no < tries:
+        print("Try ", try_no)
+        graph_topology = generate_random_topology(num_buses=150, num_generators=4, num_loads=40, edge_density=0.35)
+        graph_specification = generate_random_static_data(graph_topology)
+        graph_data = generate_random_dynamic_data(graph_specification)
 
-    graph_repository = create_real_grid_graph_repository()
+        graph_data, has_converged = generate_opf_sample(graph_data)
+        if has_converged:
+            grid_graph = GridGraph(id=0, created_at=datetime.now(), graph_data=graph_data)
 
-    graph_repository.save(grid_graph)
+            graph_repository = create_real_grid_graph_repository()
 
+            graph_repository.save(grid_graph)
+            break
 
+        try_no = try_no + 1
 
 
 if __name__ == "__main__":
