@@ -4,6 +4,7 @@ from core.common.data_types import GridGraph
 from core.data_generators.random_data_generator.random_dynamic_data_generator import generate_random_dynamic_data
 from core.data_generators.random_data_generator.random_grid_topology_generator import generate_random_topology
 from core.data_generators.random_data_generator.random_static_data_generator import generate_random_static_data
+from core.data_generators.random_data_generator.realistic_grid_topology_generator import generate_realistic_grid_topology
 from core.data_generators.solution_generator.opf_solution_generator import generate_opf_sample
 from finetuning.data_repositories.real_grid_graph_repository_creator import create_real_grid_graph_repository
 from initializer import initialize
@@ -17,7 +18,7 @@ def main():
 
     while try_no < tries:
         print("Try ", try_no)
-        graph_topology = generate_random_topology(num_buses=150, num_generators=4, num_loads=40, edge_density=0.35)
+        graph_topology = generate_realistic_grid_topology(num_buses=1000, num_generators=6, num_loads=200, edge_density=0.05)
         graph_specification = generate_random_static_data(graph_topology)
         graph_data = generate_random_dynamic_data(graph_specification)
 

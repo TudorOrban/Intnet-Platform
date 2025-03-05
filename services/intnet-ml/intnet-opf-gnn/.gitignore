@@ -10,3 +10,5 @@ best_model.pth
 synthetic_data
 
 **/__pycache__/
+
+.vscode
