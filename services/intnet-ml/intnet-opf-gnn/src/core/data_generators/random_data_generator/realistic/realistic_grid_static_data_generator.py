@@ -102,18 +102,18 @@ EDGE_TYPE_RANGES = {
     EdgeType.TRANSMISSION_LINE: {
         "r_ohm_per_km": (0.01, 0.05),
         "x_ohm_per_km": (0.2, 0.4),
-        "length_km": (1, 20),
+        "length_km": (1, 5),
     },
     EdgeType.DISTRIBUTION_LINE: {
         "r_ohm_per_km": (0.2, 0.8),
         "x_ohm_per_km": (0.1, 0.3),
         "length_km": (1, 20),
     },
-    EdgeType.TRANSFORMER: {
-        "r_ohm_per_km": (0.001, 0.005),
-        "x_ohm_per_km": (0.01, 0.03),
-        "length_km": 0,
-    },
+    # EdgeType.TRANSFORMER: {
+    #     "r_ohm_per_km": (0.001, 0.005),
+    #     "x_ohm_per_km": (0.01, 0.03),
+    #     "length_km": 0,
+    # },
 }
 
 def generate_random_edge_data(graph_data: GridGraphData) -> GridGraphData:

@@ -57,7 +57,7 @@ def generate_random_bus(id: int) -> Bus:
     return Bus(
         id=id, bus_type=BusType.PQ, latitude=random.uniform(0, 100), longitude=random.uniform(0, 100), 
         min_vm_pu=0, max_vm_pu=0, vn_kv=0, 
-        generators=[], loads=[], state=BusState(bus_id=id, vm_pu=0, va_deg=0, p_inj_mw=0, q_inj_mvar=0, tap_pos=None)
+        generators=[], loads=[], ders=[], state=BusState(bus_id=id, vm_pu=0, va_deg=0, p_inj_mw=0, q_inj_mvar=0, tap_pos=None)
     )
 
 def generate_random_edge(id: int, u: int, v: int) -> Edge:

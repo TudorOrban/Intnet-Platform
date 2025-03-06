@@ -56,6 +56,31 @@ class Load:
     max_q_mvar: float
     state: LoadState
 
+# DERs
+@dataclass
+class DERState:
+    der_id: int
+    p_mw: float
+    q_mvar: float
+
+class DERType(Enum):
+    HYDRO = "HYDRO"
+    NUCLEAR = "NUCLEAR"
+    COAL = "COAL"
+    GAS = "GAS"
+    OIL = "OIL"
+
+@dataclass
+class DER:
+    id: int
+    bus_id: int
+    der_type: DERType
+    min_p_mw: float
+    max_p_mw: float
+    min_q_mvar: float
+    max_q_mvar: float
+    state: DERState
+
 # Buses
 @dataclass
 class BusState:
@@ -84,6 +109,7 @@ class Bus:
 
     generators: List[Generator]
     loads: List[Load]
+    ders: List[DER]
 
 # Edges
 @dataclass

@@ -1,5 +1,5 @@
 from core.data_generators.sample_manager.sample_types import BusFixedSpecificationSamples, EdgeFixedSpecificationSamples, FixedSpecificationSample, FixedTopologySample, GeneratorFixedSpecificationSamples, LoadFixedSpecificationSamples
-from core.common.data_types import GridGraph, GridGraphData, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType
+from core.common.data_types import DER, DERState, DERType, EdgeType, GeneratorType, GridGraph, GridGraphData, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType, LoadType
 
 
 class GraphDataDeserializer:
@@ -32,7 +32,8 @@ class GraphDataDeserializer:
             vn_kv=bus_data["vn_kv"],
             state=GraphDataDeserializer.deserialize_bus_state(bus_data["state"]),
             generators=[GraphDataDeserializer.deserialize_generator(gen_data) for gen_data in bus_data["generators"]],
-            loads=[GraphDataDeserializer.deserialize_load(load_data) for load_data in bus_data["loads"]]
+            loads=[GraphDataDeserializer.deserialize_load(load_data) for load_data in bus_data["loads"]],
+            ders=[GraphDataDeserializer.deserialize_der(der_data) for der_data in bus_data["ders"]],
         )
 
     @staticmethod
@@ -52,7 +53,7 @@ class GraphDataDeserializer:
             id=edge_data["id"],
             src_bus_id=edge_data["src_bus_id"],
             dest_bus_id=edge_data["dest_bus_id"],
-            edge_type=edge_data["edge_type"],
+            edge_type=EdgeType(edge_data["edge_type"]),
             length_km=edge_data["length_km"],
             r_ohm_per_km=edge_data["r_ohm_per_km"],
             x_ohm_per_km=edge_data["x_ohm_per_km"],
@@ -74,7 +75,7 @@ class GraphDataDeserializer:
         return Generator(
             id=gen_data["id"],
             bus_id=gen_data["bus_id"],
-            generator_type=gen_data["generator_type"],
+            generator_type=GeneratorType(gen_data["generator_type"]),
             min_p_mw=gen_data["min_p_mw"],
             max_p_mw=gen_data["max_p_mw"],
             min_q_mvar=gen_data["min_q_mvar"],
@@ -97,14 +98,14 @@ class GraphDataDeserializer:
         return Load(
             id=load_data["id"],
             bus_id=load_data["bus_id"],
-            load_type=load_data["load_type"],
+            load_type=LoadType(load_data["load_type"]),
             min_p_mw=load_data["min_p_mw"],
             max_p_mw=load_data["max_p_mw"],
             min_q_mvar=load_data["min_q_mvar"],
             max_q_mvar=load_data["max_q_mvar"],
             state=GraphDataDeserializer.deserialize_load_state(load_data["state"])
         )
-
+    
     @staticmethod
     def deserialize_load_state(state_data: dict) -> LoadState:
         return LoadState(
@@ -113,6 +114,27 @@ class GraphDataDeserializer:
             q_mvar=state_data["q_mvar"]
         )
 
+    @staticmethod
+    def deserialize_der(der_data: dict) -> DER:
+        return DER(
+            id=der_data["id"],
+            bus_id=der_data["bus_id"],
+            der_type=DERType(der_data["der_type"]),
+            min_p_mw=der_data["min_p_mw"],
+            max_p_mw=der_data["max_p_mw"],
+            min_q_mvar=der_data["min_q_mvar"],
+            max_q_mvar=der_data["max_q_mvar"],
+            state=GraphDataDeserializer.deserialize_der_state(der_data["state"])
+        )
+    
+    @staticmethod
+    def deserialize_der_state(state_data: dict) -> DER:
+        return DERState(
+            der_id=state_data["der_id"],
+            p_mw=state_data["p_mw"],
+            q_mvar=state_data["q_mvar"]
+        )
+    
     @staticmethod
     def serialize_grid_graph(graph: GridGraph) -> dict:
         return {
@@ -140,45 +162,8 @@ class GraphDataDeserializer:
             "vn_kv": bus.vn_kv,
             "state": GraphDataDeserializer.serialize_bus_state(bus.state),
             "generators": [GraphDataDeserializer.serialize_generator(gen) for gen in bus.generators],
-            "loads": [GraphDataDeserializer.serialize_load(load) for load in bus.loads]
-        }
-
-    @staticmethod
-    def serialize_edge(edge: Edge) -> dict:
-        return {
-            "id": edge.id,
-            "src_bus_id": edge.src_bus_id,
-            "dest_bus_id": edge.dest_bus_id,
-            "edge_type": edge.edge_type.value,
-            "length_km": edge.length_km,
-            "r_ohm_per_km": edge.r_ohm_per_km,
-            "x_ohm_per_km": edge.x_ohm_per_km,
-            "state": GraphDataDeserializer.serialize_edge_state(edge.state)
-        }
-
-    @staticmethod
-    def serialize_generator(gen: Generator) -> dict:
-        return {
-            "id": gen.id,
-            "bus_id": gen.bus_id,
-            "min_p_mw": gen.min_p_mw,
-            "max_p_mw": gen.max_p_mw,
-            "min_q_mvar": gen.min_q_mvar,
-            "max_q_mvar": gen.max_q_mvar,
-            "slack": gen.slack,
-            "state": GraphDataDeserializer.serialize_generator_state(gen.state)
-        }
-
-    @staticmethod
-    def serialize_load(load: Load) -> dict:
-        return {
-            "id": load.id,
-            "bus_id": load.bus_id,
-            "min_p_mw": load.min_p_mw,
-            "max_p_mw": load.max_p_mw,
-            "min_q_mvar": load.min_q_mvar,
-            "max_q_mvar": load.max_q_mvar,
-            "state": GraphDataDeserializer.serialize_load_state(load.state)
+            "loads": [GraphDataDeserializer.serialize_load(load) for load in bus.loads],
+            "ders": [GraphDataDeserializer.serialize_der(der) for der in bus.ders],
         }
     
     @staticmethod
@@ -193,13 +178,17 @@ class GraphDataDeserializer:
         }
 
     @staticmethod
-    def serialize_edge_state(state: EdgeState) -> dict:
+    def serialize_generator(gen: Generator) -> dict:
         return {
-            "edge_id": state.edge_id,
-            "p_flow_mw": state.p_flow_mw,
-            "q_flow_mvar": state.q_flow_mvar,
-            "i_ka": state.i_ka,
-            "in_service": state.in_service,
+            "id": gen.id,
+            "bus_id": gen.bus_id,
+            "generator_type": gen.generator_type.value,
+            "min_p_mw": gen.min_p_mw,
+            "max_p_mw": gen.max_p_mw,
+            "min_q_mvar": gen.min_q_mvar,
+            "max_q_mvar": gen.max_q_mvar,
+            "slack": gen.slack,
+            "state": GraphDataDeserializer.serialize_generator_state(gen.state)
         }
 
     @staticmethod
@@ -212,11 +201,70 @@ class GraphDataDeserializer:
         }
 
     @staticmethod
+    def serialize_load(load: Load) -> dict:
+        return {
+            "id": load.id,
+            "bus_id": load.bus_id,
+            "load_type": load.load_type.value,
+            "min_p_mw": load.min_p_mw,
+            "max_p_mw": load.max_p_mw,
+            "min_q_mvar": load.min_q_mvar,
+            "max_q_mvar": load.max_q_mvar,
+            "state": GraphDataDeserializer.serialize_load_state(load.state)
+        }
+    
+    @staticmethod
     def serialize_load_state(state: LoadState) -> dict:
         return {
             "load_id": state.load_id,
             "p_mw": state.p_mw,
             "q_mvar": state.q_mvar,
+        }
+
+    @staticmethod
+    def serialize_der(gen: DER) -> dict:
+        return {
+            "id": gen.id,
+            "bus_id": gen.bus_id,
+            "der_type": gen.der_type.value,
+            "min_p_mw": gen.min_p_mw,
+            "max_p_mw": gen.max_p_mw,
+            "min_q_mvar": gen.min_q_mvar,
+            "max_q_mvar": gen.max_q_mvar,
+            "slack": gen.slack,
+            "state": GraphDataDeserializer.serialize_der_state(gen.state)
+        }
+
+    @staticmethod
+    def serialize_der_state(state: DERState) -> dict:
+        return {
+            "der_id": state.der_id,
+            "p_mw": state.p_mw,
+            "q_mvar": state.q_mvar,
+            "cp1_eur_per_mw": state.cp1_eur_per_mw,
+        }
+
+    @staticmethod
+    def serialize_edge(edge: Edge) -> dict:
+        return {
+            "id": edge.id,
+            "src_bus_id": edge.src_bus_id,
+            "dest_bus_id": edge.dest_bus_id,
+            "edge_type": edge.edge_type.value,
+            "length_km": edge.length_km,
+            "r_ohm_per_km": edge.r_ohm_per_km,
+            "x_ohm_per_km": edge.x_ohm_per_km,
+            "state": GraphDataDeserializer.serialize_edge_state(edge.state)
+        }
+    
+    @staticmethod
+    def serialize_edge_state(state: EdgeState) -> dict:
+        return {
+            "edge_id": state.edge_id,
+            "p_flow_mw": state.p_flow_mw,
+            "q_flow_mvar": state.q_flow_mvar,
+            "i_ka": state.i_ka,
+            "in_service": state.in_service,
         }
     
     # Samples
