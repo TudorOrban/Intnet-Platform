@@ -31,6 +31,21 @@ def main():
 
     run_mlflow_finetune_gnn()
 
+    # graph_repository = create_real_grid_graph_repository()
+    # record_repository = create_dynamic_data_record_repository()
+
+    # graph = graph_repository.find()
+
+    # records = generate_dynamic_data_records(graph_specification=graph.graph_data, record_count=5)
+    # print("Before", records[0].bus_data)
+
+    # record_repository.save_all(records)
+
+    # saved_records = record_repository.find_all()
+
+    # print("Saved", saved_records[0].bus_data)
+    
+
 if __name__ == "__main__":
     main()
 

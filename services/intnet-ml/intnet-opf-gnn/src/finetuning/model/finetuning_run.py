@@ -8,7 +8,7 @@ from finetuning.model.model_finetuner import finetune_model
 
 def run_mlflow_finetune_gnn():
     with mlflow.start_run():
-        samples_count = 10
+        samples_count = 50
         epochs = 200
         hidden_channels = 512
         lr = 0.008
@@ -28,10 +28,10 @@ def run_mlflow_finetune_gnn():
         record_repository = create_dynamic_data_record_repository()
 
         graph = graph_repository.find()
-        # record_repository.save_all(records)
         # records = record_repository.find_all()
-
-        records = generate_dynamic_data_records(graph_data=graph.graph_data, record_count=samples_count)
+        
+        records = generate_dynamic_data_records(graph_specification=graph.graph_data, record_count=samples_count)
+        record_repository.save_all(records)
         
         finetuned_model = finetune_model(base_graph=graph.graph_data, records=records, epochs=epochs, hidden_channels=hidden_channels, lr=lr, weight_decay=weight_decay, dropout_rate=dropout_rate, patience=patience)
 

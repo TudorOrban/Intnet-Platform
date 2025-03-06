@@ -5,6 +5,7 @@ from typing import List
 
 from core.common.json_serializer import JsonSerializer
 from finetuning.common.data_types import DynamicDataRecord
+from finetuning.common.dynamic_data_record_deserializer import DynamicDataRecordDeserializer
 
 """
 Repository for Dynamic Data records using JSON storage for fast iteration in model development
@@ -22,7 +23,7 @@ class DynamicDataRecordJsonRepository:
         with open(self.file_path, "r") as f:
             data = json.load(f)
             
-        return JsonSerializer.deserialize_dataclass(data, List[DynamicDataRecord])
+        return [DynamicDataRecordDeserializer.deserialize_dynamic_data_record(record) for record in data]
     
     def save_all(self, new_records: List[DynamicDataRecord]):
         records = self.find_all()
