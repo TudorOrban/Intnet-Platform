@@ -3,12 +3,12 @@ import mlflow
 from finetuning.data_generators.dynamic_data_record_generator import generate_dynamic_data_records
 from finetuning.data_repositories.dynamic_data_record_repository_creator import create_dynamic_data_record_repository
 from finetuning.data_repositories.real_grid_graph_repository_creator import create_real_grid_graph_repository
-from finetuning.model.model_finetuner import finetune_model
+from finetuning.model.specialized_model_training import train_specialized_model
 
 
-def run_mlflow_finetune_gnn():
+def run_mlflow_train_specialized_model():
     with mlflow.start_run():
-        samples_count = 50
+        samples_count = 100
         epochs = 200
         hidden_channels = 512
         lr = 0.008
@@ -28,12 +28,13 @@ def run_mlflow_finetune_gnn():
         record_repository = create_dynamic_data_record_repository()
 
         graph = graph_repository.find()
-        # records = record_repository.find_all()
-        
-        records = generate_dynamic_data_records(graph_specification=graph.graph_data, record_count=samples_count)
-        record_repository.save_all(records)
-        
-        finetuned_model = finetune_model(base_graph=graph.graph_data, records=records, epochs=epochs, hidden_channels=hidden_channels, lr=lr, weight_decay=weight_decay, dropout_rate=dropout_rate, patience=patience)
 
-        mlflow.pytorch.log_model(finetuned_model, "finetuned_model")
+        records = record_repository.find_all()
+        
+        # records = generate_dynamic_data_records(graph_specification=graph.graph_data, record_count=samples_count)
+        # record_repository.save_all(records)
+        
+        specialized_model = train_specialized_model(base_graph=graph.graph_data, records=records, epochs=epochs, hidden_channels=hidden_channels, lr=lr, weight_decay=weight_decay, dropout_rate=dropout_rate, patience=patience)
+
+        mlflow.pytorch.log_model(specialized_model, "specialized_model")
         mlflow.set_tags({"model_type": "GCN", "dataset": "synthetic"})

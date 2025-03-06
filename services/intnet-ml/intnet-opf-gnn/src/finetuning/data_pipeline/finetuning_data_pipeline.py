@@ -1,3 +1,4 @@
+import random
 from typing import List, Tuple
 import numpy as np
 import torch
@@ -11,7 +12,9 @@ from finetuning.common.dynamic_data_record_manager import update_graph_with_reco
 
 def preprocess_data(base_graph: GridGraphData, records: List[DynamicDataRecord]) -> Tuple[torch.Tensor, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocesses the data by computing edge_index and normalization parameters."""
-    
+
+    random.shuffle(records)
+
     adj_matrix = get_adjacency_matrix(update_graph_with_record(base_graph, records[0]))
     edge_index = torch.tensor(np.array(np.where(adj_matrix == 1)), dtype=torch.long)
 

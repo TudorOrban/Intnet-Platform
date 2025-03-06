@@ -18,9 +18,7 @@ def generate_dynamic_data_records(graph_specification: GridGraphData, record_cou
 
         graph_data, has_converged = generate_opf_sample(graph_data)
         if has_converged:
-            records.append(graph_data)
-
-        record = extract_dynamic_data_record(graph_data)
-        records.append(record)
+            record = extract_dynamic_data_record(graph_data)
+            records.append(record)
 
     return records

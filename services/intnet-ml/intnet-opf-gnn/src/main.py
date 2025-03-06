@@ -1,8 +1,8 @@
 from finetuning.data_generators.dynamic_data_record_generator import generate_dynamic_data_records
 from finetuning.data_repositories.dynamic_data_record_repository_creator import create_dynamic_data_record_repository
 from finetuning.data_repositories.real_grid_graph_repository_creator import create_real_grid_graph_repository
-from finetuning.model.finetuning_run import run_mlflow_finetune_gnn
-from finetuning.model.model_finetuner import finetune_model
+from finetuning.model.specialized_model_training_run import run_mlflow_train_specialized_model
+from finetuning.model.specialized_model_training import train_specialized_model
 from initializer import initialize
 
 
@@ -29,7 +29,7 @@ def main():
 
     #     try_no = try_no + 1
 
-    run_mlflow_finetune_gnn()
+    run_mlflow_train_specialized_model()
 
     # graph_repository = create_real_grid_graph_repository()
     # record_repository = create_dynamic_data_record_repository()

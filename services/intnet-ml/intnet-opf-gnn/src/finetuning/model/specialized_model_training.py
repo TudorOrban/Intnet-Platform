@@ -6,12 +6,12 @@ from typing import List
 import mlflow
 import torch
 from core.common.data_types import GridGraphData
-from core.model.base_gnn import BaseGNN
 from finetuning.common.data_types import DynamicDataRecord
 from finetuning.data_pipeline.finetuning_data_pipeline import create_pytorch_data_from_record, preprocess_data
+from finetuning.model.specialized_model import SpecializedGNN
 
 
-def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], epochs=100, hidden_channels=64, lr=0.01, weight_decay=1e-5, dropout_rate=0.4, patience=10) -> BaseGNN:
+def train_specialized_model(base_graph: GridGraphData, records: List[DynamicDataRecord], epochs=100, hidden_channels=64, lr=0.01, weight_decay=1e-5, dropout_rate=0.4, patience=10) -> SpecializedGNN:
     """Finetunes an existing model on dynamic data records"""
 
     train_test_ratio = 0.8
@@ -21,10 +21,10 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
 
     edge_index, node_mean, node_std, edge_mean, edge_std, num_node_features = preprocess_data(base_graph, records)
 
-    model = BaseGNN(num_node_features=num_node_features, hidden_channels=hidden_channels, dropout_rate=dropout_rate)
+    model = SpecializedGNN(num_node_features=num_node_features, hidden_channels=hidden_channels, dropout_rate=dropout_rate)
     optimizer = torch.optim.Adam(model.parameters(), lr, weight_decay=weight_decay)
     criterion = torch.nn.MSELoss()
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=patience // 2, factor=0.5, verbose=True)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=patience // 2, factor=0.5)
 
     device = os.getenv("DEVICE", "cpu")
     device = torch.device(device)
@@ -62,10 +62,11 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
         avg_val_loss = total_val_loss / len(val_records)
         scheduler.step(avg_val_loss)
 
-        print(f"Epoch {epoch + 1}, Train Loss: {avg_train_loss}, Val Loss: {avg_val_loss}")
+        print(f"Epoch {epoch + 1}, Train Loss: {avg_train_loss}, Val Loss: {avg_val_loss}, LR: {optimizer.param_groups[0]['lr']}")
 
         mlflow.log_metric("train_loss", avg_train_loss, step=epoch)
         mlflow.log_metric("val_loss", avg_val_loss, step=epoch)
+        mlflow.log_metric("learning_rate", optimizer.param_groups[0]['lr'], step=epoch)
 
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
