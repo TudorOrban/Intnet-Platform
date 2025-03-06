@@ -1,5 +1,6 @@
 
 
+import os
 from typing import List
 
 import torch
@@ -9,7 +10,7 @@ from finetuning.common.data_types import DynamicDataRecord
 from finetuning.data_pipeline.finetuning_data_pipeline import create_pytorch_data_from_record
 
 
-def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], epochs=100, hidden_channels=64, lr=0.01, weight_decay=1e-5, dropout_rate=0.4, patience=10):
+def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], epochs=100, hidden_channels=64, lr=0.01, weight_decay=1e-5, dropout_rate=0.4, patience=10) -> BaseGNN:
     """Finetunes an existing model on dynamic data records"""
 
     train_test_ratio = 0.8
@@ -17,12 +18,15 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
     train_records = records[:train_size]
     val_records = records[train_size:]
 
-    # Create one sample to initialize model
     sample_data = create_pytorch_data_from_record(base_graph, train_records[0])
     model = BaseGNN(num_node_features=sample_data.x.shape[1], hidden_channels=hidden_channels, dropout_rate=dropout_rate)
     optimizer = torch.optim.Adam(model.parameters(), lr, weight_decay=weight_decay)
     criterion = torch.nn.MSELoss()
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=patience // 2, factor=0.5, verbose=True)
+
+    device = os.getenv("DEVICE", "cpu")
+    device = torch.device(device)
+    model = model.to(device)
 
     best_val_loss = float("inf")
     epochs_no_improve = 0
