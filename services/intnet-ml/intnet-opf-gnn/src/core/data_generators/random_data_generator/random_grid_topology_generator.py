@@ -2,7 +2,7 @@
 
 import random
 from typing import List
-from core.common.data_types import Bus, BusState, BusType, Edge, EdgeState, EdgeType, GeneratorState, GeneratorType, GridGraphData, Generator, Load, LoadState, LoadType
+from core.common.data_types import DER, Bus, BusState, BusType, DERState, DERType, Edge, EdgeState, EdgeType, GeneratorState, GeneratorType, GridGraphData, Generator, Load, LoadState, LoadType
 import networkx as nx
 
 def generate_random_topology(num_buses: int, num_generators: int, num_loads: int, edge_density: float=0.5) -> GridGraphData:
@@ -79,4 +79,11 @@ def generate_random_load(id: int, bus_id: int) -> Load:
         id=id, bus_id=bus_id, load_type=LoadType.RESIDENTIAL,
         min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0,
         state=LoadState(load_id=id, p_mw=0, q_mvar=0)
+    )
+
+def generate_random_der(id: int, bus_id: int) -> DER:
+    return DER(
+        id=id, bus_id=bus_id, der_type=DERType.COAL,
+        min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0,
+        state=DERState(der_id=id, p_mw=0, q_mvar=0)
     )

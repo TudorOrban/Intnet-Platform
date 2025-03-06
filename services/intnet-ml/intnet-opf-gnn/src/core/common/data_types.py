@@ -64,11 +64,8 @@ class DERState:
     q_mvar: float
 
 class DERType(Enum):
-    HYDRO = "HYDRO"
-    NUCLEAR = "NUCLEAR"
-    COAL = "COAL"
-    GAS = "GAS"
-    OIL = "OIL"
+    SOLAR = "SOLAR"
+    WIND = "WIND"
 
 @dataclass
 class DER:

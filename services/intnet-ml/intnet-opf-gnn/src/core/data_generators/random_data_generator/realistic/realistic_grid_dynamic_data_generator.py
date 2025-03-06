@@ -1,6 +1,6 @@
 
 import random
-from core.common.data_types import EdgeType, GeneratorType, GridGraphData, LoadType
+from core.common.data_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType
 
 
 def generate_realistic_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
@@ -8,11 +8,13 @@ def generate_realistic_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
 
     graph_data = generate_realistic_load_dynamic_data(graph_data)
     graph_data = generate_realistic_generator_dynamic_data(graph_data)
+    graph_data = generate_realistic_der_dynamic_data(graph_data)
     graph_data = generate_realistic_bus_dynamic_data(graph_data)
     graph_data = generate_realistic_edge_dynamic_data(graph_data)
 
     return graph_data
 
+# Load
 LOAD_TYPE_FLUCTUATION = {
     LoadType.RESIDENTIAL: {"p_min_ratio": 0.0, "p_max_ratio": 1.0, "q_min_ratio": 0.0, "q_max_ratio": 1.0},
     LoadType.COMMERCIAL: {"p_min_ratio": 0.9, "p_max_ratio": 0.95, "q_min_ratio": 0.9, "q_max_ratio": 0.95},
@@ -28,6 +30,7 @@ def generate_realistic_load_dynamic_data(graph_data: GridGraphData) -> GridGraph
             load.state.q_mvar = random.uniform(load.min_q_mvar * fluctuation["q_min_ratio"], load.max_q_mvar * fluctuation["q_max_ratio"])
     return graph_data
 
+# Generator
 GENERATOR_TYPE_FLUCTUATION = {
     GeneratorType.NUCLEAR: {"p_min_ratio": 0.98, "p_max_ratio": 1.0, "q_min_ratio": 1.0, "q_max_ratio": 1.0},
     GeneratorType.HYDRO: {"p_min_ratio": 0.7, "p_max_ratio": 1.0, "q_min_ratio": 0.8, "q_max_ratio": 1.0},
@@ -55,7 +58,20 @@ def generate_realistic_generator_dynamic_data(graph_data: GridGraphData) -> Grid
             gen.state.cp1_eur_per_mw = random.uniform(cost_ranges["min_cost"], cost_ranges["max_cost"])
     return graph_data
 
+DER_TYPE_FLUCTUATION = {
+    DERType.NUCLEAR: {"p_min_ratio": 1.0, "p_max_ratio": 1.0, "q_min_ratio": 1.0, "q_max_ratio": 1.0},
+    DERType.HYDRO: {"p_min_ratio": 1.0, "p_max_ratio": 1.0, "q_min_ratio": 1.0, "q_max_ratio": 1.0},
+}
 
+def generate_realistic_der_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
+    for bus in graph_data.buses:
+        for der in bus.ders:
+            fluctuation = DER_TYPE_FLUCTUATION[der.der_type]
+            der.state.p_mw = random.uniform(der.min_p_mw * fluctuation["p_min_ratio"], der.max_p_mw * fluctuation["p_max_ratio"])
+            der.state.q_mvar = random.uniform(der.min_q_mvar * fluctuation["q_min_ratio"], der.max_q_mvar * fluctuation["q_max_ratio"])
+    return graph_data
+
+# Bus
 BUS_DYNAMIC_RANGES = {
     "va_deg_variation": (-5, 5),
     "tap_pos_variation": (-0.05, 0.05),
@@ -73,6 +89,7 @@ def generate_realistic_bus_dynamic_data(graph_data: GridGraphData) -> GridGraphD
 
     return graph_data
 
+# Edge
 EDGE_DYNAMIC_RANGES = {
     EdgeType.TRANSMISSION_LINE: {"p_flow_limit": 500, "q_flow_limit": 100, "i_ka_limit": 1.0},
     EdgeType.DISTRIBUTION_LINE: {"p_flow_limit": 50, "q_flow_limit": 10, "i_ka_limit": 0.5},

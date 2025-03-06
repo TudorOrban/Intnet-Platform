@@ -231,7 +231,6 @@ class GraphDataDeserializer:
             "max_p_mw": gen.max_p_mw,
             "min_q_mvar": gen.min_q_mvar,
             "max_q_mvar": gen.max_q_mvar,
-            "slack": gen.slack,
             "state": GraphDataDeserializer.serialize_der_state(gen.state)
         }
 
@@ -241,7 +240,6 @@ class GraphDataDeserializer:
             "der_id": state.der_id,
             "p_mw": state.p_mw,
             "q_mvar": state.q_mvar,
-            "cp1_eur_per_mw": state.cp1_eur_per_mw,
         }
 
     @staticmethod
