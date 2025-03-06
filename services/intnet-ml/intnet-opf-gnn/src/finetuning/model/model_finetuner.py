@@ -3,11 +3,12 @@
 import os
 from typing import List
 
+import mlflow
 import torch
 from core.common.data_types import GridGraphData
 from core.model.base_gnn import BaseGNN
 from finetuning.common.data_types import DynamicDataRecord
-from finetuning.data_pipeline.finetuning_data_pipeline import create_pytorch_data_from_record
+from finetuning.data_pipeline.finetuning_data_pipeline import create_pytorch_data_from_record, preprocess_data
 
 
 def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], epochs=100, hidden_channels=64, lr=0.01, weight_decay=1e-5, dropout_rate=0.4, patience=10) -> BaseGNN:
@@ -18,8 +19,9 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
     train_records = records[:train_size]
     val_records = records[train_size:]
 
-    sample_data = create_pytorch_data_from_record(base_graph, train_records[0])
-    model = BaseGNN(num_node_features=sample_data.x.shape[1], hidden_channels=hidden_channels, dropout_rate=dropout_rate)
+    edge_index, node_mean, node_std, edge_mean, edge_std, num_node_features = preprocess_data(base_graph, records)
+
+    model = BaseGNN(num_node_features=num_node_features, hidden_channels=hidden_channels, dropout_rate=dropout_rate)
     optimizer = torch.optim.Adam(model.parameters(), lr, weight_decay=weight_decay)
     criterion = torch.nn.MSELoss()
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=patience // 2, factor=0.5, verbose=True)
@@ -27,6 +29,7 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
     device = os.getenv("DEVICE", "cpu")
     device = torch.device(device)
     model = model.to(device)
+    edge_index = edge_index.to(device)
 
     best_val_loss = float("inf")
     epochs_no_improve = 0
@@ -35,7 +38,8 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
     for epoch in range(epochs):
         total_train_loss = 0
         for record in train_records:
-            data = create_pytorch_data_from_record(base_graph, record)
+            data = create_pytorch_data_from_record(base_graph, record, edge_index, node_mean, node_std, edge_mean, edge_std)
+            data = data.to(device)
             optimizer.zero_grad()
             out = model(data)
             loss = criterion(out, data.y)
@@ -47,7 +51,8 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
         total_val_loss = 0
         with torch.no_grad():
             for record in val_records:
-                data = create_pytorch_data_from_record(base_graph, record)
+                data = create_pytorch_data_from_record(base_graph, record, edge_index, node_mean, node_std, edge_mean, edge_std)
+                data = data.to(device)
                 out = model(data)
                 loss = criterion(out, data.y)
                 total_val_loss += loss.item()
@@ -58,6 +63,9 @@ def finetune_model(base_graph: GridGraphData, records: List[DynamicDataRecord], 
         scheduler.step(avg_val_loss)
 
         print(f"Epoch {epoch + 1}, Train Loss: {avg_train_loss}, Val Loss: {avg_val_loss}")
+
+        mlflow.log_metric("train_loss", avg_train_loss, step=epoch)
+        mlflow.log_metric("val_loss", avg_val_loss, step=epoch)
 
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss

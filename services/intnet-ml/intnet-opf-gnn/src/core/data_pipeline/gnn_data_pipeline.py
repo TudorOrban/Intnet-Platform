@@ -65,9 +65,8 @@ def extract_and_collect_features_single(sample: GridGraphData):
     node_features = extract_node_features(sample)
     edge_features = extract_edge_features(sample)
     generator_powers = extract_generator_powers(sample)
-    adj_matrix = get_adjacency_matrix(sample)
 
-    return node_features, edge_features, generator_powers, adj_matrix
+    return node_features, edge_features, generator_powers
 
 def calculate_normalization_parameters(node_features_list: List[np.ndarray], edge_features_list: List[np.ndarray]):
     all_node_features = np.concatenate(node_features_list, axis=0)
