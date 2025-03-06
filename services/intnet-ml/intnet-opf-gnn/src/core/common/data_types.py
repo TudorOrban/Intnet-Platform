@@ -14,14 +14,17 @@ class GeneratorState:
     cp1_eur_per_mw: float
 
 class GeneratorType(Enum):
+    HYDRO = "HYDRO"
     NUCLEAR = "NUCLEAR"
     COAL = "COAL"
     GAS = "GAS"
+    OIL = "OIL"
 
 @dataclass
 class Generator:
     id: int
     bus_id: int
+    generator_type: GeneratorType
     min_p_mw: float
     max_p_mw: float
     min_q_mvar: float
@@ -36,10 +39,17 @@ class LoadState:
     p_mw: float
     q_mvar: float
 
+class LoadType(Enum):
+    RESIDENTIAL = "RESIDENTIAL"
+    COMMERCIAL = "COMMERCIAL"
+    INDUSTRIAL = "INDUSTRIAL"   
+    UNKNOWN = "UNKNOWN"
+
 @dataclass
 class Load:
     id: int
     bus_id: int
+    load_type: LoadType
     min_p_mw: float
     max_p_mw: float
     min_q_mvar: float
