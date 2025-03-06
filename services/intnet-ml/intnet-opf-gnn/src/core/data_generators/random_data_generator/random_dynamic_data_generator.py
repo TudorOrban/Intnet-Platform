@@ -3,7 +3,7 @@ from core.common.data_types import GridGraphData
 
 
 def generate_random_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
-    """Generates realistic random dynamic electric data for the electric grid components."""
+    """Generates random dynamic electric data for the electric grid components."""
 
     graph_data = generate_random_load_dynamic_data(graph_data)
     graph_data = generate_random_generator_dynamic_data(graph_data)

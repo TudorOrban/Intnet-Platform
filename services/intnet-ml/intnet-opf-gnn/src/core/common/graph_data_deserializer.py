@@ -74,6 +74,7 @@ class GraphDataDeserializer:
         return Generator(
             id=gen_data["id"],
             bus_id=gen_data["bus_id"],
+            generator_type=gen_data["generator_type"],
             min_p_mw=gen_data["min_p_mw"],
             max_p_mw=gen_data["max_p_mw"],
             min_q_mvar=gen_data["min_q_mvar"],
@@ -96,6 +97,7 @@ class GraphDataDeserializer:
         return Load(
             id=load_data["id"],
             bus_id=load_data["bus_id"],
+            load_type=load_data["load_type"],
             min_p_mw=load_data["min_p_mw"],
             max_p_mw=load_data["max_p_mw"],
             min_q_mvar=load_data["min_q_mvar"],

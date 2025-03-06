@@ -2,7 +2,7 @@
 import random
 from core.common.data_types import EdgeType, GeneratorType, GridGraphData, LoadType
 
-def generate_realistic_grid_data(graph_topology: GridGraphData) -> GridGraphData:
+def generate_realistic_static_data(graph_topology: GridGraphData) -> GridGraphData:
     """Generates realistic static electric data for the electric grid components"""
     
     graph_data = generate_realistic_load_data(graph_topology)
@@ -102,7 +102,7 @@ EDGE_TYPE_RANGES = {
     EdgeType.TRANSMISSION_LINE: {
         "r_ohm_per_km": (0.01, 0.05),
         "x_ohm_per_km": (0.2, 0.4),
-        "length_km": (1, 3),
+        "length_km": (1, 20),
     },
     EdgeType.DISTRIBUTION_LINE: {
         "r_ohm_per_km": (0.2, 0.8),
@@ -118,10 +118,9 @@ EDGE_TYPE_RANGES = {
 
 def generate_random_edge_data(graph_data: GridGraphData) -> GridGraphData:
     for edge in graph_data.edges:
+        ranges = EDGE_TYPE_RANGES[edge.edge_type]
         edge.r_ohm_per_km = random.uniform(*ranges["r_ohm_per_km"])
         edge.x_ohm_per_km = random.uniform(*ranges["x_ohm_per_km"])
-
-        ranges = EDGE_TYPE_RANGES[edge.edge_type]
         edge.length_km = random.uniform(*ranges["length_km"]) if edge.edge_type != EdgeType.TRANSFORMER else 0
 
     return graph_data
