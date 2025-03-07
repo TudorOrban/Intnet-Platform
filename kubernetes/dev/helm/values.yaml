@@ -44,9 +44,7 @@ kibana:
 logstash:
   replicaCount: 0
 
-kubeflow:
-  replicaCount: 1
 cassandra:
-  replicaCount: 1
+  replicaCount: 0
 mlflow:
   replicaCount: 1

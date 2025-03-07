@@ -1,9 +1,11 @@
 from fastapi import APIRouter
+from dotenv import load_dotenv
 
 from features.grid_graph.models.grid_graph_types import GridGraph
 from features.grid_graph.repositories.grid_graph_repository_creator import create_grid_graph_repository
 
 
+load_dotenv()
 router = APIRouter()
 
 grid_graph_base_route = "/api/v1/grid-graph"
