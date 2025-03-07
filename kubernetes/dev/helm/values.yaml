@@ -46,3 +46,7 @@ logstash:
 
 kubeflow:
   replicaCount: 1
+cassandra:
+  replicaCount: 1
+mlflow:
+  replicaCount: 1

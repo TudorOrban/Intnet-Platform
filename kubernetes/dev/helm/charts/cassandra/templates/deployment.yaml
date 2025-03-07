@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-cassandra
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "..selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "..labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: cassandra
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: JVM_OPTS
+              value: "-Xms2048M -Xmx2048M"
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          volumeMounts:
+            - name: cassandra-pv
+              mountPath: /data
+      volumes:
+        - name: cassandra-pv
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-cassandra-pvc
