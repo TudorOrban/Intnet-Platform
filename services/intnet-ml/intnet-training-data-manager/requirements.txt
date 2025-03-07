@@ -63,5 +63,3 @@ pymongo==4.11.2
 
 fastapi
 uvicorn[standard]
-
-cassandra-driver
