@@ -3,10 +3,10 @@ import networkx as nx
 
 from typing import List
 from core.common.data_types import Bus, Edge, GridGraphData
-from core.data_generators.random_data_generator.random_grid_topology_generator import generate_random_bus, generate_random_der, generate_random_edge, generate_random_generator, generate_random_load
+from core.data_generators.random_data_generator.random_grid_topology_generator import generate_random_bus, generate_random_der, generate_random_edge, generate_random_generator, generate_random_load, generate_random_storage_unit
 
 
-def generate_realistic_grid_topology(num_buses=10, num_generators=3, num_loads=4, num_ders=5, edge_density=0.1) -> GridGraphData:
+def generate_realistic_grid_topology(num_buses=10, num_generators=3, num_loads=4, der_density=0.2, storage_unit_density=0.1, edge_density=0.1) -> GridGraphData:
     """Generates a realistic grid topology incrementally, starting from generators"""
 
     buses: List[Bus] = []
@@ -14,6 +14,7 @@ def generate_realistic_grid_topology(num_buses=10, num_generators=3, num_loads=4
     graph = nx.Graph()
     load_count = 0
     der_count = 0
+    storage_unit_count = 0
 
     # 1. Initialize Generator Buses
     generator_buses = random.sample(range(num_buses), num_generators)
@@ -45,10 +46,16 @@ def generate_realistic_grid_topology(num_buses=10, num_generators=3, num_loads=4
             new_bus.loads.append(new_load)
             load_count += 1
 
-        if random.random() < 0.2 and der_count < num_ders:
+        if random.random() < der_density:
             new_der = generate_random_der(id=der_count, bus_id=dest_bus_id)
             new_bus.ders.append(new_der)
             der_count += 1
+
+        if random.random() < storage_unit_density:
+            new_storage_unit = generate_random_storage_unit(id=storage_unit_count, bus_id=dest_bus_id)
+            new_bus.storage_units.append(new_storage_unit)
+            storage_unit_count += 1
+            
 
         current_buses.append(dest_bus_id)
         remaining_buses.remove(dest_bus_id)
@@ -62,19 +69,12 @@ def generate_realistic_grid_topology(num_buses=10, num_generators=3, num_loads=4
             edges.append(new_edge)
             graph.add_edge(bus1.id, bus2.id)
 
-    # Distribute remaining loads and ders
+    # Distribute remaining loads
     loadless_buses = list(filter(lambda x: len(x.loads) == 0, buses))
     while load_count < num_loads and len(loadless_buses) > 0:
         bus = random.choice(loadless_buses)
         new_load = generate_random_load(id=len(bus.loads), bus_id=bus.id)
         bus.loads.append(new_load)
         load_count += 1
-
-    derless_buses = list(filter(lambda x: len(x.ders) == 0, buses))
-    while der_count < num_ders and len(derless_buses) > 0:
-        bus = random.choice(derless_buses)
-        new_der = generate_random_der(id=len(bus.ders), bus_id=bus.id)
-        bus.ders.append(new_der)
-        der_count += 1
 
     return GridGraphData(buses, edges)

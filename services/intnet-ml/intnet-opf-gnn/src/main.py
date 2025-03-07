@@ -24,7 +24,7 @@ def main():
 
     # while try_no < tries:
     #     print("Try ", try_no)
-    #     graph_topology = generate_realistic_grid_topology(num_buses=500, num_generators=10, num_loads=1000, num_ders=150, edge_density=0.05)
+    #     graph_topology = generate_realistic_grid_topology(num_buses=500, num_generators=10, num_loads=1000, der_density=0.2, storage_unit_density=0.1, edge_density=0.05)
     #     graph_specification = generate_realistic_static_data(graph_topology)
     #     graph_data = generate_realistic_dynamic_data(graph_specification)
 

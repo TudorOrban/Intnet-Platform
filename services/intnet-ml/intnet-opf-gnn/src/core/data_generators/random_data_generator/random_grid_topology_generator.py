@@ -2,7 +2,7 @@
 
 import random
 from typing import List
-from core.common.data_types import DER, Bus, BusState, BusType, DERState, DERType, Edge, EdgeState, EdgeType, GeneratorState, GeneratorType, GridGraphData, Generator, Load, LoadState, LoadType
+from core.common.data_types import DER, Bus, BusState, BusType, DERState, DERType, Edge, EdgeState, EdgeType, GeneratorState, GeneratorType, GridGraphData, Generator, Load, LoadState, LoadType, StorageUnit, StorageUnitState, StorageUnitType
 import networkx as nx
 
 def generate_random_topology(num_buses: int, num_generators: int, num_loads: int, edge_density: float=0.5) -> GridGraphData:
@@ -57,7 +57,7 @@ def generate_random_bus(id: int) -> Bus:
     return Bus(
         id=id, bus_type=BusType.PQ, latitude=random.uniform(0, 100), longitude=random.uniform(0, 100), 
         min_vm_pu=0, max_vm_pu=0, vn_kv=0, 
-        generators=[], loads=[], ders=[], state=BusState(bus_id=id, vm_pu=0, va_deg=0, p_inj_mw=0, q_inj_mvar=0, tap_pos=None)
+        generators=[], loads=[], ders=[], storage_units=[], state=BusState(bus_id=id, vm_pu=0, va_deg=0, p_inj_mw=0, q_inj_mvar=0, tap_pos=None)
     )
 
 def generate_random_edge(id: int, u: int, v: int) -> Edge:
@@ -86,4 +86,11 @@ def generate_random_der(id: int, bus_id: int) -> DER:
         id=id, bus_id=bus_id, der_type=DERType.SOLAR,
         min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0,
         state=DERState(der_id=id, p_mw=0, q_mvar=0)
+    )
+
+def generate_random_storage_unit(id: int, bus_id: int) -> StorageUnit:
+    return StorageUnit(
+        id=id, bus_id=bus_id, storage_type=StorageUnitType.BATTERY,
+        min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0, min_e_mwh=0, max_e_mwh=0,
+        state=StorageUnitState(storage_unit_id=id, p_mw=0, q_mvar=0, soc_percent=0)
     )

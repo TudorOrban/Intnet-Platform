@@ -1,6 +1,6 @@
 
 import random
-from core.common.data_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType
+from core.common.data_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType, StorageUnitType
 
 def generate_realistic_static_data(graph_topology: GridGraphData) -> GridGraphData:
     """Generates realistic static electric data for the electric grid components"""
@@ -8,6 +8,7 @@ def generate_realistic_static_data(graph_topology: GridGraphData) -> GridGraphDa
     graph_data = generate_realistic_load_data(graph_topology)
     graph_data = generate_realistic_generator_data(graph_data)
     graph_data = generate_realistic_der_data(graph_data)
+    graph_data = generate_realistic_storage_unit_data(graph_data)
     graph_data = generate_realistic_bus_data(graph_data)
     graph_data = generate_realistic_edge_data(graph_data)
 
@@ -67,7 +68,7 @@ def generate_realistic_generator_data(graph_data: GridGraphData) -> GridGraphDat
 
     total_load_max_p_mw = sum(load.max_p_mw for bus in graph_data.buses for load in bus.loads)
     
-    safety_margin = 1.5
+    safety_margin = 1.1
     variation = 0.2
 
     generator_types = list(GENERATOR_TYPE_PROBABILITIES.keys())
@@ -108,7 +109,7 @@ def generate_realistic_der_data(graph_data: GridGraphData) -> GridGraphData:
     
     total_load_max_p_mw = sum(load.max_p_mw for bus in graph_data.buses for load in bus.loads)
     
-    safety_margin = 0.4
+    safety_margin = 0.1
     variation = 0.2
 
     der_types = list(DER_TYPE_PROBABILITIES.keys())
@@ -131,6 +132,74 @@ def generate_realistic_der_data(graph_data: GridGraphData) -> GridGraphData:
 
     return graph_data
 
+# Storage Units
+STORAGE_UNIT_TYPE_RANGES = {
+    StorageUnitType.BATTERY: {
+        "p_min_mult": 0.2,
+        "p_max_mult": 0.8,
+        "q_min_mult": -0.3,
+        "q_max_mult": 0.3,
+        "e_min_mult": 0.1,
+        "e_max_mult": 0.9,
+    },
+    StorageUnitType.PUMPED_HYDRO: {
+        "p_min_mult": 0.5,
+        "p_max_mult": 1.0,
+        "q_min_mult": -0.2,
+        "q_max_mult": 0.2,
+        "e_min_mult": 0.2,
+        "e_max_mult": 0.95,
+    },
+}
+
+STORAGE_UNIT_TYPE_PROBABILITIES = {
+    StorageUnitType.BATTERY: 0.2,
+    StorageUnitType.PUMPED_HYDRO: 0.1,
+}
+
+def generate_realistic_storage_unit_data(graph_data: GridGraphData) -> GridGraphData:
+    available_buses = [bus for bus in graph_data.buses if bus.storage_units]
+    if not available_buses:
+        return graph_data
+
+    total_load_max_p_mw = sum(load.max_p_mw for bus in graph_data.buses for load in bus.loads)
+
+    safety_margin = 0.05
+    variation = 0.05
+
+    storage_types = list(STORAGE_UNIT_TYPE_PROBABILITIES.keys())
+    probabilities = list(STORAGE_UNIT_TYPE_PROBABILITIES.values())
+
+    for bus in available_buses:
+        for storage_unit in bus.storage_units:
+            storage_type = random.choices(storage_types, probabilities)[0]
+            storage_unit.storage_type = storage_type
+
+            storage_ranges = STORAGE_UNIT_TYPE_RANGES[storage_type]
+
+            max_p_mw_per_storage = (total_load_max_p_mw * safety_margin / len(bus.storage_units))
+
+            storage_unit.min_p_mw = -random.uniform(max_p_mw_per_storage * storage_ranges["p_min_mult"] * (1 - variation),
+                                                  max_p_mw_per_storage * storage_ranges["p_max_mult"] * (1 + variation))
+            storage_unit.max_p_mw = random.uniform(max_p_mw_per_storage * storage_ranges["p_min_mult"] * (1 - variation),
+                                                  max_p_mw_per_storage * storage_ranges["p_max_mult"] * (1 + variation))
+
+            storage_unit.min_q_mvar = storage_unit.min_p_mw * storage_ranges["q_min_mult"]
+            storage_unit.max_q_mvar = storage_unit.max_p_mw * storage_ranges["q_max_mult"]
+
+            max_e_mwh_per_storage = total_load_max_p_mw * 2
+
+            storage_unit.min_e_mwh = random.uniform(max_e_mwh_per_storage * storage_ranges["e_min_mult"] * (1 - variation),
+                                                     max_e_mwh_per_storage * storage_ranges["e_max_mult"] * (1 + variation))
+
+            storage_unit.max_e_mwh = random.uniform(max_e_mwh_per_storage * storage_ranges["e_min_mult"] * (1 - variation),
+                                                     max_e_mwh_per_storage * storage_ranges["e_max_mult"] * (1 + variation))
+
+            storage_unit.sn_mva = max(abs(storage_unit.min_p_mw), storage_unit.max_p_mw) * 1.2
+            storage_unit.controllable = True
+
+    return graph_data
+
 # Buses
 def generate_realistic_bus_data(graph_data: GridGraphData) -> GridGraphData:
     for bus in graph_data.buses:
@@ -144,7 +213,7 @@ EDGE_TYPE_RANGES = {
     EdgeType.TRANSMISSION_LINE: {
         "r_ohm_per_km": (0.01, 0.05),
         "x_ohm_per_km": (0.2, 0.4),
-        "length_km": (1, 5),
+        "length_km": (1, 20),
     },
     EdgeType.DISTRIBUTION_LINE: {
         "r_ohm_per_km": (0.2, 0.8),

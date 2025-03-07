@@ -1,6 +1,6 @@
 
 import random
-from core.common.data_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType
+from core.common.data_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType, StorageUnitType
 
 
 def generate_realistic_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
@@ -9,6 +9,7 @@ def generate_realistic_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
     graph_data = generate_realistic_load_dynamic_data(graph_data)
     graph_data = generate_realistic_generator_dynamic_data(graph_data)
     graph_data = generate_realistic_der_dynamic_data(graph_data)
+    graph_data = generate_realistic_storage_unit_dynamic_data(graph_data)
     graph_data = generate_realistic_bus_dynamic_data(graph_data)
     graph_data = generate_realistic_edge_dynamic_data(graph_data)
 
@@ -58,6 +59,7 @@ def generate_realistic_generator_dynamic_data(graph_data: GridGraphData) -> Grid
             gen.state.cp1_eur_per_mw = random.uniform(cost_ranges["min_cost"], cost_ranges["max_cost"])
     return graph_data
 
+# DER
 DER_TYPE_FLUCTUATION = {
     DERType.SOLAR: {"p_min_ratio": 0.0, "p_max_ratio": 1.0, "q_min_ratio": -1.0, "q_max_ratio": 1.0},
     DERType.WIND: {"p_min_ratio": 0.0, "p_max_ratio": 1.0, "q_min_ratio": -1.0, "q_max_ratio": 1.0},
@@ -69,6 +71,46 @@ def generate_realistic_der_dynamic_data(graph_data: GridGraphData) -> GridGraphD
             fluctuation = DER_TYPE_FLUCTUATION[der.der_type]
             der.state.p_mw = random.uniform(der.min_p_mw * fluctuation["p_min_ratio"], der.max_p_mw * fluctuation["p_max_ratio"])
             der.state.q_mvar = random.uniform(der.min_q_mvar * fluctuation["q_min_ratio"], der.max_q_mvar * fluctuation["q_max_ratio"])
+    return graph_data
+
+# Storage unit
+
+STORAGE_UNIT_TYPE_FLUCTUATION = {
+    StorageUnitType.BATTERY: {
+        "p_min_ratio": -1.0,
+        "p_max_ratio": 1.0,
+        "q_min_ratio": -0.8,
+        "q_max_ratio": 0.8,
+        "soc_min_ratio": -0.1,
+        "soc_max_ratio": 0.1,
+    },
+    StorageUnitType.PUMPED_HYDRO: {
+        "p_min_ratio": -1.0,
+        "p_max_ratio": 1.0,
+        "q_min_ratio": -0.5,
+        "q_max_ratio": 0.5,
+        "soc_min_ratio": -0.05,
+        "soc_max_ratio": 0.05,
+    },
+}
+
+def generate_realistic_storage_unit_dynamic_data(graph_data: GridGraphData) -> GridGraphData:
+    for bus in graph_data.buses:
+        for storage_unit in bus.storage_units:
+            fluctuation = STORAGE_UNIT_TYPE_FLUCTUATION[storage_unit.storage_type]
+
+            storage_unit.state.p_mw = random.uniform(
+                storage_unit.min_p_mw * fluctuation["p_min_ratio"],
+                storage_unit.max_p_mw * fluctuation["p_max_ratio"],
+            )
+            storage_unit.state.q_mvar = random.uniform(
+                storage_unit.min_q_mvar * fluctuation["q_min_ratio"],
+                storage_unit.max_q_mvar * fluctuation["q_max_ratio"],
+            )
+
+            soc_change = random.uniform(fluctuation["soc_min_ratio"], fluctuation["soc_max_ratio"])
+            storage_unit.state.soc_percent = max(0.0, min(100.0, storage_unit.state.soc_percent + soc_change * 100))
+
     return graph_data
 
 # Bus
