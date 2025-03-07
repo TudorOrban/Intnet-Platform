@@ -109,8 +109,8 @@ def generate_realistic_der_data(graph_data: GridGraphData) -> GridGraphData:
     
     total_load_max_p_mw = sum(load.max_p_mw for bus in graph_data.buses for load in bus.loads)
     
-    safety_margin = 0.1
-    variation = 0.2
+    safety_margin = 0.04
+    variation = 0.02
 
     der_types = list(DER_TYPE_PROBABILITIES.keys())
     probabilities = list(DER_TYPE_PROBABILITIES.values())
@@ -218,7 +218,7 @@ EDGE_TYPE_RANGES = {
     EdgeType.DISTRIBUTION_LINE: {
         "r_ohm_per_km": (0.2, 0.8),
         "x_ohm_per_km": (0.1, 0.3),
-        "length_km": (1, 20),
+        "length_km": (0.2, 5),
     },
     # EdgeType.TRANSFORMER: {
     #     "r_ohm_per_km": (0.001, 0.005),

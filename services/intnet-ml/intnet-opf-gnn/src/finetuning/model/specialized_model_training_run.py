@@ -8,9 +8,9 @@ from finetuning.model.specialized_model_training import train_specialized_model
 
 def run_mlflow_train_specialized_model():
     with mlflow.start_run():
-        samples_count = 10
+        samples_count = 50
         epochs = 200
-        hidden_channels = 512
+        hidden_channels = 1024
         lr = 0.008
         weight_decay = 1e-5
         dropout_rate = 0.01
