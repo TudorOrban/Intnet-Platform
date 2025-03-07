@@ -1,27 +1,26 @@
 
 from dataclasses import dataclass
-import datetime
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional
+from pydantic import BaseModel
 
 
 # Generators
-@dataclass
-class GeneratorState:
+class GeneratorState(BaseModel):
     generator_id: int
     p_mw: float
     q_mvar: float
     cp1_eur_per_mw: float
 
-class GeneratorType(Enum):
+class GeneratorType(str, Enum):
     HYDRO = "HYDRO"
     NUCLEAR = "NUCLEAR"
     COAL = "COAL"
     GAS = "GAS"
     OIL = "OIL"
 
-@dataclass
-class Generator:
+class Generator(BaseModel):
     id: int
     bus_id: int
     generator_type: GeneratorType
@@ -33,20 +32,18 @@ class Generator:
     state: GeneratorState
 
 # Loads
-@dataclass
-class LoadState:
+class LoadState(BaseModel):
     load_id: int
     p_mw: float
     q_mvar: float
 
-class LoadType(Enum):
+class LoadType(str, Enum):
     RESIDENTIAL = "RESIDENTIAL"
     COMMERCIAL = "COMMERCIAL"
     INDUSTRIAL = "INDUSTRIAL"   
     UNKNOWN = "UNKNOWN"
 
-@dataclass
-class Load:
+class Load(BaseModel):
     id: int
     bus_id: int
     load_type: LoadType
@@ -57,18 +54,16 @@ class Load:
     state: LoadState
 
 # DERs
-@dataclass
-class DERState:
+class DERState(BaseModel):
     der_id: int
     p_mw: float
     q_mvar: float
 
-class DERType(Enum):
+class DERType(str, Enum):
     SOLAR = "SOLAR"
     WIND = "WIND"
 
-@dataclass
-class DER:
+class DER(BaseModel):
     id: int
     bus_id: int
     der_type: DERType
@@ -79,19 +74,17 @@ class DER:
     state: DERState
 
 # Storage units
-@dataclass
-class StorageUnitState:
+class StorageUnitState(BaseModel):
     storage_unit_id: int
     p_mw: float
     q_mvar: float
     soc_percent: float
 
-class StorageUnitType(Enum):
+class StorageUnitType(str, Enum):
     BATTERY = "BATTERY"
     PUMPED_HYDRO = "PUMPED_HYDRO"
 
-@dataclass
-class StorageUnit:
+class StorageUnit(BaseModel):
     id: int
     bus_id: int
     storage_type: StorageUnitType
@@ -104,8 +97,7 @@ class StorageUnit:
     state: StorageUnitState
 
 # Buses
-@dataclass
-class BusState:
+class BusState(BaseModel):
     bus_id: int
     vm_pu: float
     va_deg: float
@@ -113,13 +105,12 @@ class BusState:
     q_inj_mvar: float
     tap_pos: Optional[float]
 
-class BusType(Enum):
+class BusType(str, Enum):
     PQ = "PQ"
     PV = "PV"
     REF = "REF"
 
-@dataclass
-class Bus:
+class Bus(BaseModel):
     id: int
     bus_type: BusType
     latitude: float
@@ -135,21 +126,19 @@ class Bus:
     storage_units: List[StorageUnit]
 
 # Edges
-@dataclass
-class EdgeState:
+class EdgeState(BaseModel):
     edge_id: int
     p_flow_mw: float
     q_flow_mvar: float
     i_ka: float
     in_service: bool
 
-class EdgeType(Enum):
+class EdgeType(str, Enum):
     TRANSMISSION_LINE = "TRANSMISSION_LINE"
     DISTRIBUTION_LINE = "DISTRIBUTION_LINE"
     TRANSFORMER = "TRANSFORMER"
 
-@dataclass
-class Edge:
+class Edge(BaseModel):
     id: int
     src_bus_id: int
     dest_bus_id: int
@@ -159,13 +148,11 @@ class Edge:
     x_ohm_per_km: float
     state: EdgeState
 
-@dataclass
-class GridGraphData:
+class GridGraphData(BaseModel):
     buses: List[Bus]
     edges: List[Edge]
 
-@dataclass
-class GridGraph:
+class GridGraph(BaseModel):
     id: int
     created_at: datetime
     graph_data: GridGraphData

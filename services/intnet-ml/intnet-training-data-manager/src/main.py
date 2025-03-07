@@ -1,30 +1,22 @@
-from datetime import datetime
-import logging
+import os
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
-from features.grid_graph.models.grid_graph_types import GridGraph, GridGraphData
-from features.grid_graph.repositories.grid_graph_repository_creator import create_grid_graph_repository
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from core.config.logging_config import configure_logging, get_logger
+from features.grid_graph.routers.grid_graph_router import router as grid_graph_router # Correct import
 
 load_dotenv()
 
+
+configure_logging()
+logger = get_logger(__name__)
+
 app = FastAPI()
+
+
 
 @app.get("/")
 async def root():
     return {"message": "Intnet Training Data Manager Service is running"}
 
-@app.get("/grid-graph")
-async def get_grid_graph():
-    graph_repository = create_grid_graph_repository()
-
-    grid_graph = GridGraph(id=0, created_at=datetime.now(), graph_data=GridGraphData(buses=[], edges=[]))
-
-    graph_repository.save(grid_graph)
-
-    saved_graph = graph_repository.find()
-    
-    return saved_graph
+app.include_router(grid_graph_router)

@@ -13,6 +13,7 @@ logger = structlog.get_logger(__name__)
 
 class GridGraphMongoRepository(GridGraphRepository):
     def __init__(self):
+        print(os.getenv("MONGODB_CONNECTION_STRING"))
         connection_string = os.getenv("MONGODB_CONNECTION_STRING")
         database_name = os.getenv("MONGODB_DATABASE_NAME")
         collection_name="grid_graph"
@@ -36,6 +37,7 @@ class GridGraphMongoRepository(GridGraphRepository):
             return None
 
         document = self.collection.find_one()
+        print("Document", document)
         if document:
             return GridGraphJsonMapper.deserialize_grid_graph(document)
         else:
