@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional
 
 from features.grid_graph.models.grid_graph_types import GridGraph
-from features.grid_graph.utils.graph_data_deserializer import GraphDataDeserializer
+from features.grid_graph.utils.grid_graph_json_mapper import GridGraphJsonMapper
 
 """
 Repository for Grid Graph using JSON storage for fast iteration in model development
@@ -22,10 +22,10 @@ class GridGraphJsonRepository:
         with open(self.file_path, "r") as f:
             data = json.load(f)
             
-        return GraphDataDeserializer.deserialize_grid_graph(data)
+        return GridGraphJsonMapper.deserialize_grid_graph(data)
     
     def save(self, grid_graph: GridGraph):
-        data = GraphDataDeserializer.serialize_grid_graph(grid_graph)
+        data = GridGraphJsonMapper.serialize_grid_graph(grid_graph)
 
         with open(self.file_path, "w") as f:
             json.dump(data, f, indent=4)

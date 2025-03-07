@@ -14,3 +14,7 @@ class GridGraphRepository(ABC):
     @abstractmethod
     def save(self, grid_graph: GridGraph):
         pass
+
+    @abstractmethod
+    def delete(self):
+        pass

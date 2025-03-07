@@ -1,7 +1,7 @@
 from features.grid_graph.models.grid_graph_types import BusType, DERType, Edge, EdgeState, EdgeType, GeneratorType, GridGraph, GridGraphData, Bus, BusState, Generator, GeneratorState, Load, LoadState, DER, DERState, LoadType, StorageUnit, StorageUnitState, StorageUnitType
 
 
-class GraphDataDeserializer:
+class GridGraphJsonMapper:
 
     # Graph Data
     @staticmethod
@@ -9,14 +9,14 @@ class GraphDataDeserializer:
         return GridGraph(
             id=grid_graph["id"],
             created_at=grid_graph["created_at"],
-            graph_data=GraphDataDeserializer.deserialize_graph_data(grid_graph["graph_data"])
+            graph_data=GridGraphJsonMapper.deserialize_graph_data(grid_graph["graph_data"])
         )
 
     @staticmethod
     def deserialize_graph_data(graph_data: dict) -> GridGraphData:
         return GridGraphData(
-            buses=[GraphDataDeserializer.deserialize_bus(bus_data) for bus_data in graph_data["buses"]],
-            edges=[GraphDataDeserializer.deserialize_edge(edge_data) for edge_data in graph_data["edges"]]
+            buses=[GridGraphJsonMapper.deserialize_bus(bus_data) for bus_data in graph_data["buses"]],
+            edges=[GridGraphJsonMapper.deserialize_edge(edge_data) for edge_data in graph_data["edges"]]
         )
 
     @staticmethod
@@ -29,11 +29,11 @@ class GraphDataDeserializer:
             min_vm_pu=bus_data["min_vm_pu"],
             max_vm_pu=bus_data["max_vm_pu"],
             vn_kv=bus_data["vn_kv"],
-            state=GraphDataDeserializer.deserialize_bus_state(bus_data["state"]),
-            generators=[GraphDataDeserializer.deserialize_generator(gen_data) for gen_data in bus_data["generators"]],
-            loads=[GraphDataDeserializer.deserialize_load(load_data) for load_data in bus_data["loads"]],
-            ders=[GraphDataDeserializer.deserialize_der(der_data) for der_data in bus_data["ders"]],
-            storage_units=[GraphDataDeserializer.deserialize_storage_unit(storage_unit_data) for storage_unit_data in bus_data["storage_units"]],
+            state=GridGraphJsonMapper.deserialize_bus_state(bus_data["state"]),
+            generators=[GridGraphJsonMapper.deserialize_generator(gen_data) for gen_data in bus_data["generators"]],
+            loads=[GridGraphJsonMapper.deserialize_load(load_data) for load_data in bus_data["loads"]],
+            ders=[GridGraphJsonMapper.deserialize_der(der_data) for der_data in bus_data["ders"]],
+            storage_units=[GridGraphJsonMapper.deserialize_storage_unit(storage_unit_data) for storage_unit_data in bus_data["storage_units"]],
         )
 
     @staticmethod
@@ -57,7 +57,7 @@ class GraphDataDeserializer:
             length_km=edge_data["length_km"],
             r_ohm_per_km=edge_data["r_ohm_per_km"],
             x_ohm_per_km=edge_data["x_ohm_per_km"],
-            state=GraphDataDeserializer.deserialize_edge_state(edge_data["state"])
+            state=GridGraphJsonMapper.deserialize_edge_state(edge_data["state"])
         )
     
     @staticmethod
@@ -81,7 +81,7 @@ class GraphDataDeserializer:
             min_q_mvar=gen_data["min_q_mvar"],
             max_q_mvar=gen_data["max_q_mvar"],
             slack=gen_data["slack"],
-            state=GraphDataDeserializer.deserialize_generator_state(gen_data["state"])
+            state=GridGraphJsonMapper.deserialize_generator_state(gen_data["state"])
         )
     
     @staticmethod
@@ -103,7 +103,7 @@ class GraphDataDeserializer:
             max_p_mw=load_data["max_p_mw"],
             min_q_mvar=load_data["min_q_mvar"],
             max_q_mvar=load_data["max_q_mvar"],
-            state=GraphDataDeserializer.deserialize_load_state(load_data["state"])
+            state=GridGraphJsonMapper.deserialize_load_state(load_data["state"])
         )
     
     @staticmethod
@@ -124,7 +124,7 @@ class GraphDataDeserializer:
             max_p_mw=der_data["max_p_mw"],
             min_q_mvar=der_data["min_q_mvar"],
             max_q_mvar=der_data["max_q_mvar"],
-            state=GraphDataDeserializer.deserialize_der_state(der_data["state"])
+            state=GridGraphJsonMapper.deserialize_der_state(der_data["state"])
         )
     
     @staticmethod
@@ -147,7 +147,7 @@ class GraphDataDeserializer:
             max_q_mvar=unit_data["max_q_mvar"],
             min_e_mwh=unit_data["min_e_mwh"],
             max_e_mwh=unit_data["max_e_mwh"],
-            state=GraphDataDeserializer.deserialize_storage_unit_state(unit_data["state"])
+            state=GridGraphJsonMapper.deserialize_storage_unit_state(unit_data["state"])
         )
     
     @staticmethod
@@ -164,14 +164,14 @@ class GraphDataDeserializer:
         return {
             "id": graph.id,
             "created_at": graph.created_at.isoformat(),
-            "graph_data": GraphDataDeserializer.serialize_graph_data(graph.graph_data)
+            "graph_data": GridGraphJsonMapper.serialize_graph_data(graph.graph_data)
         }
 
     @staticmethod
     def serialize_graph_data(graph_data: GridGraphData) -> dict:
         return {
-            "buses": [GraphDataDeserializer.serialize_bus(bus) for bus in graph_data.buses],
-            "edges": [GraphDataDeserializer.serialize_edge(edge) for edge in graph_data.edges]
+            "buses": [GridGraphJsonMapper.serialize_bus(bus) for bus in graph_data.buses],
+            "edges": [GridGraphJsonMapper.serialize_edge(edge) for edge in graph_data.edges]
         }
 
     @staticmethod
@@ -184,11 +184,11 @@ class GraphDataDeserializer:
             "min_vm_pu": bus.min_vm_pu,
             "max_vm_pu": bus.max_vm_pu,
             "vn_kv": bus.vn_kv,
-            "state": GraphDataDeserializer.serialize_bus_state(bus.state),
-            "generators": [GraphDataDeserializer.serialize_generator(gen) for gen in bus.generators],
-            "loads": [GraphDataDeserializer.serialize_load(load) for load in bus.loads],
-            "ders": [GraphDataDeserializer.serialize_der(der) for der in bus.ders],
-            "storage_units": [GraphDataDeserializer.serialize_storage_unit(storage_unit) for storage_unit in bus.storage_units],
+            "state": GridGraphJsonMapper.serialize_bus_state(bus.state),
+            "generators": [GridGraphJsonMapper.serialize_generator(gen) for gen in bus.generators],
+            "loads": [GridGraphJsonMapper.serialize_load(load) for load in bus.loads],
+            "ders": [GridGraphJsonMapper.serialize_der(der) for der in bus.ders],
+            "storage_units": [GridGraphJsonMapper.serialize_storage_unit(storage_unit) for storage_unit in bus.storage_units],
         }
     
     @staticmethod
@@ -213,7 +213,7 @@ class GraphDataDeserializer:
             "min_q_mvar": gen.min_q_mvar,
             "max_q_mvar": gen.max_q_mvar,
             "slack": gen.slack,
-            "state": GraphDataDeserializer.serialize_generator_state(gen.state)
+            "state": GridGraphJsonMapper.serialize_generator_state(gen.state)
         }
 
     @staticmethod
@@ -235,7 +235,7 @@ class GraphDataDeserializer:
             "max_p_mw": load.max_p_mw,
             "min_q_mvar": load.min_q_mvar,
             "max_q_mvar": load.max_q_mvar,
-            "state": GraphDataDeserializer.serialize_load_state(load.state)
+            "state": GridGraphJsonMapper.serialize_load_state(load.state)
         }
     
     @staticmethod
@@ -256,7 +256,7 @@ class GraphDataDeserializer:
             "max_p_mw": gen.max_p_mw,
             "min_q_mvar": gen.min_q_mvar,
             "max_q_mvar": gen.max_q_mvar,
-            "state": GraphDataDeserializer.serialize_der_state(gen.state)
+            "state": GridGraphJsonMapper.serialize_der_state(gen.state)
         }
 
     @staticmethod
@@ -279,7 +279,7 @@ class GraphDataDeserializer:
             "max_q_mvar": gen.max_q_mvar,
             "min_e_mwh": gen.min_e_mwh,
             "max_e_mwh": gen.max_e_mwh,
-            "state": GraphDataDeserializer.serialize_storage_unit_state(gen.state)
+            "state": GridGraphJsonMapper.serialize_storage_unit_state(gen.state)
         }
 
     @staticmethod
@@ -301,7 +301,7 @@ class GraphDataDeserializer:
             "length_km": edge.length_km,
             "r_ohm_per_km": edge.r_ohm_per_km,
             "x_ohm_per_km": edge.x_ohm_per_km,
-            "state": GraphDataDeserializer.serialize_edge_state(edge.state)
+            "state": GridGraphJsonMapper.serialize_edge_state(edge.state)
         }
     
     @staticmethod
