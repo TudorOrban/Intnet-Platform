@@ -6,36 +6,6 @@ class DynamicDataRecordJsonMapper:
 
     @staticmethod
     def deserialize_dynamic_data_record(record: dict) -> DynamicDataRecord:
-        bus_data = {
-            int(bus_id): GridGraphJsonMapper.deserialize_bus_state(state_data)
-            for bus_id, state_data in record["bus_data"].items()
-        }
-
-        edge_data = {
-            int(edge_id): GridGraphJsonMapper.deserialize_edge_state(state_data)
-            for edge_id, state_data in record["edge_data"].items()
-        }
-
-        generator_data = {
-            int(generator_id): GridGraphJsonMapper.deserialize_generator_state(state_data)
-            for generator_id, state_data in record["generator_data"].items()
-        }
-
-        load_data = {
-            int(load_id): GridGraphJsonMapper.deserialize_load_state(state_data)
-            for load_id, state_data in record["load_data"].items()
-        }
-
-        der_data = {
-            int(der_id): GridGraphJsonMapper.deserialize_der_state(state_data)
-            for der_id, state_data in record["der_data"].items()
-        }
-
-        storage_unit_data = {
-            int(storage_unit_id): GridGraphJsonMapper.deserialize_storage_unit_state(state_data)
-            for storage_unit_id, state_data in record["storage_unit_data"].items()
-        }
-
         return DynamicDataRecord(
             id=record["id"],
             created_at=record["created_at"],
