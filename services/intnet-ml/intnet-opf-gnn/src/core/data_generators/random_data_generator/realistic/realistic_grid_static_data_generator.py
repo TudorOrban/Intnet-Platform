@@ -124,9 +124,12 @@ def generate_realistic_der_data(graph_data: GridGraphData) -> GridGraphData:
             max_p_mw_per_der = (total_load_max_p_mw * safety_margin / len(bus.ders))
 
             der.min_p_mw = 0
-            der.max_p_mw = random.uniform(max_p_mw_per_der * der_ranges["p_min_mult"] * (1 - variation))
+            der.max_p_mw = random.uniform(max_p_mw_per_der * der_ranges["p_min_mult"] * (1 - variation),
+                                          max_p_mw_per_der * der_ranges["p_max_mult"] * (1 + variation))
             der.min_q_mvar = der.min_p_mw * der_ranges["q_min_mult"]
             der.max_q_mvar = der.max_p_mw * der_ranges["q_max_mult"]
+
+    return graph_data
 
 # Buses
 def generate_realistic_bus_data(graph_data: GridGraphData) -> GridGraphData:

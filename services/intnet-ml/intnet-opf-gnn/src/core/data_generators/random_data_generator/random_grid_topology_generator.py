@@ -83,7 +83,7 @@ def generate_random_load(id: int, bus_id: int) -> Load:
 
 def generate_random_der(id: int, bus_id: int) -> DER:
     return DER(
-        id=id, bus_id=bus_id, der_type=DERType.COAL,
+        id=id, bus_id=bus_id, der_type=DERType.SOLAR,
         min_p_mw=0, max_p_mw=0, min_q_mvar=0, max_q_mvar=0,
         state=DERState(der_id=id, p_mw=0, q_mvar=0)
     )

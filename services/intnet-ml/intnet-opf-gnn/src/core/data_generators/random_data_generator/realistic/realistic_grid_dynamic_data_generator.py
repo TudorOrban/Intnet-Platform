@@ -59,8 +59,8 @@ def generate_realistic_generator_dynamic_data(graph_data: GridGraphData) -> Grid
     return graph_data
 
 DER_TYPE_FLUCTUATION = {
-    DERType.NUCLEAR: {"p_min_ratio": 1.0, "p_max_ratio": 1.0, "q_min_ratio": 1.0, "q_max_ratio": 1.0},
-    DERType.HYDRO: {"p_min_ratio": 1.0, "p_max_ratio": 1.0, "q_min_ratio": 1.0, "q_max_ratio": 1.0},
+    DERType.SOLAR: {"p_min_ratio": 0.0, "p_max_ratio": 1.0, "q_min_ratio": -1.0, "q_max_ratio": 1.0},
+    DERType.WIND: {"p_min_ratio": 0.0, "p_max_ratio": 1.0, "q_min_ratio": -1.0, "q_max_ratio": 1.0},
 }
 
 def generate_realistic_der_dynamic_data(graph_data: GridGraphData) -> GridGraphData:

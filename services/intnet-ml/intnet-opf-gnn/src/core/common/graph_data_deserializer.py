@@ -1,5 +1,5 @@
 from core.data_generators.sample_manager.sample_types import BusFixedSpecificationSamples, EdgeFixedSpecificationSamples, FixedSpecificationSample, FixedTopologySample, GeneratorFixedSpecificationSamples, LoadFixedSpecificationSamples
-from core.common.data_types import DER, DERState, DERType, EdgeType, GeneratorType, GridGraph, GridGraphData, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType, LoadType
+from core.common.data_types import DER, DERState, DERType, EdgeType, GeneratorType, GridGraph, GridGraphData, Bus, Edge, Generator, Load, BusState, EdgeState, GeneratorState, LoadState, BusType, LoadType, StorageUnit, StorageUnitState, StorageUnitType
 
 
 class GraphDataDeserializer:
@@ -34,6 +34,7 @@ class GraphDataDeserializer:
             generators=[GraphDataDeserializer.deserialize_generator(gen_data) for gen_data in bus_data["generators"]],
             loads=[GraphDataDeserializer.deserialize_load(load_data) for load_data in bus_data["loads"]],
             ders=[GraphDataDeserializer.deserialize_der(der_data) for der_data in bus_data["ders"]],
+            storage_units=[GraphDataDeserializer.deserialize_storage_unit(storage_unit_data) for storage_unit_data in bus_data["storage_units"]],
         )
 
     @staticmethod
@@ -136,6 +137,30 @@ class GraphDataDeserializer:
         )
     
     @staticmethod
+    def deserialize_storage_unit(unit_data: dict) -> DER:
+        return StorageUnit(
+            id=unit_data["id"],
+            bus_id=unit_data["bus_id"],
+            storage_type=StorageUnitType(unit_data["storage_type"]),
+            min_p_mw=unit_data["min_p_mw"],
+            max_p_mw=unit_data["max_p_mw"],
+            min_q_mvar=unit_data["min_q_mvar"],
+            max_q_mvar=unit_data["max_q_mvar"],
+            min_e_mwh=unit_data["min_e_mwh"],
+            max_e_mwh=unit_data["max_e_mwh"],
+            state=GraphDataDeserializer.deserialize_storage_unit_state(unit_data["state"])
+        )
+    
+    @staticmethod
+    def deserialize_storage_unit_state(state_data: dict) -> StorageUnitState:
+        return StorageUnitState(
+            storage_unit_id=state_data["storage_unit_id"],
+            p_mw=state_data["p_mw"],
+            q_mvar=state_data["q_mvar"],
+            soc_percent=state_data["soc_percent"]
+        )
+    
+    @staticmethod
     def serialize_grid_graph(graph: GridGraph) -> dict:
         return {
             "id": graph.id,
@@ -164,6 +189,7 @@ class GraphDataDeserializer:
             "generators": [GraphDataDeserializer.serialize_generator(gen) for gen in bus.generators],
             "loads": [GraphDataDeserializer.serialize_load(load) for load in bus.loads],
             "ders": [GraphDataDeserializer.serialize_der(der) for der in bus.ders],
+            "storage_units": [GraphDataDeserializer.serialize_storage_unit(storage_unit) for storage_unit in bus.storage_units],
         }
     
     @staticmethod
@@ -240,6 +266,30 @@ class GraphDataDeserializer:
             "der_id": state.der_id,
             "p_mw": state.p_mw,
             "q_mvar": state.q_mvar,
+        }
+    
+    @staticmethod
+    def serialize_storage_unit(gen: StorageUnit) -> dict:
+        return {
+            "id": gen.id,
+            "bus_id": gen.bus_id,
+            "storage_type": gen.storage_type.value,
+            "min_p_mw": gen.min_p_mw,
+            "max_p_mw": gen.max_p_mw,
+            "min_q_mvar": gen.min_q_mvar,
+            "max_q_mvar": gen.max_q_mvar,
+            "min_e_mwh": gen.min_e_mwh,
+            "max_e_mwh": gen.max_e_mwh,
+            "state": GraphDataDeserializer.serialize_storage_unit_state(gen.state)
+        }
+
+    @staticmethod
+    def serialize_storage_unit_state(state: StorageUnitState) -> dict:
+        return {
+            "storage_unit_id": state.storage_unit_id,
+            "p_mw": state.p_mw,
+            "q_mvar": state.q_mvar,
+            "soc_percent": state.soc_percent,
         }
 
     @staticmethod

@@ -48,6 +48,17 @@ def create_loads(net: pandapowerNet, bus: Bus):
             p_mw=load.state.p_mw, q_mvar=load.state.q_mvar,
         )
 
+def create_ders(net: pandapowerNet, bus: Bus):
+    bus_index = net.bus.index[net.bus["name"] == str(bus.id)].tolist()[0]
+
+    for der in bus.ders:
+        pp.create_gen(
+            net, bus=bus_index, name=str(der.id),
+            min_p_mw=der.state.p_mw, max_p_mw=der.state.p_mw, min_q_mvar=der.state.q_mvar, max_q_mvar=der.state.q_mvar, # Fixed power
+            p_mw=der.state.p_mw, q_mvar=der.state.q_mvar,
+            slack=False
+        )
+
 def create_edges(net: pandapowerNet, edges: List[Edge]):
     for edge in edges:
         if edge.edge_type == EdgeType.TRANSFORMER: 

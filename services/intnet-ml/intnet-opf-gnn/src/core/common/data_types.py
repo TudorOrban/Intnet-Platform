@@ -78,6 +78,31 @@ class DER:
     max_q_mvar: float
     state: DERState
 
+# Storage units
+@dataclass
+class StorageUnitState:
+    storage_unit_id: int
+    p_mw: float
+    q_mvar: float
+    soc_percent: float
+
+class StorageUnitType(Enum):
+    BATTERY = "BATTERY"
+    PUMPED_HYDRO = "PUMPED_HYDRO"
+
+@dataclass
+class StorageUnit:
+    id: int
+    bus_id: int
+    storage_type: StorageUnitType
+    min_p_mw: float
+    max_p_mw: float
+    min_q_mvar: float
+    max_q_mvar: float
+    min_e_mwh: float
+    max_e_mwh: float
+    state: StorageUnitState
+
 # Buses
 @dataclass
 class BusState:
@@ -107,6 +132,7 @@ class Bus:
     generators: List[Generator]
     loads: List[Load]
     ders: List[DER]
+    storage_units: List[StorageUnit]
 
 # Edges
 @dataclass
