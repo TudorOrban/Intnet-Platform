@@ -29,11 +29,23 @@ class DynamicDataRecordDeserializer:
             for load_id, state_data in record["load_data"].items()
         }
 
+        der_data = {
+            int(der_id): GraphDataDeserializer.deserialize_der_state(state_data)
+            for der_id, state_data in record["der_data"].items()
+        }
+
+        storage_unit_data = {
+            int(storage_unit_id): GraphDataDeserializer.storage_unit_state(state_data)
+            for storage_unit_id, state_data in record["storage_unit_data"].items()
+        }
+
         return DynamicDataRecord(
             bus_data=bus_data,
             edge_data=edge_data,
             generator_data=generator_data,
-            load_data=load_data
+            load_data=load_data,
+            der_data=der_data,
+            storage_unit_data=storage_unit_data,
         )
     
 
@@ -59,9 +71,20 @@ class DynamicDataRecordDeserializer:
             for load_id, state in record.load_data.items()
         }
 
+        der_data = {
+            str(der_id): GraphDataDeserializer.serialize_der_state(state)
+            for der_id, state in record.der_data.items()
+        }
+
+        storage_unit_data = {
+            str(storage_unit_id): GraphDataDeserializer.serialize_storage_unit_state(state)
+            for storage_unit_id, state in record.storage_unit_data.items()
+        }
         return {
             "bus_data": bus_data,
             "edge_data": edge_data,
             "generator_data": generator_data,
             "load_data": load_data,
+            "der_data": der_data,
+            "storage_unit_data": storage_unit_data,
         }

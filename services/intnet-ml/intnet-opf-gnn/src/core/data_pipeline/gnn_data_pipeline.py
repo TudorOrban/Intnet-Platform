@@ -183,7 +183,7 @@ def extract_generator_powers(graph_data: GridGraphData) -> np.ndarray:
     generator_powers = []
     for bus in graph_data.buses:
         for generator in bus.generators:
-            generator_powers.append(generator.state.p_mw)
+            generator_powers.extend([generator.state.p_mw, generator.state.q_mvar])
 
     return np.array(generator_powers)
 

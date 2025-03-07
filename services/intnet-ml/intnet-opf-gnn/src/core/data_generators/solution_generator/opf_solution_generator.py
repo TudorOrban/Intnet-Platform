@@ -27,8 +27,7 @@ def generate_opf_sample(graph_data: GridGraphData) -> Tuple[GridGraphData, bool]
         for generator in bus.generators:
             generator_index = net.gen.index[net.gen["name"] == str(generator.id)].tolist()[0]
             
-            generator_p_mw = net.res_gen.p_mw.values[generator_index]
-
-            generator.state.p_mw = generator_p_mw
+            generator.state.p_mw = net.res_gen.p_mw.values[generator_index]
+            generator.state.q_mvar = net.res_gen.q_mvar.values[generator_index]
 
     return graph_data, True
