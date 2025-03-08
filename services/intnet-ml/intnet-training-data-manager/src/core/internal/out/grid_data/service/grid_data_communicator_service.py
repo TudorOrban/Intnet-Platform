@@ -2,9 +2,13 @@ import os
 import requests
 from typing import Optional
 
+import structlog
+
 from features.grid_graph.models.grid_graph_types import GridGraph
 from features.grid_graph.utils.grid_graph_json_mapper import GridGraphJsonMapper
 
+
+logger = structlog.get_logger(__name__)
 
 class GridDataCommunicatorService:
 
@@ -20,6 +24,8 @@ class GridDataCommunicatorService:
             data = response.json()
             return GridGraphJsonMapper.deserialize_grid_graph(data)
         except requests.exceptions.RequestException as e:
+            logger.error(f"Error communicating with Grid Data Service: {e}")
             return None
         except ValueError:
+            logger.error(f"Invalid JSON response from Grid Data Service: {e}")
             return None
