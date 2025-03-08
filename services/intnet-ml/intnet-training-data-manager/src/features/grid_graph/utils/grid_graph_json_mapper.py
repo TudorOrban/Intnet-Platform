@@ -8,6 +8,7 @@ class GridGraphJsonMapper:
     def deserialize_grid_graph(grid_graph: dict) -> GridGraph:
         return GridGraph(
             id=grid_graph["id"],
+            grid_id=grid_graph["grid_id"],
             created_at=grid_graph["created_at"],
             graph_data=GridGraphJsonMapper.deserialize_graph_data(grid_graph["graph_data"])
         )
@@ -163,6 +164,7 @@ class GridGraphJsonMapper:
     def serialize_grid_graph(graph: GridGraph) -> dict:
         return {
             "id": graph.id,
+            "grid_id": graph.grid_id,
             "created_at": graph.created_at.isoformat(),
             "graph_data": GridGraphJsonMapper.serialize_graph_data(graph.graph_data)
         }

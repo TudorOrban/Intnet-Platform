@@ -153,5 +153,6 @@ class GridGraphData(BaseModel):
 
 class GridGraph(BaseModel):
     id: int
+    grid_id: int
     created_at: datetime
     graph_data: GridGraphData
