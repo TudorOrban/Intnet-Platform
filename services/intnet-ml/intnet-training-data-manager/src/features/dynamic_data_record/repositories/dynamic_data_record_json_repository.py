@@ -9,7 +9,7 @@ from features.dynamic_data_record.utils.dynamic_data_record_json_mapper import D
 
 
 class DynamicDataRecordJsonRepository:
-    def __init__(self, file_path: str = "synthetic_data/grid_records.json"):
+    def __init__(self, file_path: str = "training_data_json_db/synthetic_data/dynamic_data_records.json"):
         self.file_path = Path(file_path)
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
 

@@ -10,7 +10,7 @@ from features.grid_graph.utils.grid_graph_json_mapper import GridGraphJsonMapper
 Repository for Grid Graph using JSON storage for fast iteration in model development
 """
 class GridGraphJsonRepository:
-    def __init__(self, file_path: str = "synthetic_data/finetuning/real_grid_graph.json"):
+    def __init__(self, file_path: str = "training_data_json_db/synthetic_data/finetuning/real_grid_graph.json"):
         self.file_path = Path(file_path)
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
