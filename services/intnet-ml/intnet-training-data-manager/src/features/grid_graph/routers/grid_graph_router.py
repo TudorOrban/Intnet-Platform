@@ -2,8 +2,6 @@ from fastapi import APIRouter
 
 from core.config.service_manager import get_service
 from features.grid_graph.models.grid_graph_types import GridGraph
-from features.grid_graph.repositories.grid_graph_repository import GridGraphRepository
-from features.grid_graph.repositories.grid_graph_repository_creator import create_grid_graph_repository
 
 router = APIRouter()
 
