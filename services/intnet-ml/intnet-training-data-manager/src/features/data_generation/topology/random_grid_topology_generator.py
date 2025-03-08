@@ -84,4 +84,4 @@ def generate_random_grid_topology(specifications: TopologySpecifications) -> Gri
         bus.loads.append(new_load)
         load_count += 1
 
-    return GridGraphData(buses, edges)
+    return GridGraphData(buses=buses, edges=edges)

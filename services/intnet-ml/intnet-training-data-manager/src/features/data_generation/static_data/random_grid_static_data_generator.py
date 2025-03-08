@@ -195,9 +195,6 @@ def generate_random_storage_unit_data(graph_data: GridGraphData) -> GridGraphDat
             storage_unit.max_e_mwh = random.uniform(max_e_mwh_per_storage * storage_ranges["e_min_mult"] * (1 - variation),
                                                      max_e_mwh_per_storage * storage_ranges["e_max_mult"] * (1 + variation))
 
-            storage_unit.sn_mva = max(abs(storage_unit.min_p_mw), storage_unit.max_p_mw) * 1.2
-            storage_unit.controllable = True
-
     return graph_data
 
 # Buses

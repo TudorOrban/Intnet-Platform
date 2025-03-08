@@ -1,3 +1,4 @@
+from datetime import datetime
 import structlog
 from typing import List
 
@@ -32,7 +33,7 @@ class RecordGeneratorService:
 
         return synthetic_records
 
-    def generate_synthetic_records(graph_data: GridGraphData, count=10, try_limit=100) -> List[DynamicDataRecord]:
+    def generate_synthetic_records(self, graph_data: GridGraphData, count=10, try_limit=100) -> List[DynamicDataRecord]:
         """Generates random synthetic Dynamic Data Records with OPF solutions"""
         
         logger.info("Starting generation of dynamic data records.")
@@ -43,15 +44,17 @@ class RecordGeneratorService:
         for i in range(try_limit):
             if convergent_count > count:
                 break
-            
+
             logger.info(f"Progress: {convergent_count} / {count}, Try: {i} / {try_limit}")
             graph_data = generate_random_dynamic_data(graph_data)
             
             graph_data, has_converged = generate_opf_solution(graph_data)
             if has_converged:
-                record = extract_dynamic_data_record(graph_data)
+                record_data = extract_dynamic_data_record(graph_data)
+                record = DynamicDataRecord(id=0, created_at=datetime.now(), record_data=record_data)
                 records.append(record)
                 convergent_count += 1
 
         logger.info("Finished generation of dynamic data records.")
-    
+
+        return records

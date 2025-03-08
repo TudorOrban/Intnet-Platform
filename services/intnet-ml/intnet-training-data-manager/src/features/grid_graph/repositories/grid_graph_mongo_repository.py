@@ -37,7 +37,6 @@ class GridGraphMongoRepository(GridGraphRepository):
             return None
 
         document = self.collection.find_one()
-        print("Document", document)
         if document:
             return GridGraphJsonMapper.deserialize_grid_graph(document)
         else:

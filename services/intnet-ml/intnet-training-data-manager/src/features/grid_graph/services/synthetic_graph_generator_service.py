@@ -36,4 +36,4 @@ class SyntheticGraphGeneratorService:
                 logger.info("Finished generation of synthetic grid graph.")
                 return grid_graph
 
-        logger.info("Failed to generate a synhtetic grid graph: OPF did not converge.")
+        logger.info("Failed to generate a synthetic grid graph: OPF did not converge.")

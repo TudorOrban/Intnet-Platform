@@ -1,6 +1,4 @@
-
-from typing import Generator
-from features.grid_graph.models.grid_graph_types import DER, Bus, BusState, BusType, DERState, DERType, Edge, EdgeState, EdgeType, GeneratorState, GeneratorType, Load, LoadState, LoadType, StorageUnit, StorageUnitState, StorageUnitType
+from features.grid_graph.models.grid_graph_types import DER, Bus, BusState, BusType, DERState, DERType, Edge, EdgeState, EdgeType, Generator, GeneratorState, GeneratorType, Load, LoadState, LoadType, StorageUnit, StorageUnitState, StorageUnitType
 
 
 def generate_bus(id: int) -> Bus:

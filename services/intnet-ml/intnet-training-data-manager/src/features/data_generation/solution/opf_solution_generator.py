@@ -21,7 +21,7 @@ def generate_opf_solution(graph_data: GridGraphData) -> Tuple[GridGraphData, boo
     except Exception as e:
         logger.error(f"OPF didn't converge: {e}")
     if not has_converged:
-        return False
+        return graph_data, False
     
     for bus in graph_data.buses:
         for generator in bus.generators:
@@ -30,4 +30,4 @@ def generate_opf_solution(graph_data: GridGraphData) -> Tuple[GridGraphData, boo
             generator.state.p_mw = net.res_gen.p_mw.values[generator_index]
             generator.state.q_mvar = net.res_gen.q_mvar.values[generator_index]
 
-    return True
+    return graph_data, True

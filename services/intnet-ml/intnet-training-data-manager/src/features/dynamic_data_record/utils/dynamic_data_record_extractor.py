@@ -1,11 +1,11 @@
 import dataclasses
 from typing import Dict
 
-from features.dynamic_data_record.models.record_types import DynamicDataRecord
+from features.dynamic_data_record.models.record_types import RecordData
 from features.grid_graph.models.grid_graph_types import BusState, DERState, EdgeState, GeneratorState, GridGraphData, LoadState, StorageUnitState
 
 
-def extract_dynamic_data_record(graph_data: GridGraphData) -> DynamicDataRecord:
+def extract_dynamic_data_record(graph_data: GridGraphData) -> RecordData:
     """Extracts a record of dynamic data from a grid graph"""
 
     bus_data: Dict[int, BusState] = {} 
@@ -30,10 +30,10 @@ def extract_dynamic_data_record(graph_data: GridGraphData) -> DynamicDataRecord:
     for edge in graph_data.edges:
         edge_data[edge.id] = edge.state
 
-    return DynamicDataRecord(bus_data, edge_data, generator_data, load_data, der_data, storage_unit_data)
+    return RecordData(bus_data=bus_data, edge_data=edge_data, generator_data=generator_data, load_data=load_data, der_data=der_data, storage_unit_data=storage_unit_data)
 
 
-def update_graph_with_record(base_graph: GridGraphData, record: DynamicDataRecord) -> GridGraphData:
+def update_graph_with_record(base_graph: GridGraphData, record: RecordData) -> GridGraphData:
     """Updates the base graph with dynamic data from a record."""
 
     updated_buses = []

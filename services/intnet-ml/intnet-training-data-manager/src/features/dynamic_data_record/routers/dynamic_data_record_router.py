@@ -10,7 +10,6 @@ record_base_route = "/api/v1/dynamic-data-records"
 def create_record_router(record_repository: DynamicDataRecordRepository):
     router = APIRouter()
 
-    # CRUD ops
     @router.get(record_base_route + "/{record_id}", response_model=DynamicDataRecord)
     async def get_record(record_id: int):
         record = record_repository.find_by_id(record_id)

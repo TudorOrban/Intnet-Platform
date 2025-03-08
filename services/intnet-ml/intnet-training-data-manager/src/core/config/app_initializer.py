@@ -29,9 +29,9 @@ def initialize_services(app: FastAPI):
     record_generator_service = RecordGeneratorService(synthetic_graph_repository, synthetic_record_repository)
     
     real_graph_router = create_grid_graph_router(real_graph_repository)
-    synthetic_graph_router = create_synthetic_graph_router(graph_generator_service)
+    synthetic_graph_router = create_synthetic_graph_router(synthetic_graph_repository, graph_generator_service)
     real_record_router = create_record_router(real_record_repository)
-    synthetic_record_router = create_synthetic_record_router(record_generator_service)
+    synthetic_record_router = create_synthetic_record_router(synthetic_record_repository, record_generator_service)
 
     app.include_router(real_graph_router)
     app.include_router(synthetic_graph_router)
