@@ -6,11 +6,13 @@ from typing import List, Optional
 
 from features.dynamic_data_record.models.record_types import DynamicDataRecord
 from features.dynamic_data_record.utils.dynamic_data_record_json_mapper import DynamicDataRecordJsonMapper
+from shared.enums import RecordType
 
 
 class DynamicDataRecordJsonRepository:
-    def __init__(self, file_path: str = "training_data_json_db/synthetic_data/dynamic_data_records.json"):
-        self.file_path = Path(file_path)
+    def __init__(self, record_type: RecordType):
+        file_path_str = "training_data_json_db/synthetic_data/dynamic_data_records.json" if record_type == RecordType.SYNTHETIC else "training_data_json_db/real_data/dynamic_data_records.json"
+        self.file_path = Path(file_path_str)
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
 

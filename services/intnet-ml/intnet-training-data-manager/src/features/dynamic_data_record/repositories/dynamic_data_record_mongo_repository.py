@@ -9,15 +9,16 @@ from pymongo.errors import ConnectionFailure
 from features.dynamic_data_record.models.record_types import DynamicDataRecord
 from features.dynamic_data_record.repositories.dynamic_data_record_repository import DynamicDataRecordRepository
 from features.dynamic_data_record.utils.dynamic_data_record_json_mapper import DynamicDataRecordJsonMapper
+from shared.enums import RecordType
 
 
 logger = structlog.get_logger(__name__)
 
 class DynamicDataRecordMongoRepository(DynamicDataRecordRepository):
-    def __init__(self):
+    def __init__(self, record_type: RecordType):
         connection_string = os.getenv("MONGODB_CONNECTION_STRING")
         database_name = os.getenv("MONGODB_DATABASE_NAME")
-        collection_name="dynamic_data_records"
+        collection_name = "synthetic_dynamic_data_records" if record_type == RecordType.SYNTHETIC else "dynamic_data_records"
 
         try:
             self.client = MongoClient(connection_string)

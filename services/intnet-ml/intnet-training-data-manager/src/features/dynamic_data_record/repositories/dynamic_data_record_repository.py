@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from features.dynamic_data_record.models.record_types import DynamicDataRecord
-from features.grid_graph.models.grid_graph_types import GridGraph
 
 
 class DynamicDataRecordRepository(ABC):
@@ -26,4 +25,8 @@ class DynamicDataRecordRepository(ABC):
 
     @abstractmethod
     def delete_by_id(self, id: int):
+        pass
+
+    @abstractmethod
+    def delete_all(self):
         pass

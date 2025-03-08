@@ -1,6 +1,6 @@
 
 import random
-from grid_graph.models.grid_graph_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType, StorageUnitType
+from features.grid_graph.models.grid_graph_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType, StorageUnitType
 
 
 def generate_random_dynamic_data(graph_data: GridGraphData) -> GridGraphData:

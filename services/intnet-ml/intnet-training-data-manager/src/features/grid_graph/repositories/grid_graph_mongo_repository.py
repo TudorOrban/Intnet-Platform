@@ -8,15 +8,15 @@ from pymongo.errors import ConnectionFailure
 from features.grid_graph.models.grid_graph_types import GridGraph
 from features.grid_graph.repositories.grid_graph_repository import GridGraphRepository
 from features.grid_graph.utils.grid_graph_json_mapper import GridGraphJsonMapper
+from shared.enums import GraphType
 
 logger = structlog.get_logger(__name__)
 
 class GridGraphMongoRepository(GridGraphRepository):
-    def __init__(self):
-        print(os.getenv("MONGODB_CONNECTION_STRING"))
+    def __init__(self, graph_type: GraphType):
         connection_string = os.getenv("MONGODB_CONNECTION_STRING")
         database_name = os.getenv("MONGODB_DATABASE_NAME")
-        collection_name="grid_graph"
+        collection_name = "synthetic_grid_graph" if graph_type == GraphType.SYNTHETIC else "grid_graph"
 
         try:
             self.client = MongoClient(connection_string)

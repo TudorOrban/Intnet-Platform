@@ -2,7 +2,7 @@ import dataclasses
 from typing import Dict
 
 from features.dynamic_data_record.models.record_types import DynamicDataRecord
-from grid_graph.models.grid_graph_types import BusState, DERState, EdgeState, GeneratorState, GridGraphData, LoadState, StorageUnitState
+from features.grid_graph.models.grid_graph_types import BusState, DERState, EdgeState, GeneratorState, GridGraphData, LoadState, StorageUnitState
 
 
 def extract_dynamic_data_record(graph_data: GridGraphData) -> DynamicDataRecord:

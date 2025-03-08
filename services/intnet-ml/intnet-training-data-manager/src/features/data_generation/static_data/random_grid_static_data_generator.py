@@ -1,6 +1,6 @@
 
 import random
-from grid_graph.models.grid_graph_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType, StorageUnitType
+from features.grid_graph.models.grid_graph_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType, StorageUnitType
 
 def generate_realistic_static_data(graph_topology: GridGraphData) -> GridGraphData:
     """Generates random static electric data for the electric grid components"""
