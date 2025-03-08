@@ -40,14 +40,12 @@ class GridGraphMongoRepository(GridGraphRepository):
             return None
     
     @mongo_connection_check
-    def find_all(self) -> Optional[GridGraph]:
-        document = self.collection.find_one()
-        
+    def find_all(self) -> List[GridGraph]:
         results = self.collection.find()
         graphs = []
         for i, result in enumerate(results):
             result.pop("_id", None) 
-            graphs.append(GridGraphJsonMapper.deserialize_grid_graph(document))
+            graphs.append(GridGraphJsonMapper.deserialize_grid_graph(result))
         return graphs
 
     @mongo_connection_check

@@ -25,14 +25,10 @@ class DynamicDataRecordJsonRepository:
             
         return None
     
-    def find_by_grid_id(self, grid_id: int) -> Optional[DynamicDataRecord]:
+    def find_by_grid_id(self, grid_id: int) -> List[DynamicDataRecord]:
         records = self.find_all()
-
-        for record in records:
-            if record.grid_id == grid_id:
-                return record
-            
-        return None
+        grid_records = [record for record in records if record.grid_id == grid_id]
+        return grid_records
 
     def find_all(self, limit=1000) -> List[DynamicDataRecord]:
         if not self.file_path.exists():
@@ -52,7 +48,7 @@ class DynamicDataRecordJsonRepository:
 
     def save(self, record: DynamicDataRecord):
         records = self.find_all()
-        existing_ids = {g.id for g in records}
+        existing_ids = {r.id for r in records}
         record.id = self._generate_unique_integer_id(existing_ids)
 
         records.append(record)

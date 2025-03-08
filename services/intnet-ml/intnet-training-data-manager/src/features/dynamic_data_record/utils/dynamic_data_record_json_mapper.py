@@ -59,7 +59,7 @@ class DynamicDataRecordJsonMapper:
         return {
             "id": record.id,
             "grid_id": record.grid_id,
-            "created_at": record.created_at,
+            "created_at": record.created_at.isoformat(),
             "record_data": DynamicDataRecordJsonMapper.serialize_record_data(record.record_data)
         }
 
