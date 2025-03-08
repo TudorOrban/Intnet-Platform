@@ -12,6 +12,10 @@ class DynamicDataRecordRepository(ABC):
         pass
 
     @abstractmethod
+    def find_by_grid_id(self, grid_id: int) -> List[DynamicDataRecord]:
+        pass
+
+    @abstractmethod
     def find_all(self, limit: int=1000) -> List[DynamicDataRecord]:
         pass
 
@@ -27,6 +31,10 @@ class DynamicDataRecordRepository(ABC):
     def delete_by_id(self, id: int):
         pass
 
+    @abstractmethod
+    def delete_by_grid_id(self, grid_id: int):
+        pass
+    
     @abstractmethod
     def delete_all(self):
         pass

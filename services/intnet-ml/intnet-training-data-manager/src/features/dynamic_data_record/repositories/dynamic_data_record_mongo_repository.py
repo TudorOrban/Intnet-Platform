@@ -10,6 +10,7 @@ from features.dynamic_data_record.models.record_types import DynamicDataRecord
 from features.dynamic_data_record.repositories.dynamic_data_record_repository import DynamicDataRecordRepository
 from features.dynamic_data_record.utils.dynamic_data_record_json_mapper import DynamicDataRecordJsonMapper
 from shared.enums import RecordType
+from shared.utils import mongo_connection_check
 
 
 logger = structlog.get_logger(__name__)
@@ -31,12 +32,8 @@ class DynamicDataRecordMongoRepository(DynamicDataRecordRepository):
             self.db = None
             self.collection = None
 
-    
+    @mongo_connection_check
     def find_by_id(self, id: int) -> Optional[DynamicDataRecord]:
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return None
-
         result = self.collection.find_one({"id": id})
         if result:
             result.pop("_id", None) 
@@ -44,11 +41,17 @@ class DynamicDataRecordMongoRepository(DynamicDataRecordRepository):
         else:
             return None
 
+    @mongo_connection_check
+    def find_by_grid_id(self, grid_id: int) -> List[DynamicDataRecord]:
+        results = self.collection.find({"grid_id": grid_id})
+        records = []
+        for result in results:
+            result.pop("_id", None)
+            records.append(DynamicDataRecordJsonMapper.deserialize_dynamic_data_record(result))
+        return records
+        
+    @mongo_connection_check
     def find_all(self, limit=1000) -> List[DynamicDataRecord]:
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return []
-
         results = self.collection.find()
         records = []
         for i, result in enumerate(results):
@@ -59,22 +62,16 @@ class DynamicDataRecordMongoRepository(DynamicDataRecordRepository):
             records.append(DynamicDataRecordJsonMapper.deserialize_dynamic_data_record(result))
         return records
 
+    @mongo_connection_check
     def save(self, record: DynamicDataRecord):
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return
-
         record_dict = DynamicDataRecordJsonMapper.serialize_dynamic_data_record(record)
         new_object_id = ObjectId()
         record_dict["_id"] = new_object_id
         record_dict["id"] = self.generate_unique_integer_id()
         self.collection.insert_one(record_dict)
 
+    @mongo_connection_check
     def save_all(self, records: List[DynamicDataRecord]):
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return
-        
         record_dicts = [DynamicDataRecordJsonMapper.serialize_dynamic_data_record(record) for record in records]
         for record_dict in record_dicts:
             new_object_id = ObjectId()
@@ -82,26 +79,20 @@ class DynamicDataRecordMongoRepository(DynamicDataRecordRepository):
         record_dict["id"] = self.generate_unique_integer_id()
         self.collection.insert_many(record_dicts)
 
+    @mongo_connection_check
     def delete_by_id(self, id: int):
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return
-
         self.collection.delete_one({"id": id})
     
-    def delete_all(self):
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return
-        
-        self.collection.delete_many({})
-
+    @mongo_connection_check
+    def delete_by_grid_id(self, grid_id: int):
+        self.collection.delete_one({"grid_id": grid_id})
     
+    @mongo_connection_check
+    def delete_all(self):
+        self.collection.delete_many({})
+    
+    @mongo_connection_check
     def _get_existing_ids(self) -> set:
-        if self.collection is None:
-            logger.error("MongoDB connection is not established.")
-            return set()
-
         existing_ids = self.collection.distinct("id")
         return set(existing_ids)
 

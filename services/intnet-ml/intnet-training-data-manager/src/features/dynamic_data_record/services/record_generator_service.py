@@ -23,17 +23,17 @@ class RecordGeneratorService:
         self.graph_repository = graph_repository
         self.record_repository = record_repository
 
-    def generate_and_save_synthetic_records(self, count=10, try_limit=100) -> List[DynamicDataRecord]:
-        graph = self.graph_repository.find()
+    def generate_and_save_synthetic_records(self, grid_id: int, count=10, try_limit=100) -> List[DynamicDataRecord]:
+        graph = self.graph_repository.find_by_grid_id(grid_id)
         if graph is None:
             return []
         
-        synthetic_records = self.generate_synthetic_records(graph_data=graph.graph_data, count=count, try_limit=try_limit)
+        synthetic_records = self.generate_synthetic_records(graph_data=graph.graph_data, grid_id=grid_id, count=count, try_limit=try_limit)
         self.record_repository.save_all(synthetic_records)
 
         return synthetic_records
 
-    def generate_synthetic_records(self, graph_data: GridGraphData, count=10, try_limit=100) -> List[DynamicDataRecord]:
+    def generate_synthetic_records(self, graph_data: GridGraphData, grid_id: int, count=10, try_limit=100) -> List[DynamicDataRecord]:
         """Generates random synthetic Dynamic Data Records with OPF solutions"""
         
         logger.info("Starting generation of dynamic data records.")
@@ -51,7 +51,7 @@ class RecordGeneratorService:
             graph_data, has_converged = generate_opf_solution(graph_data)
             if has_converged:
                 record_data = extract_dynamic_data_record(graph_data)
-                record = DynamicDataRecord(id=0, created_at=datetime.now(), record_data=record_data)
+                record = DynamicDataRecord(id=0, grid_id=grid_id, created_at=datetime.now(), record_data=record_data)
                 records.append(record)
                 convergent_count += 1
 

@@ -15,5 +15,6 @@ class RecordData(BaseModel):
 
 class DynamicDataRecord(BaseModel):
     id: int
+    grid_id: int
     created_at: datetime
     record_data: RecordData

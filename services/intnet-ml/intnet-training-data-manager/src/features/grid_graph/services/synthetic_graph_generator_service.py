@@ -18,7 +18,7 @@ class SyntheticGraphGeneratorService:
     def __init__(self, graph_repository: GridGraphRepository):
         self.graph_repository = graph_repository
 
-    def generate_synthetic_graph(self, specifications: TopologySpecifications, try_limit=10) -> GridGraph:
+    def generate_synthetic_graph(self, specifications: TopologySpecifications, grid_id: int, try_limit=10) -> GridGraph:
         """Attempts to generate a synthetic graph of specified size"""
         
         logger.info("Starting generation of synthetic grid graph.")
@@ -31,8 +31,8 @@ class SyntheticGraphGeneratorService:
 
             graph_data, has_converged = generate_opf_solution(graph_data)
             if has_converged:
-                grid_graph = GridGraph(id=0, created_at=datetime.now(), graph_data=graph_data)
-                self.graph_repository.save(grid_graph)
+                grid_graph = GridGraph(id=0, grid_id=grid_id, created_at=datetime.now(), graph_data=graph_data)
+                self.graph_repository.add(grid_graph)
                 logger.info("Finished generation of synthetic grid graph.")
                 return grid_graph
 

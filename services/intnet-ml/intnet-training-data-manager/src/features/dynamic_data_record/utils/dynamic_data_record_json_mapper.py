@@ -8,6 +8,7 @@ class DynamicDataRecordJsonMapper:
     def deserialize_dynamic_data_record(record: dict) -> DynamicDataRecord:
         return DynamicDataRecord(
             id=record["id"],
+            grid_id=record["grid_id"],
             created_at=record["created_at"],
             record_data=DynamicDataRecordJsonMapper.deserialize_record_data(record["record_data"])
         )
@@ -57,6 +58,7 @@ class DynamicDataRecordJsonMapper:
     def serialize_dynamic_data_record(record: DynamicDataRecord) -> dict:
         return {
             "id": record.id,
+            "grid_id": record.grid_id,
             "created_at": record.created_at,
             "record_data": DynamicDataRecordJsonMapper.serialize_record_data(record.record_data)
         }

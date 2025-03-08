@@ -24,6 +24,15 @@ class DynamicDataRecordJsonRepository:
                 return record
             
         return None
+    
+    def find_by_grid_id(self, grid_id: int) -> Optional[DynamicDataRecord]:
+        records = self.find_all()
+
+        for record in records:
+            if record.grid_id == grid_id:
+                return record
+            
+        return None
 
     def find_all(self, limit=1000) -> List[DynamicDataRecord]:
         if not self.file_path.exists():
@@ -70,6 +79,15 @@ class DynamicDataRecordJsonRepository:
     def delete_by_id(self, id: int):
         data = self.find_all()
         updated_data = [item for item in data if item.get("id") != id]
+        
+        data = [DynamicDataRecordJsonMapper.serialize_dynamic_data_record(s) for s in updated_data]
+
+        with open(self.file_path, "w") as f:
+            json.dump(data, f, indent=4)
+
+    def delete_by_grid_id(self, grid_id: int):
+        data = self.find_all()
+        updated_data = [item for item in data if item.get("grid_id") != grid_id]
         
         data = [DynamicDataRecordJsonMapper.serialize_dynamic_data_record(s) for s in updated_data]
 

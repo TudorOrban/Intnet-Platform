@@ -17,8 +17,11 @@ def create_synthetic_record_router(
     # CRUD ops
     @router.get(record_base_route + "/{record_id}", response_model=DynamicDataRecord)
     async def get_record(record_id: int):
-        record = synthetic_record_repository.find_by_id(record_id)
-        return record
+        return synthetic_record_repository.find_by_id(record_id)
+    
+    @router.get(record_base_route + "/grid/{grid_id}", response_model=List[DynamicDataRecord])
+    async def get_records_by_grid_id(grid_id: int):
+        return synthetic_record_repository.find_by_grid_id(grid_id)        
 
     @router.get(record_base_route, response_model=List[DynamicDataRecord])
     async def get_all_records(limit: int = 1000):
@@ -27,27 +30,30 @@ def create_synthetic_record_router(
     @router.post(record_base_route, response_model=DynamicDataRecord)
     async def create_record(record: DynamicDataRecord):
         synthetic_record_repository.save(record)
-        return record
 
     @router.post(record_base_route + "/batch", response_model=List[DynamicDataRecord])
     async def create_records(records: List[DynamicDataRecord]):
         synthetic_record_repository.save_all(records)
-        return records
 
     @router.delete(record_base_route + "/{record_id}")
     async def delete_record(record_id: int):
         synthetic_record_repository.delete_by_id(record_id)
+
+    @router.delete(record_base_route + "/grid/{grid_id}")
+    async def delete_records_by_grid_id(grid_id: int):
+        synthetic_record_repository.delete_by_grid_id(grid_id)
 
     @router.delete(record_base_route)
     async def delete_all_records():
         synthetic_record_repository.delete_all()
 
     # Data generation
-    @router.post(record_base_route + "/generate", response_model=List[DynamicDataRecord])
+    @router.post(record_base_route + "/generate/{grid_id}", response_model=List[DynamicDataRecord])
     async def generate_records(
+        grid_id: int,
         count: int = Query(10, description="Number of records to generate"),
         try_limit: int = Query(100, description="Maximum attempts to generate unique records")
     ):
-        return record_generator_service.generate_and_save_synthetic_records(count, try_limit)
+        return record_generator_service.generate_and_save_synthetic_records(grid_id, count, try_limit)
 
     return router
