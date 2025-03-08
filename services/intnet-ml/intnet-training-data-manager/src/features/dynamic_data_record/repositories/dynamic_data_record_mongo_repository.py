@@ -40,7 +40,7 @@ class DynamicDataRecordMongoRepository(DynamicDataRecordRepository):
         result = self.collection.find_one({"id": id})
         if result:
             result.pop("_id", None) 
-            return DynamicDataRecordJsonMapper.deserialize_dynamic_data_record(result, DynamicDataRecord)
+            return DynamicDataRecordJsonMapper.deserialize_dynamic_data_record(result)
         else:
             return None
 
@@ -56,7 +56,7 @@ class DynamicDataRecordMongoRepository(DynamicDataRecordRepository):
                 break
 
             result.pop("_id", None) 
-            records.append(DynamicDataRecordJsonMapper.deserialize_dynamic_data_record(result, DynamicDataRecord))
+            records.append(DynamicDataRecordJsonMapper.deserialize_dynamic_data_record(result))
         return records
 
     def save(self, record: DynamicDataRecord):

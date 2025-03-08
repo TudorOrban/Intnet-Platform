@@ -58,7 +58,7 @@ class DynamicDataRecordJsonMapper:
         return {
             "id": record.id,
             "created_at": record.created_at,
-            "record_data": record.record_data
+            "record_data": DynamicDataRecordJsonMapper.serialize_record_data(record.record_data)
         }
 
     @staticmethod
