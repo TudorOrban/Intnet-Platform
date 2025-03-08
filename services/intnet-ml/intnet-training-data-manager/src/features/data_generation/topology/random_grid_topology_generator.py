@@ -3,11 +3,19 @@ import networkx as nx
 
 from typing import List
 from features.data_generation.topology.initial_component_generator import generate_bus, generate_der, generate_edge, generate_generator, generate_load, generate_storage_unit
+from features.data_generation.topology.types import TopologySpecifications
 from features.grid_graph.models.grid_graph_types import Bus, Edge, GridGraphData
 
 
-def generate_random_grid_topology(num_buses=10, num_generators=3, num_loads=4, der_density=0.2, storage_unit_density=0.1, edge_density=0.1) -> GridGraphData:
+def generate_random_grid_topology(specifications: TopologySpecifications) -> GridGraphData:
     """Generates a random grid topology incrementally, starting from generators"""
+
+    num_buses = specifications.num_buses
+    num_generators = specifications.num_generators
+    num_loads = specifications.num_loads
+    der_density = specifications.der_density
+    storage_unit_density = specifications.storage_unit_density
+    edge_density = specifications.edge_density
 
     buses: List[Bus] = []
     edges: List[Edge] = []

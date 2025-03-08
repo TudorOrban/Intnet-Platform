@@ -3,15 +3,11 @@ from fastapi import APIRouter
 
 from features.dynamic_data_record.models.record_types import DynamicDataRecord
 from features.dynamic_data_record.repositories.dynamic_data_record_repository import DynamicDataRecordRepository
-from features.dynamic_data_record.services.record_generator_service import RecordGeneratorService
 
 
 record_base_route = "/api/v1/dynamic-data-records"
 
-def create_record_router(
-    record_repository: DynamicDataRecordRepository,
-    record_generator_service: RecordGeneratorService
-):
+def create_record_router(record_repository: DynamicDataRecordRepository):
     router = APIRouter()
 
     # CRUD ops
@@ -41,10 +37,5 @@ def create_record_router(
     @router.delete(record_base_route)
     async def delete_all_records():
         record_repository.delete_all()
-
-    # Data generation
-    @router.post(record_base_route + "/generate", response_model=List[DynamicDataRecord])
-    async def generate_records(count=10, limit=100):
-        return record_generator_service.generate_and_save_synthetic_records(count, limit)
 
     return router

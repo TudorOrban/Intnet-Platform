@@ -2,15 +2,15 @@
 import random
 from features.grid_graph.models.grid_graph_types import DERType, EdgeType, GeneratorType, GridGraphData, LoadType, StorageUnitType
 
-def generate_realistic_static_data(graph_topology: GridGraphData) -> GridGraphData:
+def generate_random_static_data(graph_topology: GridGraphData) -> GridGraphData:
     """Generates random static electric data for the electric grid components"""
     
-    graph_data = generate_realistic_load_data(graph_topology)
-    graph_data = generate_realistic_generator_data(graph_data)
-    graph_data = generate_realistic_der_data(graph_data)
-    graph_data = generate_realistic_storage_unit_data(graph_data)
-    graph_data = generate_realistic_bus_data(graph_data)
-    graph_data = generate_realistic_edge_data(graph_data)
+    graph_data = generate_random_load_data(graph_topology)
+    graph_data = generate_random_generator_data(graph_data)
+    graph_data = generate_random_der_data(graph_data)
+    graph_data = generate_random_storage_unit_data(graph_data)
+    graph_data = generate_random_bus_data(graph_data)
+    graph_data = generate_random_edge_data(graph_data)
 
     return graph_data
 
@@ -29,7 +29,7 @@ LOAD_TYPE_PROBABILITIES = {
     LoadType.UNKNOWN: 0.05,
 }
 
-def generate_realistic_load_data(graph_data: GridGraphData) -> GridGraphData:
+def generate_random_load_data(graph_data: GridGraphData) -> GridGraphData:
     load_types = list(LOAD_TYPE_PROBABILITIES.keys())
     probabilities = list(LOAD_TYPE_PROBABILITIES.values())
 
@@ -61,7 +61,7 @@ GENERATOR_TYPE_PROBABILITIES = {
     GeneratorType.OIL: 0.15,
 }
 
-def generate_realistic_generator_data(graph_data: GridGraphData) -> GridGraphData:
+def generate_random_generator_data(graph_data: GridGraphData) -> GridGraphData:
     available_buses = [bus for bus in graph_data.buses if bus.generators]
     if not available_buses:
         return graph_data
@@ -102,7 +102,7 @@ DER_TYPE_PROBABILITIES = {
     DERType.WIND: 0.05,
 }
 
-def generate_realistic_der_data(graph_data: GridGraphData) -> GridGraphData:
+def generate_random_der_data(graph_data: GridGraphData) -> GridGraphData:
     available_buses = [bus for bus in graph_data.buses if bus.ders]
     if not available_buses:
         return graph_data
@@ -157,7 +157,7 @@ STORAGE_UNIT_TYPE_PROBABILITIES = {
     StorageUnitType.PUMPED_HYDRO: 0.1,
 }
 
-def generate_realistic_storage_unit_data(graph_data: GridGraphData) -> GridGraphData:
+def generate_random_storage_unit_data(graph_data: GridGraphData) -> GridGraphData:
     available_buses = [bus for bus in graph_data.buses if bus.storage_units]
     if not available_buses:
         return graph_data
@@ -201,7 +201,7 @@ def generate_realistic_storage_unit_data(graph_data: GridGraphData) -> GridGraph
     return graph_data
 
 # Buses
-def generate_realistic_bus_data(graph_data: GridGraphData) -> GridGraphData:
+def generate_random_bus_data(graph_data: GridGraphData) -> GridGraphData:
     for bus in graph_data.buses:
         bus.vn_kv = 110
         bus.min_vm_pu = 0.9
@@ -227,7 +227,7 @@ EDGE_TYPE_RANGES = {
     # },
 }
 
-def generate_realistic_edge_data(graph_data: GridGraphData) -> GridGraphData:
+def generate_random_edge_data(graph_data: GridGraphData) -> GridGraphData:
     for edge in graph_data.edges:
         ranges = EDGE_TYPE_RANGES[edge.edge_type]
         edge.r_ohm_per_km = random.uniform(*ranges["r_ohm_per_km"])
