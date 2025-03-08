@@ -23,7 +23,6 @@ class GridGraphMongoRepository(GridGraphRepository):
             self.db = self.client[database_name]
             self.collection = self.db[collection_name]
             self.client.admin.command("ping")
-            logger.info("Successfully connected to MongoDB.")
         except ConnectionFailure as e:
             logger.error(f"Could not connect to MongoDB: {e}")
             self.client = None
