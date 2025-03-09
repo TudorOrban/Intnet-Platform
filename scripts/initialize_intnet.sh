@@ -67,24 +67,29 @@ echo "Dependencies checked and installed."
 
 # --- Minikube Setup
 
-# echo "Starting Minikube..."
-# minikube start --driver=docker
-# eval $(minikube docker-env)
-# echo "Minikube started successfully."
+echo "Starting Minikube..."
+minikube start --driver=docker
+eval $(minikube docker-env)
+echo "Minikube started successfully."
 
-# --- Building and deploying Intnet Admin microservice
+# --- Build Intnet Admin microservice image
 
-echo "Building and deploying Intnet Admin microservice"
+echo "Building Intnet Admin microservice"
 cd ../services/intnet-admin
 mvn clean package -DskipTests
 docker build -t intnet-admin:latest .
 
+# --- Deploy Intnet Helm chart
+
+echo "Deploying Intnet Helm charts to minikube"
 cd ../../kubernetes/dev/helm
 INTNET_PATH=$(pwd)
 RELEASE_NAME=std-release
 helm install $RELEASE_NAME . --set intnet-admin.volume.hostPath="$INTNET_PATH"
 
-kubectl port-forward svc/$RELEASE_NAME-intnet-admin 8080:20
+gnome-terminal -- bash -c "kubectl port-forward svc/std-release-intnet-admin 8080:20; exec bash"
+
+# --- Run Intnet Admin frontend
 
 echo "Starting Web frontend"
-gnome-terminal -- bash -c "cd ../../frontends/admin-frontend && ng serve; exec bash"
+gnome-terminal -- bash -c "cd ../../../frontends/admin-frontend && ng serve; exec bash"
