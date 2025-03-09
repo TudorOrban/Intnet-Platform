@@ -1,17 +1,23 @@
 imagePullPolicy: IfNotPresent
 
 # Microservices
-intnet-gateway:
+intnet-admin:
   replicaCount: 1
+intnet-gateway:
+  replicaCount: 0
 intnet-tenant:
   replicaCount: 0
 intnet-grid-data:
-  replicaCount: 1
+  replicaCount: 0
 intnet-grid-topology:
   replicaCount: 0
 intnet-grid-history:
   replicaCount: 0
 intnet-grid-device-manager:
+  replicaCount: 0
+
+## ML services
+intnet-training-data-manager:
   replicaCount: 0
 
 # Device adapters
@@ -47,4 +53,6 @@ logstash:
 cassandra:
   replicaCount: 0
 mlflow:
-  replicaCount: 1
+  replicaCount: 0
+mongodb:
+  replicaCount: 0

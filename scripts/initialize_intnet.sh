@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Initialization of Intnet Platform for local development --- Ubuntu
+
 set -e
 
 echo "Initializing Intnet local environment..."
@@ -65,10 +67,10 @@ echo "Dependencies checked and installed."
 
 # --- Minikube Setup
 
-echo "Starting Minikube..."
-minikube start --driver=docker
-eval $(minikube docker-env)
-echo "Minikube started successfully."
+# echo "Starting Minikube..."
+# minikube start --driver=docker
+# eval $(minikube docker-env)
+# echo "Minikube started successfully."
 
 # --- Building and deploying Intnet Admin microservice
 
@@ -77,5 +79,12 @@ cd ../services/intnet-admin
 mvn clean package -DskipTests
 docker build -t intnet-admin:latest .
 
-INTNET_PATH = $(pwd)
-helm install intnet ./helm/ --set intnet-admin.volume.hostPath="$INTNET_PATH"
+cd ../../kubernetes/dev/helm
+INTNET_PATH=$(pwd)
+RELEASE_NAME=std-release
+helm install $RELEASE_NAME . --set intnet-admin.volume.hostPath="$INTNET_PATH"
+
+kubectl port-forward svc/$RELEASE_NAME-intnet-admin 8080:20
+
+echo "Starting Web frontend"
+gnome-terminal -- bash -c "cd ../../frontends/admin-frontend && ng serve; exec bash"
