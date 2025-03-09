@@ -54,3 +54,6 @@ torch_sparse
 torch_spline_conv
 
 structlog==25.1.0
+
+fastapi
+uvicorn[standard]
