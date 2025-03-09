@@ -1,0 +1,32 @@
+[
+    {
+        "name": "std-release-intnet-grid-data",
+        "helmChartPath": "helm/charts/intnet-grid-data",
+        "dockerfilePath": "services/intnet-grid-data",
+        "serviceType": "CUSTOM"
+    },
+    {
+        "name": "std-release-intnet-gateway",
+        "helmChartPath": "helm/charts/intnet-gateway",
+        "dockerfilePath": "services/intnet-gateway",
+        "serviceType": "CUSTOM"
+    },
+    {
+        "name": "std-release-intnet-training-data-manager",
+        "helmChartPath": "helm/charts/intnet-training-data-manager",
+        "dockerfilePath": "services/intnet-training-data-manager",
+        "serviceType": "CUSTOM"
+    },
+    {
+        "name": "std-release-mlflow",
+        "helmChartPath": "helm/charts/mlflow",
+        "dockerfilePath": "",
+        "serviceType": "EXTERNAL"
+    },
+    {
+        "name": "std-release-mongodb",
+        "helmChartPath": "helm/charts/mongodb",
+        "dockerfilePath": "",
+        "serviceType": "EXTERNAL"
+    }
+]

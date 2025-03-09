@@ -12,6 +12,7 @@ public class IntnetService {
     private String name;
     private String helmChartPath;
     private String dockerfilePath;
+    private ServiceType serviceType;
 
     private ServiceKubernetesData kubernetesData;
 }

@@ -3,7 +3,6 @@ package com.intnet.admin.features.intnetservice.service;
 import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
-import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentStatus;
 import org.springframework.stereotype.Service;
@@ -16,14 +15,9 @@ import java.util.Objects;
 @Service
 public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernetesService {
 
-    private final CoreV1Api coreV1Api;
     private final AppsV1Api appsV1Api;
 
-    public IntnetServiceKubernetesServiceImpl(
-            CoreV1Api coreV1Api,
-            AppsV1Api appsV1Api
-    ) {
-        this.coreV1Api = coreV1Api;
+    public IntnetServiceKubernetesServiceImpl(AppsV1Api appsV1Api) {
         this.appsV1Api = appsV1Api;
     }
 
@@ -40,7 +34,7 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
                 ServiceKubernetesData data = this.getKubernetesData(status);
                 serviceDataMap.put(serviceName, data);
             } catch (ApiException e) {
-                System.err.println("Error fetching Kubernetes data");
+                System.err.println("Error fetching Kubernetes data for " + serviceName + ": " + e.getResponseBody());
                 serviceDataMap.put(serviceName, null);
             }
         }

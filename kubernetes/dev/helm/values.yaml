@@ -8,7 +8,7 @@ intnet-gateway:
 intnet-tenant:
   replicaCount: 0
 intnet-grid-data:
-  replicaCount: 0
+  replicaCount: 1
 intnet-grid-topology:
   replicaCount: 0
 intnet-grid-history:
