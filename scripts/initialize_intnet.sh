@@ -89,7 +89,12 @@ helm install $RELEASE_NAME . --set intnet-admin.volume.hostPath="$INTNET_PATH"
 
 gnome-terminal -- bash -c "kubectl port-forward svc/std-release-intnet-admin 8080:20; exec bash"
 
+# --- Run Host Agent
+
+cd ../../../services/intnet-hostagent
+gnome-terminal -- bash -c "mvn spring-boot:run; exec bash"
+
 # --- Run Intnet Admin frontend
 
 echo "Starting Web frontend"
-gnome-terminal -- bash -c "cd ../../../frontends/admin-frontend && ng serve; exec bash"
+gnome-terminal -- bash -c "cd ../../frontends/admin-frontend && ng serve; exec bash"
