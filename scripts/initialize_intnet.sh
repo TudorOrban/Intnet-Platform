@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Initializing Intnet local environmet..."
+echo "Initializing Intnet local environment..."
 
 # --- Dependency Checks and Installation ---
 
@@ -67,5 +67,15 @@ echo "Dependencies checked and installed."
 
 echo "Starting Minikube..."
 minikube start --driver=docker
+eval $(minikube docker-env)
 echo "Minikube started successfully."
 
+# --- Building and deploying Intnet Admin microservice
+
+echo "Building and deploying Intnet Admin microservice"
+cd ../services/intnet-admin
+mvn clean package -DskipTests
+docker build -t intnet-admin:latest .
+
+INTNET_PATH = $(pwd)
+helm install intnet ./helm/ --set intnet-admin.volume.hostPath="$INTNET_PATH"

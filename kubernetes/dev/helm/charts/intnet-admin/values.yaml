@@ -1,0 +1,19 @@
+replicaCount: 1
+image:
+  repository: intnet-admin
+  tag: latest
+  pullPolicy: IfNotPresent
+springProfile: "docker-dev"
+service:
+  type: ClusterIP
+  port: 20
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+volume:
+  hostPath: "" # To be set by the intnet_initialization.sh script
+  mountPath: /intnet
