@@ -27,7 +27,6 @@ public class IntnetServiceRepositoryImpl implements IntnetServiceRepository {
         this.resourceLoader = resourceLoader;
     }
 
-    @Override
     public List<IntnetService> findAll() {
         try (InputStream inputStream = resourceLoader.getResource(servicesConfigPath).getInputStream()) {
             return objectMapper.readValue(inputStream, new TypeReference<>() {});
@@ -35,5 +34,14 @@ public class IntnetServiceRepositoryImpl implements IntnetServiceRepository {
             System.err.println("Error loading Intnet services configuration: " + e.getMessage());
             return null;
         }
+    }
+    public List<IntnetService> findByNames(List<String> serviceNames) {
+        List<IntnetService> allServices = findAll();
+        if (allServices == null) {
+            return null;
+        }
+        return allServices.stream()
+                .filter(service -> serviceNames.contains(service.getName()))
+                .toList();
     }
 }

@@ -1,5 +1,4 @@
-package com.intnet.admin.features.intnetservice.model;
-
+package com.intnet.hostagent.shared.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,11 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IntnetService {
+
     private String name;
     private String helmChartPath;
     private String dockerfilePath;
-    private ServiceType serviceType;
     private ServiceBuildType serviceBuildType;
 
-    private ServiceKubernetesData kubernetesData;
+    private ServiceType serviceType;
 }

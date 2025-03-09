@@ -4,9 +4,7 @@ import com.intnet.admin.features.intnetservice.model.IntnetService;
 import com.intnet.admin.features.intnetservice.service.IntnetServiceManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +23,11 @@ public class IntnetServiceController {
     public ResponseEntity<List<IntnetService>> getIntnetServices() {
         List<IntnetService> services = serviceManager.getServices();
         return ResponseEntity.ok(services);
+    }
+
+    @PostMapping("/build-images")
+    public ResponseEntity<Void> buildServiceImages(@RequestBody List<String> serviceNames) {
+        serviceManager.buildServiceImages(serviceNames);
+        return ResponseEntity.ok().build();
     }
 }

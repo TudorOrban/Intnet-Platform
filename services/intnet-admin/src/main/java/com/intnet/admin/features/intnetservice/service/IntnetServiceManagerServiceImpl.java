@@ -14,14 +14,17 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
 
     private final IntnetServiceRepository serviceRepository;
     private final IntnetServiceKubernetesService kubernetesService;
+    private final ImageBuilderService imageBuilderService;
 
     @Autowired
     public IntnetServiceManagerServiceImpl(
             IntnetServiceRepository serviceRepository,
-            IntnetServiceKubernetesService kubernetesService
+            IntnetServiceKubernetesService kubernetesService,
+            ImageBuilderService imageBuilderService
     ) {
         this.serviceRepository = serviceRepository;
         this.kubernetesService = kubernetesService;
+        this.imageBuilderService = imageBuilderService;
     }
 
     public List<IntnetService> getServices() {
@@ -38,5 +41,10 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
         }
 
         return services;
+    }
+
+    public void buildServiceImages(List<String> serviceNames) {
+        List<IntnetService> services = serviceRepository.findByNames(serviceNames);
+        imageBuilderService.buildImages(services);
     }
 }

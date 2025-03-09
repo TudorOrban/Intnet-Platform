@@ -3,127 +3,148 @@
         "name": "std-release-intnet-admin",
         "helmChartPath": "helm/charts/intnet-admin",
         "dockerfilePath": "services/intnet-admin",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-intnet-gateway",
         "helmChartPath": "helm/charts/intnet-gateway",
         "dockerfilePath": "services/intnet-gateway",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-intnet-grid-data",
         "helmChartPath": "helm/charts/intnet-grid-data",
         "dockerfilePath": "services/intnet-grid-data",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-intnet-grid-device-manager",
         "helmChartPath": "helm/charts/intnet-grid-device-manager",
         "dockerfilePath": "services/intnet-grid-device-manager",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-intnet-grid-history",
         "helmChartPath": "helm/charts/intnet-grid-history",
         "dockerfilePath": "services/intnet-grid-history",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-intnet-grid-topology",
         "helmChartPath": "helm/charts/intnet-grid-topology",
         "dockerfilePath": "services/intnet-grid-topology",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-intnet-tenant",
         "helmChartPath": "helm/charts/intnet-tenant",
         "dockerfilePath": "services/intnet-tenant",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-intnet-training-data-manager",
         "helmChartPath": "helm/charts/intnet-training-data-manager",
         "dockerfilePath": "services/intnet-ml/intnet-training-data-manager",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "JAVA"
     },
     {
         "name": "std-release-modbus-adapter",
         "helmChartPath": "helm/charts/modbus-adapter",
         "dockerfilePath": "services/device-adapters/modbus-adapter",
-        "serviceType": "CUSTOM"
+        "serviceType": "CUSTOM",
+        "serviceBuildType": "GO"
     },
 
     {
         "name": "std-release-cassandra",
         "helmChartPath": "helm/charts/cassandra",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-elasticsearch",
         "helmChartPath": "helm/charts/elasticsearch",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-grafana",
         "helmChartPath": "helm/charts/grafana",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-kafka",
         "helmChartPath": "helm/charts/kafka",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-keycloak",
         "helmChartPath": "helm/charts/keycloak",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-kibana",
         "helmChartPath": "helm/charts/kibana",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-logstash",
         "helmChartPath": "helm/charts/logstash",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-mlflow",
         "helmChartPath": "helm/charts/mlflow",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-mongodb",
         "helmChartPath": "helm/charts/mongodb",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-neo4j",
         "helmChartPath": "helm/charts/neo4j",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-timescale-db",
         "helmChartPath": "helm/charts/timescale-db",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     },
     {
         "name": "std-release-zookeeper",
         "helmChartPath": "helm/charts/zookeeper",
         "dockerfilePath": "",
-        "serviceType": "EXTERNAL"
+        "serviceType": "EXTERNAL",
+        "serviceBuildType": "NONE"
     }
 ]

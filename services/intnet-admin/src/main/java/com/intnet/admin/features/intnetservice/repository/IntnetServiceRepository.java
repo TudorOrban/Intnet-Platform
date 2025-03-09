@@ -7,4 +7,5 @@ import java.util.List;
 public interface IntnetServiceRepository {
 
     List<IntnetService> findAll();
+    List<IntnetService> findByNames(List<String> serviceNames);
 }

@@ -4,8 +4,7 @@ import com.intnet.admin.features.intnetservice.model.IntnetService;
 
 import java.util.List;
 
-public interface IntnetServiceManagerService {
+public interface ImageBuilderService {
 
-    List<IntnetService> getServices();
-    void buildServiceImages(List<String> serviceNames);
+    void buildImages(List<IntnetService> services);
 }
