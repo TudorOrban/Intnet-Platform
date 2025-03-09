@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ServiceKubernetesData {
 
-    private String status;
+    private ServiceStatus status;
     private int replicas;
+    private int availableReplicas;
     private String namespace;
 }

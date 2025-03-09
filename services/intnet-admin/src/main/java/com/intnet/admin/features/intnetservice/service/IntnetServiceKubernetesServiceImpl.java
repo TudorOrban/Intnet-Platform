@@ -1,6 +1,7 @@
 package com.intnet.admin.features.intnetservice.service;
 
 import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
+import com.intnet.admin.features.intnetservice.model.ServiceStatus;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.models.V1Deployment;
@@ -44,14 +45,18 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
 
     private ServiceKubernetesData getKubernetesData(V1DeploymentStatus status) {
         Integer replicas = status.getReplicas() != null ? status.getReplicas() : 0;
+        Integer availableReplicas = status.getAvailableReplicas() != null ? status.getAvailableReplicas() : 0;
+        Integer unavailableReplicas = status.getUnavailableReplicas() != null ? status.getUnavailableReplicas() : 0;
 
-        String deploymentStatus = "Unknown";
-        if (status.getAvailableReplicas() != null && Objects.equals(status.getAvailableReplicas(), replicas)) {
-            deploymentStatus = "Running";
-        } else if (status.getUnavailableReplicas() != null && Objects.equals(status.getUnavailableReplicas(), replicas)) {
-            deploymentStatus = "Stopped";
+        ServiceStatus deploymentStatus = ServiceStatus.UNKNOWN;
+        if (availableReplicas.equals(replicas)) {
+            deploymentStatus = ServiceStatus.RUNNING;
+        } else if (unavailableReplicas.equals(replicas)) {
+            deploymentStatus = ServiceStatus.STOPPED;
+        } else if (replicas > 0 && availableReplicas == 0) {
+            deploymentStatus = ServiceStatus.PENDING;
         }
 
-        return new ServiceKubernetesData(deploymentStatus, replicas, "default");
+        return new ServiceKubernetesData(deploymentStatus, replicas, availableReplicas, "default");
     }
 }
