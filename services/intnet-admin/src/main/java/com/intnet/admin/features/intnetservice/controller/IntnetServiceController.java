@@ -3,8 +3,11 @@ package com.intnet.admin.features.intnetservice.controller;
 import com.intnet.admin.features.intnetservice.model.IntnetService;
 import com.intnet.admin.features.intnetservice.service.IntnetServiceManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -26,8 +29,10 @@ public class IntnetServiceController {
     }
 
     @PostMapping("/build-images")
-    public ResponseEntity<Void> buildServiceImages(@RequestBody List<String> serviceNames) {
-        serviceManager.buildServiceImages(serviceNames);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Flux<DataBuffer>> buildServiceImages(@RequestBody List<String> serviceNames) {
+        Flux<DataBuffer> logStream = serviceManager.buildServiceImages(serviceNames);
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_EVENT_STREAM)
+                .body(logStream);
     }
 }

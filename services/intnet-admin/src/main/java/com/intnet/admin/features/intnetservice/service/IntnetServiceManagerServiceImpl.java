@@ -4,7 +4,9 @@ import com.intnet.admin.features.intnetservice.model.IntnetService;
 import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
 import com.intnet.admin.features.intnetservice.repository.IntnetServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
@@ -43,8 +45,8 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
         return services;
     }
 
-    public void buildServiceImages(List<String> serviceNames) {
+    public Flux<DataBuffer> buildServiceImages(List<String> serviceNames) {
         List<IntnetService> services = serviceRepository.findByNames(serviceNames);
-        imageBuilderService.buildImages(services);
+        return imageBuilderService.buildImages(services);
     }
 }
