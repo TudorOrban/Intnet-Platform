@@ -1,1 +1,57 @@
-<p>intnet-services works!</p>
+<!-- Header -->
+<div class="px-12 py-8 space-y-4">
+    <div class="text-xl font-semibold">
+        Intnet Services
+    </div>
+
+    <div class="flex items-center justify-between w-full">
+        <div class="flex items-center">
+            <input 
+                type="text" 
+                [(ngModel)]="searchQuery"
+                (ngModelChange)="handleSearchQueryChange()"
+                class="px-2 py-1 h-9 border border-gray-400 rounded-l-md"
+            />
+            <button class="w-9 h-9 bg-gray-800 text-gray-100 rounded-r-md">
+                <fa-icon [icon]="faSearch"></fa-icon>
+            </button>
+        </div>
+
+        <div class="flex items-center justify-center px-2 h-9 bg-gray-50 border border-gray-300 rounded-md shadow-sm">
+            <fa-icon [icon]="faArrowLeftRotate"></fa-icon>
+        </div>
+    </div>
+</div>
+
+<!-- Services Table -->
+<div class="px-12">
+    <table class="w-full border-collapse">
+        <thead>
+            <tr>
+                <th class="border border-gray-400 p-2 text-left">Name</th>
+                <th class="border border-gray-400 p-2 text-left">Status</th>
+                <th class="border border-gray-400 p-2 text-left">Replicas</th>
+                <th class="border border-gray-400 p-2 text-left">Available Replicas</th>
+                <th class="border border-gray-400 p-2 text-left">Namespace</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let service of searchedServices" class="border">
+                <td class="border border-gray-400 p-2">{{ service.name }}</td>
+                <td class="border border-gray-400 p-2">
+                    <span [ngClass]="{
+                        'text-green-600': service.kubernetesData?.status === 'RUNNING',
+                        'text-red-600': service.kubernetesData?.status === 'ERROR',
+                        'text-yellow-600': service.kubernetesData?.status === 'PENDING',
+                        'text-gray-600': service.kubernetesData?.status === 'UNKNOWN' || service.kubernetesData?.status === 'STOPPED'
+                    }">
+                        {{ uiUtilService.formatEnum(service.kubernetesData?.status) }}
+                    </span>
+                </td>
+                <td class="border border-gray-400 p-2">{{ service.kubernetesData?.replicas }}</td>
+                <td class="border border-gray-400 p-2">{{ service.kubernetesData?.availableReplicas }}</td>
+                <td class="border border-gray-400 p-2">{{ service.kubernetesData?.namespace }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
