@@ -6,10 +6,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowLeftRotate, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { UIUtilService } from '../../../../shared/utils/ui-util.service';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-intnet-services',
-  imports: [CommonModule, FontAwesomeModule, FormsModule],
+  imports: [CommonModule, FontAwesomeModule, FormsModule, RouterModule],
   templateUrl: './intnet-services.component.html',
   styleUrl: './intnet-services.component.css'
 })

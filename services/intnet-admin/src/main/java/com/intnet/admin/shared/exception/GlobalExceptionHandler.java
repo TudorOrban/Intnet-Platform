@@ -57,4 +57,11 @@ public class GlobalExceptionHandler {
         logger.error("Operation Failed Exception: {}", errorDetails);
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(KubernetesException.class)
+    public ResponseEntity<ErrorDetails> handleKubernetesException(KubernetesException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        logger.error("Kubernetes Exception: {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,9 +1,12 @@
 package com.intnet.admin.features.intnetservice.service;
 
+import com.intnet.admin.features.intnetservice.model.PodData;
 import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
 import com.intnet.admin.features.intnetservice.model.ServiceStatus;
+import com.intnet.admin.shared.exception.types.KubernetesException;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +21,15 @@ import java.util.Map;
 public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernetesService {
 
     private final AppsV1Api appsV1Api;
+    private final CoreV1Api coreV1Api;
     private final Logger logger = LoggerFactory.getLogger(IntnetServiceKubernetesServiceImpl.class);
 
-    public IntnetServiceKubernetesServiceImpl(AppsV1Api appsV1Api) {
+    public IntnetServiceKubernetesServiceImpl(
+            AppsV1Api appsV1Api,
+            CoreV1Api coreV1Api
+    ) {
         this.appsV1Api = appsV1Api;
+        this.coreV1Api = coreV1Api;
     }
 
     public Map<String, ServiceKubernetesData> getServices(List<String> serviceNames, String namespace) {
@@ -45,6 +53,45 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         }
 
         return serviceDataMap;
+    }
+
+    public List<PodData> getPodsForService(String serviceName, String namespace) {
+        namespace = namespace == null ? "default" : namespace;
+
+        try {
+            V1Deployment deployment = appsV1Api.readNamespacedDeployment(serviceName, namespace).execute();
+            if (deployment.getSpec() == null || deployment.getSpec().getSelector().getMatchLabels() == null) {
+                throw new KubernetesException("Missing Deployment Spec");
+            }
+            String selector = deployment.getSpec().getSelector().getMatchLabels().entrySet().stream()
+                    .map(entry -> entry.getKey() + "=" + entry.getValue())
+                    .reduce((a, b) -> a + "," + b)
+                    .orElse("");
+
+            V1PodList podList = coreV1Api.listNamespacedPod(namespace)
+                    .labelSelector(selector)
+                    .execute();
+            return podList.getItems().stream().map(this::mapV1PodToPodData).toList();
+        } catch (ApiException e) {
+            logger.error("Error fetching pods for {}: {}", serviceName, e.getResponseBody());
+            throw new KubernetesException(e.getMessage());
+        }
+    }
+
+    private PodData mapV1PodToPodData(V1Pod pod) {
+        PodData podData = new PodData();
+        if (pod.getMetadata() != null) {
+            podData.setName(pod.getMetadata().getName());
+            podData.setNamespace(pod.getMetadata().getNamespace());
+        }
+        if (pod.getStatus() != null) {
+            podData.setStatus(pod.getStatus().getPhase());
+            podData.setStartTime(pod.getStatus().getStartTime().toString());
+        }
+        if (pod.getSpec() != null) {
+            podData.setNodeName(pod.getSpec().getNodeName());
+        }
+        return podData;
     }
 
     public void rolloutRestartDeployments(List<String> serviceNames, String namespace) {

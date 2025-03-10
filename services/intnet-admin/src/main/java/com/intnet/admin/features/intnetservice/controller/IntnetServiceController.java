@@ -1,6 +1,7 @@
 package com.intnet.admin.features.intnetservice.controller;
 
 import com.intnet.admin.features.intnetservice.model.IntnetService;
+import com.intnet.admin.features.intnetservice.model.PodData;
 import com.intnet.admin.features.intnetservice.service.IntnetServiceManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -23,9 +24,20 @@ public class IntnetServiceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<IntnetService>> getIntnetServices(@RequestParam(required = false, defaultValue = "default") String namespace) {
+    public ResponseEntity<List<IntnetService>> getIntnetServices(
+            @RequestParam(required = false, defaultValue = "default") String namespace
+    ) {
         List<IntnetService> services = serviceManager.getServices(namespace);
         return ResponseEntity.ok(services);
+    }
+
+    @GetMapping("/{serviceName}/pods")
+    public ResponseEntity<List<PodData>> getPodsForIntnetService(
+            @PathVariable String serviceName,
+            @RequestParam(required = false, defaultValue = "default") String namespace
+    ) {
+        List<PodData> pods = serviceManager.getPodsForService(serviceName, namespace);
+        return ResponseEntity.ok(pods);
     }
 
     @PostMapping("/build-images")

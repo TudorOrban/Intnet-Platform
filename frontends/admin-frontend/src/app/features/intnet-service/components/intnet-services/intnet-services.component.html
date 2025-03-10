@@ -36,8 +36,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let service of searchedServices" class="border">
-                <td class="border border-gray-400 p-2">{{ service.name }}</td>
+            <tr *ngFor="let service of searchedServices" class="border border-gray-400">
+                <a routerLink="/services/{{ service.name }}" class="flex items-center border-gray-400 p-2 hover:text-blue-700 cursor-pointer">{{ service.name }}</a>
                 <td class="border border-gray-400 p-2">
                     <span [ngClass]="{
                         'text-green-600': service.kubernetesData?.status === 'RUNNING',
