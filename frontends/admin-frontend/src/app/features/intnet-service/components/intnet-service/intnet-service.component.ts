@@ -18,6 +18,8 @@ export class IntnetServiceComponent implements OnInit {
 
     openPodName?: string;
 
+    logs: string[] = [];
+
     constructor(
         private readonly intnetServiceService: IntnetServiceService,
         private readonly activatedRoute: ActivatedRoute
@@ -47,9 +49,24 @@ export class IntnetServiceComponent implements OnInit {
     openPod(podName: string) {
         if (this.openPodName == podName) {
             this.openPodName = undefined;
-        } else {
-            this.openPodName = podName;
+            return;
         }
+        this.openPodName = podName;
+
+        if (!this.serviceName) return;
+
+        this.intnetServiceService.streamPodLogs(this.serviceName, this.openPodName, "default").subscribe(
+            (logLine) => {
+                this.logs.push(logLine);
+                console.log("Log line", logLine);
+            },
+            (error) => {
+                console.error("Error streaming logs:", error);
+            },
+            () => {
+                console.log("Log stream completed");
+            }
+        );
     }
 
     faCaretDown = faCaretDown;
