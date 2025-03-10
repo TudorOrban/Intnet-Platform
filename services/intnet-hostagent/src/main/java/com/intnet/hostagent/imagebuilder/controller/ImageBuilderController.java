@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,12 +19,14 @@ public class ImageBuilderController {
     public ResponseEntity<String> buildImages(@RequestBody List<IntnetService> services) {
         for (IntnetService service : services) {
             try {
-                String scriptPath = "../../scripts/build_docker_image.sh";
+                String scriptPath = "scripts/build_docker_image.sh";
+                File projectRoot = new File(".");
                 ProcessBuilder processBuilder = new ProcessBuilder(scriptPath, service.getName(), service.getDockerfilePath(), service.getServiceBuildType().toString());
+                processBuilder.directory(projectRoot);
                 Process process = processBuilder.start();
                 process.waitFor();
             } catch (IOException | InterruptedException e) {
-                return ResponseEntity.badRequest().body("Error building " + service.getName());
+                return ResponseEntity.badRequest().body("Error building " + service.getName() + ", Error: " + e.getMessage());
             }
         }
         return ResponseEntity.ok("Builds started");

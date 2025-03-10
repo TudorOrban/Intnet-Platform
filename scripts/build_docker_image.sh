@@ -9,4 +9,5 @@ cd "../${docker_filepath}"
 if docker_build_type = JAVA; then
     mvn clean package -DskipTests
 
+eval $(minikube docker-env)
 docker build -t "${service_name}:latest" .

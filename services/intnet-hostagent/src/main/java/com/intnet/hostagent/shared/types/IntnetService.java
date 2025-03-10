@@ -12,7 +12,6 @@ public class IntnetService {
     private String name;
     private String helmChartPath;
     private String dockerfilePath;
-    private ServiceBuildType serviceBuildType;
-
     private ServiceType serviceType;
+    private ServiceBuildType serviceBuildType;
 }

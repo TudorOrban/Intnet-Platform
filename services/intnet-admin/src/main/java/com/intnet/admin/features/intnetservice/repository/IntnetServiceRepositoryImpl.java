@@ -35,6 +35,7 @@ public class IntnetServiceRepositoryImpl implements IntnetServiceRepository {
             return null;
         }
     }
+
     public List<IntnetService> findByNames(List<String> serviceNames) {
         List<IntnetService> allServices = findAll();
         if (allServices == null) {
