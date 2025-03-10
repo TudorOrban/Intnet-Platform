@@ -8,10 +8,21 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,14 +34,17 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
 
     private final AppsV1Api appsV1Api;
     private final CoreV1Api coreV1Api;
+    private final OkHttpClient okHttpClient;
     private final Logger logger = LoggerFactory.getLogger(IntnetServiceKubernetesServiceImpl.class);
 
     public IntnetServiceKubernetesServiceImpl(
             AppsV1Api appsV1Api,
-            CoreV1Api coreV1Api
+            CoreV1Api coreV1Api,
+            OkHttpClient okHttpClient
     ) {
         this.appsV1Api = appsV1Api;
         this.coreV1Api = coreV1Api;
+        this.okHttpClient = okHttpClient;
     }
 
     public Map<String, ServiceKubernetesData> getServices(List<String> serviceNames, String namespace) {
@@ -88,6 +102,23 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         }
     }
 
+    private ServiceKubernetesData mapV1DeploymentStatusToServiceKubernetesData(V1DeploymentStatus status) {
+        int replicas = status.getReplicas() != null ? status.getReplicas() : 0;
+        Integer availableReplicas = status.getAvailableReplicas() != null ? status.getAvailableReplicas() : 0;
+        Integer unavailableReplicas = status.getUnavailableReplicas() != null ? status.getUnavailableReplicas() : 0;
+
+        ServiceStatus deploymentStatus = ServiceStatus.UNKNOWN;
+        if (availableReplicas.equals(replicas)) {
+            deploymentStatus = ServiceStatus.RUNNING;
+        } else if (unavailableReplicas.equals(replicas)) {
+            deploymentStatus = ServiceStatus.STOPPED;
+        } else if (replicas > 0 && availableReplicas == 0) {
+            deploymentStatus = ServiceStatus.PENDING;
+        }
+
+        return new ServiceKubernetesData(deploymentStatus, replicas, availableReplicas, "default", new ArrayList<>());
+    }
+
     private PodData mapV1PodToPodData(V1Pod pod) {
         PodData podData = new PodData();
         if (pod.getMetadata() != null) {
@@ -104,6 +135,70 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
             podData.setNodeName(pod.getSpec().getNodeName());
         }
         return podData;
+    }
+
+    public Flux<DataBuffer> streamPodLogs(String podName, String namespace, String containerName) {
+        String finalNamespace = namespace == null ? "default" : namespace;
+        String logUrl = buildLogUrl(podName, finalNamespace, containerName);
+
+        return Mono.fromCallable(() -> fetchLogs(logUrl))
+                .flatMapMany(this::readLogsToFlux);
+    }
+
+    private String buildLogUrl(String podName, String namespace, String containerName) {
+        String baseUrl = coreV1Api.getApiClient().getBasePath() +
+                "/api/v1/namespaces/" + namespace +
+                "/pods/" + podName +
+                "/log?follow=true&pretty=false&timestamps=true";
+
+        if (containerName != null && !containerName.isEmpty()) {
+            baseUrl += "&container=" + containerName;
+        }
+
+        return baseUrl;
+    }
+
+    private BufferedReader fetchLogs(String logUrl) throws IOException, ApiException {
+        Request request = new Request.Builder().url(logUrl).build();
+
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new ApiException(response.code(), response.message());
+            }
+
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new IOException("Empty response body");
+            }
+
+            return new BufferedReader(new InputStreamReader(responseBody.byteStream()));
+        }
+    }
+
+    private Flux<DataBuffer> readLogsToFlux(BufferedReader reader) {
+        return Flux.generate(
+                () -> reader,
+                (bufferedReader, sink) -> {
+                    try {
+                        String line = bufferedReader.readLine();
+                        if (line != null) {
+                            sink.next(DefaultDataBufferFactory.sharedInstance.wrap(line.getBytes()));
+                        } else {
+                            sink.complete();
+                        }
+                    } catch (IOException e) {
+                        sink.error(e);
+                    }
+                    return bufferedReader;
+                },
+                bufferedReader -> {
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException e) {
+                        logger.error("Error closing BufferedReader", e);
+                    }
+                }
+        );
     }
 
     public void rolloutRestartDeployments(List<String> serviceNames, String namespace) {
@@ -143,20 +238,4 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         }
     }
 
-    private ServiceKubernetesData mapV1DeploymentStatusToServiceKubernetesData(V1DeploymentStatus status) {
-        int replicas = status.getReplicas() != null ? status.getReplicas() : 0;
-        Integer availableReplicas = status.getAvailableReplicas() != null ? status.getAvailableReplicas() : 0;
-        Integer unavailableReplicas = status.getUnavailableReplicas() != null ? status.getUnavailableReplicas() : 0;
-
-        ServiceStatus deploymentStatus = ServiceStatus.UNKNOWN;
-        if (availableReplicas.equals(replicas)) {
-            deploymentStatus = ServiceStatus.RUNNING;
-        } else if (unavailableReplicas.equals(replicas)) {
-            deploymentStatus = ServiceStatus.STOPPED;
-        } else if (replicas > 0 && availableReplicas == 0) {
-            deploymentStatus = ServiceStatus.PENDING;
-        }
-
-        return new ServiceKubernetesData(deploymentStatus, replicas, availableReplicas, "default", new ArrayList<>());
-    }
 }

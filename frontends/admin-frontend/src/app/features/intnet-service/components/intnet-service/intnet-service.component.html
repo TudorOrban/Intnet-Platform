@@ -1,13 +1,27 @@
 <!-- Header -->
 <div class="px-12 py-8">
-    <div class="text-lg font-semibold">
+    <div class="text-xl font-semibold">
         {{ serviceName }}
     </div>
 </div>
 
 <!-- Pods -->
-<div>
-    <div *ngFor="let pod of serviceData?.pods ?? []">
-        {{ pod.name }}
+<div class="px-12 space-y-4">
+    <div class="text-lg font-semibold">
+        Pods
+    </div>
+
+    <div *ngFor="let pod of serviceData?.pods ?? []" class="px-4 py-2 border border-gray-300 rounded-sm shadow-sm">
+        <div class="flex items-center justify-between w-full">
+            <div class="font-semibold">
+                {{ pod.name }}
+            </div>
+            <button (click)="openPod(pod.name)" class="cursor-pointer">
+                <fa-icon [icon]="openPodName == pod.name ? faCaretUp : faCaretDown"></fa-icon>
+            </button>
+        </div>
+        <div *ngIf="openPodName == pod.name">
+            Expanded
+        </div>
     </div>
 </div>

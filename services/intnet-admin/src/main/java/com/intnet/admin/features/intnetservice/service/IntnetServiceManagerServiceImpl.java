@@ -1,7 +1,6 @@
 package com.intnet.admin.features.intnetservice.service;
 
 import com.intnet.admin.features.intnetservice.model.IntnetService;
-import com.intnet.admin.features.intnetservice.model.PodData;
 import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
 import com.intnet.admin.features.intnetservice.repository.IntnetServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +47,10 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
 
     public ServiceKubernetesData getServiceWithPods(String serviceName, String namespace) {
         return kubernetesService.getServiceWithPods(serviceName, namespace);
+    }
+
+    public Flux<DataBuffer> streamPodLogs(String podName, String namespace, String containerName) {
+        return kubernetesService.streamPodLogs(podName, namespace, containerName);
     }
 
     public void rolloutRestartServiceDeployments(List<String> serviceNames, String namespace) {

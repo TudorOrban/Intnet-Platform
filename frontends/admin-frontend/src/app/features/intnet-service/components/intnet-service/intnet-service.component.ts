@@ -3,16 +3,20 @@ import { ActivatedRoute } from "@angular/router";
 import { PodData, ServiceKubernetesData } from "../../models/IntnetService";
 import { IntnetServiceService } from "../../services/intnet-service.service";
 import { CommonModule } from "@angular/common";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 @Component({
     selector: "app-intnet-service",
-    imports: [CommonModule],
+    imports: [CommonModule, FontAwesomeModule],
     templateUrl: "./intnet-service.component.html",
     styleUrl: "./intnet-service.component.css",
 })
 export class IntnetServiceComponent implements OnInit {
     serviceName?: string;
     serviceData?: ServiceKubernetesData;
+
+    openPodName?: string;
 
     constructor(
         private readonly intnetServiceService: IntnetServiceService,
@@ -39,4 +43,15 @@ export class IntnetServiceComponent implements OnInit {
             }
         );
     }
+
+    openPod(podName: string) {
+        if (this.openPodName == podName) {
+            this.openPodName = undefined;
+        } else {
+            this.openPodName = podName;
+        }
+    }
+
+    faCaretDown = faCaretDown;
+    faCaretUp = faCaretUp;
 }

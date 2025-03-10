@@ -41,6 +41,19 @@ public class IntnetServiceController {
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("/{serviceName}/pods/{podName}/logs")
+    public ResponseEntity<Flux<DataBuffer>> streamPodLogs(
+            @PathVariable String serviceName,
+            @PathVariable String podName,
+            @RequestParam(required = false, defaultValue = "default") String namespace,
+            @RequestParam(required = false) String containerName
+    ) {
+        Flux<DataBuffer> logStream = serviceManager.streamPodLogs(podName, namespace, containerName);
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_EVENT_STREAM)
+                .body(logStream);
+    }
+
     @PostMapping("/build-images")
     public ResponseEntity<Flux<DataBuffer>> buildServiceImages(@RequestBody List<String> serviceNames) {
         Flux<DataBuffer> logStream = serviceManager.buildServiceImages(serviceNames);
