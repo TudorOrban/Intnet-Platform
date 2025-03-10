@@ -1,1 +1,13 @@
-{{ serviceName }}
+<!-- Header -->
+<div class="px-12 py-8">
+    <div class="text-lg font-semibold">
+        {{ serviceName }}
+    </div>
+</div>
+
+<!-- Pods -->
+<div>
+    <div *ngFor="let pod of serviceData?.pods ?? []">
+        {{ pod.name }}
+    </div>
+</div>

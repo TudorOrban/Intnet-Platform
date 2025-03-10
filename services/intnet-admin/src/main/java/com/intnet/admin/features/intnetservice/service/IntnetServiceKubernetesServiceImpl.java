@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
                 if (status == null) {
                     continue;
                 }
-                ServiceKubernetesData data = this.getKubernetesData(status);
+                ServiceKubernetesData data = this.mapV1DeploymentStatusToServiceKubernetesData(status);
                 serviceDataMap.put(serviceName, data);
             } catch (ApiException e) {
                 logger.error("Error fetching Kubernetes data for {}: {}", serviceName, e.getResponseBody());
@@ -55,7 +56,7 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         return serviceDataMap;
     }
 
-    public List<PodData> getPodsForService(String serviceName, String namespace) {
+    public ServiceKubernetesData getServiceWithPods(String serviceName, String namespace) {
         namespace = namespace == null ? "default" : namespace;
 
         try {
@@ -63,6 +64,12 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
             if (deployment.getSpec() == null || deployment.getSpec().getSelector().getMatchLabels() == null) {
                 throw new KubernetesException("Missing Deployment Spec");
             }
+            V1DeploymentStatus status = deployment.getStatus();
+            if (status == null) {
+                throw new KubernetesException("Failed to get Deployment status");
+            }
+            ServiceKubernetesData data = this.mapV1DeploymentStatusToServiceKubernetesData(status);
+
             String selector = deployment.getSpec().getSelector().getMatchLabels().entrySet().stream()
                     .map(entry -> entry.getKey() + "=" + entry.getValue())
                     .reduce((a, b) -> a + "," + b)
@@ -71,7 +78,10 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
             V1PodList podList = coreV1Api.listNamespacedPod(namespace)
                     .labelSelector(selector)
                     .execute();
-            return podList.getItems().stream().map(this::mapV1PodToPodData).toList();
+            List<PodData> pods = podList.getItems().stream().map(this::mapV1PodToPodData).toList();
+            data.setPods(pods);
+
+            return data;
         } catch (ApiException e) {
             logger.error("Error fetching pods for {}: {}", serviceName, e.getResponseBody());
             throw new KubernetesException(e.getMessage());
@@ -86,7 +96,9 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         }
         if (pod.getStatus() != null) {
             podData.setStatus(pod.getStatus().getPhase());
-            podData.setStartTime(pod.getStatus().getStartTime().toString());
+            if (pod.getStatus().getStartTime() != null) {
+                podData.setStartTime(pod.getStatus().getStartTime().toString());
+            }
         }
         if (pod.getSpec() != null) {
             podData.setNodeName(pod.getSpec().getNodeName());
@@ -126,12 +138,12 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
 
                 logger.info("Rollout restart initiated for deployment: {} in namespace: {}", serviceName, namespace);
             } catch (ApiException e) {
-                logger.error("Error restarting deployment: {}. Error: {}", serviceName, e);
+                logger.error("Error restarting deployment: {}. Error: {}", serviceName, e.getMessage());
             }
         }
     }
 
-    private ServiceKubernetesData getKubernetesData(V1DeploymentStatus status) {
+    private ServiceKubernetesData mapV1DeploymentStatusToServiceKubernetesData(V1DeploymentStatus status) {
         int replicas = status.getReplicas() != null ? status.getReplicas() : 0;
         Integer availableReplicas = status.getAvailableReplicas() != null ? status.getAvailableReplicas() : 0;
         Integer unavailableReplicas = status.getUnavailableReplicas() != null ? status.getUnavailableReplicas() : 0;
@@ -145,6 +157,6 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
             deploymentStatus = ServiceStatus.PENDING;
         }
 
-        return new ServiceKubernetesData(deploymentStatus, replicas, availableReplicas, "default");
+        return new ServiceKubernetesData(deploymentStatus, replicas, availableReplicas, "default", new ArrayList<>());
     }
 }

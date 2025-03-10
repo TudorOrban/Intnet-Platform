@@ -2,6 +2,7 @@ package com.intnet.admin.features.intnetservice.controller;
 
 import com.intnet.admin.features.intnetservice.model.IntnetService;
 import com.intnet.admin.features.intnetservice.model.PodData;
+import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
 import com.intnet.admin.features.intnetservice.service.IntnetServiceManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -32,12 +33,12 @@ public class IntnetServiceController {
     }
 
     @GetMapping("/{serviceName}/pods")
-    public ResponseEntity<List<PodData>> getPodsForIntnetService(
+    public ResponseEntity<ServiceKubernetesData> getPodsForIntnetService(
             @PathVariable String serviceName,
             @RequestParam(required = false, defaultValue = "default") String namespace
     ) {
-        List<PodData> pods = serviceManager.getPodsForService(serviceName, namespace);
-        return ResponseEntity.ok(pods);
+        ServiceKubernetesData data = serviceManager.getServiceWithPods(serviceName, namespace);
+        return ResponseEntity.ok(data);
     }
 
     @PostMapping("/build-images")

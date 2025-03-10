@@ -14,6 +14,7 @@ export interface ServiceKubernetesData {
     replicas: number;
     availableReplicas: number;
     namespace: string;
+    pods: PodData[];
 }
 
 export enum ServiceType {
@@ -33,4 +34,13 @@ export enum ServiceStatus {
     PENDING = "PENDING",
     UNKNOWN = "UNKNOWN",
     ERROR = "ERROR"
+}
+
+// Pods
+export interface PodData {
+    name: string;
+    namespace: string;
+    status: string;
+    nodeName: string;
+    startTime: Date;
 }

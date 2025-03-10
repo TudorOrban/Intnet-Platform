@@ -46,8 +46,8 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
         return services;
     }
 
-    public List<PodData> getPodsForService(String serviceName, String namespace) {
-        return kubernetesService.getPodsForService(serviceName, namespace);
+    public ServiceKubernetesData getServiceWithPods(String serviceName, String namespace) {
+        return kubernetesService.getServiceWithPods(serviceName, namespace);
     }
 
     public void rolloutRestartServiceDeployments(List<String> serviceNames, String namespace) {
