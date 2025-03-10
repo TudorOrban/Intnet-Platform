@@ -29,10 +29,10 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
         this.imageBuilderService = imageBuilderService;
     }
 
-    public List<IntnetService> getServices() {
+    public List<IntnetService> getServices(String namespace) {
         List<IntnetService> services = serviceRepository.findAll();
         List<String> serviceNames = services.stream().map(IntnetService::getName).toList();
-        Map<String, ServiceKubernetesData> serviceDataMap = kubernetesService.getServices(serviceNames);
+        Map<String, ServiceKubernetesData> serviceDataMap = kubernetesService.getServices(serviceNames, namespace);
 
         for (IntnetService service: services) {
             ServiceKubernetesData kubernetesData = serviceDataMap.get(service.getName());
@@ -43,6 +43,10 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
         }
 
         return services;
+    }
+
+    public void rolloutRestartServiceDeployments(List<String> serviceNames, String namespace) {
+        kubernetesService.rolloutRestartDeployments(serviceNames, namespace);
     }
 
     public Flux<DataBuffer> buildServiceImages(List<String> serviceNames) {

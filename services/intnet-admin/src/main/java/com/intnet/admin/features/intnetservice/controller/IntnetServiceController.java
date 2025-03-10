@@ -23,8 +23,8 @@ public class IntnetServiceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<IntnetService>> getIntnetServices() {
-        List<IntnetService> services = serviceManager.getServices();
+    public ResponseEntity<List<IntnetService>> getIntnetServices(@RequestParam(required = false, defaultValue = "default") String namespace) {
+        List<IntnetService> services = serviceManager.getServices(namespace);
         return ResponseEntity.ok(services);
     }
 
@@ -34,5 +34,11 @@ public class IntnetServiceController {
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
                 .body(logStream);
+    }
+
+    @PutMapping("/rollout-restart")
+    public ResponseEntity<Void> rolloutRestartDeployments(@RequestBody List<String> serviceNames, @RequestParam(required = false, defaultValue = "default") String namespace) {
+        serviceManager.rolloutRestartServiceDeployments(serviceNames, namespace);
+        return ResponseEntity.ok().build();
     }
 }

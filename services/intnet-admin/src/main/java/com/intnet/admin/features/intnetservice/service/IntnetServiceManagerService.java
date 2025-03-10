@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface IntnetServiceManagerService {
 
-    List<IntnetService> getServices();
+    List<IntnetService> getServices(String namespace);
     Flux<DataBuffer> buildServiceImages(List<String> serviceNames);
+    void rolloutRestartServiceDeployments(List<String> serviceNames, String namespace);
 }

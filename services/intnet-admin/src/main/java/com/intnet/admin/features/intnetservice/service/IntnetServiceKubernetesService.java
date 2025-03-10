@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface IntnetServiceKubernetesService {
 
-    Map<String, ServiceKubernetesData> getServices(List<String> serviceNames);
+    Map<String, ServiceKubernetesData> getServices(List<String> serviceNames, String namespace);
+    void rolloutRestartDeployments(List<String> serviceNames, String namespace);
 }

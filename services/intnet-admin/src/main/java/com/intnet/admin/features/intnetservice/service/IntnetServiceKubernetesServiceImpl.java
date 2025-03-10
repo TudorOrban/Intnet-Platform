@@ -4,14 +4,13 @@ import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
 import com.intnet.admin.features.intnetservice.model.ServiceStatus;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
-import io.kubernetes.client.openapi.models.V1Deployment;
-import io.kubernetes.client.openapi.models.V1DeploymentStatus;
+import io.kubernetes.client.openapi.models.*;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernetesService {
@@ -22,12 +21,14 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         this.appsV1Api = appsV1Api;
     }
 
-    public Map<String, ServiceKubernetesData> getServices(List<String> serviceNames) {
+    public Map<String, ServiceKubernetesData> getServices(List<String> serviceNames, String namespace) {
+        namespace = namespace == null ? "default" : namespace;
+
         Map<String, ServiceKubernetesData> serviceDataMap = new HashMap<>();
 
         for (String serviceName : serviceNames) {
             try {
-                V1Deployment deployment = appsV1Api.readNamespacedDeployment(serviceName, "default").execute();
+                V1Deployment deployment = appsV1Api.readNamespacedDeployment(serviceName, namespace).execute();
                 V1DeploymentStatus status = deployment.getStatus();
                 if (status == null) {
                     continue;
@@ -43,8 +44,35 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         return serviceDataMap;
     }
 
+    public void rolloutRestartDeployments(List<String> serviceNames, String namespace) {
+        namespace = namespace == null ? "default" : namespace;
+
+        for (String serviceName : serviceNames) {
+            try {
+                V1Deployment deployment = appsV1Api.readNamespacedDeployment(serviceName, namespace).execute();
+                if (deployment.getMetadata() == null) {
+                    System.out.println("Failed to get service metadata for: " + serviceName);
+                    continue;
+                }
+                // Create a new annotation for the restart
+                Map<String, String> annotations = deployment.getMetadata().getAnnotations();
+                if (annotations == null) {
+                    annotations = new HashMap<>();
+                }
+                annotations.put("kubectl.kubernetes.io/restartedAt", Instant.now().toString());
+
+                deployment.getMetadata().setAnnotations(annotations);
+                appsV1Api.replaceNamespacedDeployment(serviceName, namespace, deployment);
+
+                System.out.println("Rollout restart initiated for deployment: " + serviceName + " in namespace: " + namespace);
+            } catch (ApiException e) {
+                System.err.println("Error restarting deployment: " + serviceName + ". Error: " + e);
+            }
+        }
+    }
+
     private ServiceKubernetesData getKubernetesData(V1DeploymentStatus status) {
-        Integer replicas = status.getReplicas() != null ? status.getReplicas() : 0;
+        int replicas = status.getReplicas() != null ? status.getReplicas() : 0;
         Integer availableReplicas = status.getAvailableReplicas() != null ? status.getAvailableReplicas() : 0;
         Integer unavailableReplicas = status.getUnavailableReplicas() != null ? status.getUnavailableReplicas() : 0;
 
