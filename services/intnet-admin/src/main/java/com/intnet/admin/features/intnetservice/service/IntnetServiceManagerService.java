@@ -11,7 +11,7 @@ public interface IntnetServiceManagerService {
 
     List<IntnetService> getServices(String namespace);
     ServiceKubernetesData getServiceWithPods(String serviceName, String namespace);
-    Flux<DataBuffer> streamPodLogs(String podName, String namespace, String containerName);
+    Flux<String> streamPodLogs(String podName, String namespace, String containerName);
     Flux<DataBuffer> buildServiceImages(List<String> serviceNames);
     void rolloutRestartServiceDeployments(List<String> serviceNames, String namespace);
 }

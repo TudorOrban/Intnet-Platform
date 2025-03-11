@@ -4,7 +4,7 @@ imagePullPolicy: IfNotPresent
 intnet-admin:
   replicaCount: 1
 intnet-gateway:
-  replicaCount: 3
+  replicaCount: 1
 intnet-tenant:
   replicaCount: 0
 intnet-grid-data:

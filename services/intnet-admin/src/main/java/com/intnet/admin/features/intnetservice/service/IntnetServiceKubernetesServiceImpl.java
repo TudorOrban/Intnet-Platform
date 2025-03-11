@@ -4,10 +4,12 @@ import com.intnet.admin.features.intnetservice.model.PodData;
 import com.intnet.admin.features.intnetservice.model.ServiceKubernetesData;
 import com.intnet.admin.features.intnetservice.model.ServiceStatus;
 import com.intnet.admin.shared.exception.types.KubernetesException;
+import io.kubernetes.client.PodLogs;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
+import io.kubernetes.client.util.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -18,10 +20,7 @@ import reactor.core.publisher.Flux;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernetesService {
@@ -130,27 +129,29 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
         return podData;
     }
 
-    public Flux<DataBuffer> streamPodLogs(String podName, String namespace, String containerName) {
+    public Flux<String> streamPodLogs(String podName, String namespace, String containerName) {
         String finalNamespace = namespace == null ? "default" : namespace;
         String finalContainerName = this.getPodContainerName(podName, namespace);
 
         return Flux.create(sink -> {
             try {
-                String logString = coreV1Api.readNamespacedPodLog(podName, finalNamespace)
-                        .container(finalContainerName)
-                        .follow(true)
-                        .execute();
-
-                InputStream inputStream = new ByteArrayInputStream(logString.getBytes(StandardCharsets.UTF_8));
+                PodLogs logs = new PodLogs(Config.defaultClient());
+                InputStream inputStream = logs.streamNamespacedPodLog(finalNamespace, podName, finalContainerName);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    sink.next(dataBufferFactory.wrap(line.getBytes()));
+//                    System.out.println(line);
+                    byte[] utf8Bytes = line.getBytes(StandardCharsets.UTF_8);
+                    String base64Encoded = Base64.getEncoder().encodeToString(utf8Bytes);
+                    String eventData = "data: " + base64Encoded + "\n\n";
+                    sink.next(eventData);
+                    System.out.println("Data sent to sink.next(): " + eventData);
                 }
 
                 reader.close();
                 sink.complete();
+                System.out.println("Flux completed");
             } catch (IOException | ApiException e) {
                 logger.error("Error streaming pod logs: {}", e.getMessage(), e);
                 sink.error(e);
@@ -166,13 +167,13 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
                 List<V1Container> containers = pod.getSpec().getContainers();
 
                 if (containers.isEmpty()) {
-                    throw new KubernetesException("Smth");
+                    throw new KubernetesException("No containers found for pod " + podName);
                 }
 
                 defaultContainerName = containers.getFirst().getName();
             }
         } catch (ApiException e) {
-            throw new KubernetesException("smth else" + e.getMessage());
+            throw new KubernetesException("Error fetching pod container: " + e.getMessage());
         }
         return defaultContainerName;
     }

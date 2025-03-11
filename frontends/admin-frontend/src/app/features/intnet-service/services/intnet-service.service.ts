@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, NgZone } from "@angular/core";
 import { environment } from "../../../../environments/environment";
 import { IntnetService, PodData, ServiceKubernetesData } from "../models/IntnetService";
 import { Observable } from "rxjs";
@@ -10,7 +10,10 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 export class IntnetServiceService {
     private apiUrl = `${environment.apiUrl}/intnet-services`;
 
-    constructor(private readonly http: HttpClient) {}
+    constructor(
+        private readonly http: HttpClient,
+        private ngZone: NgZone
+    ) {}
 
     getServices(namespace?: string): Observable<IntnetService[]> {
         return this.http.get<IntnetService[]>(this.apiUrl, { params: { namespace: namespace ?? "default" }});
@@ -30,13 +33,38 @@ export class IntnetServiceService {
         }
 
         return new Observable<string>(observer => {
+            // const eventSource = new EventSource(`${this.apiUrl}/test-stream`);
             const eventSource = new EventSource(`${this.apiUrl}/${serviceName}/pods/${podName}/logs?${params.toString()}`);
 
             eventSource.onmessage = (event) => {
-                observer.next(event.data);
+                console.log("Data: ", event.data);
+                const encodedData = event.data.substring("data: ".length).trim();
+                const decodedBase64 = atob(encodedData);
+            
+                try {
+                    const decodedUTF8 = decodeURIComponent(escape(decodedBase64));
+        
+                    // Check for end-of-stream marker
+                    if (decodedUTF8 === "[DONE]") {
+                        this.ngZone.run(() => {
+                            observer.complete();
+                        });
+                        return;
+                    }
+                    
+                    this.ngZone.run(() => {
+                        observer.next(decodedUTF8);
+                    });
+                } catch (e) {
+                    console.error("UTF-8 decode failed, fallback to direct Base64 string:", e);
+                    this.ngZone.run(() => {
+                        observer.next(decodedBase64);
+                    });
+                }
             }
 
             eventSource.onerror = (error) => {
+                console.log("Error: ", error);
                 observer.error(error);
             }
 

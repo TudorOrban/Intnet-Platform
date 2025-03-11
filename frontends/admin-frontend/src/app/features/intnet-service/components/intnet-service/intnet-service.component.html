@@ -21,7 +21,9 @@
             </button>
         </div>
         <div *ngIf="openPodName == pod.name">
-            Expanded
+            <div *ngFor="let log of logs">
+                {{ log }}
+            </div>
         </div>
     </div>
 </div>

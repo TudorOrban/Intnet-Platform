@@ -49,7 +49,7 @@ public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerServ
         return kubernetesService.getServiceWithPods(serviceName, namespace);
     }
 
-    public Flux<DataBuffer> streamPodLogs(String podName, String namespace, String containerName) {
+    public Flux<String> streamPodLogs(String podName, String namespace, String containerName) {
         return kubernetesService.streamPodLogs(podName, namespace, containerName);
     }
 
