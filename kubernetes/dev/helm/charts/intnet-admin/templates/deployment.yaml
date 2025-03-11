@@ -12,6 +12,7 @@ spec:
       labels:
         {{- include "..labels" . | nindent 8 }}
     spec:
+      serviceAccountName: intnet-admin-service-account
       containers:
         - name: intnet-admin
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -28,10 +29,3 @@ spec:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
-          volumeMounts:
-            - name: intnet-volume
-              mountPath: {{ .Values.volume.mountPath }}
-      volumes:
-        - name: intnet-volume
-          hostPath:
-            path: {{ .Values.volume.hostPath }}

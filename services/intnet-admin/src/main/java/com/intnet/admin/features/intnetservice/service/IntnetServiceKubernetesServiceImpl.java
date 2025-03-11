@@ -8,21 +8,15 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,17 +28,16 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
 
     private final AppsV1Api appsV1Api;
     private final CoreV1Api coreV1Api;
-    private final OkHttpClient okHttpClient;
+    private final DefaultDataBufferFactory dataBufferFactory;
     private final Logger logger = LoggerFactory.getLogger(IntnetServiceKubernetesServiceImpl.class);
 
     public IntnetServiceKubernetesServiceImpl(
             AppsV1Api appsV1Api,
-            CoreV1Api coreV1Api,
-            OkHttpClient okHttpClient
+            CoreV1Api coreV1Api
     ) {
         this.appsV1Api = appsV1Api;
         this.coreV1Api = coreV1Api;
-        this.okHttpClient = okHttpClient;
+        this.dataBufferFactory = new DefaultDataBufferFactory();
     }
 
     public Map<String, ServiceKubernetesData> getServices(List<String> serviceNames, String namespace) {
@@ -139,66 +132,49 @@ public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernet
 
     public Flux<DataBuffer> streamPodLogs(String podName, String namespace, String containerName) {
         String finalNamespace = namespace == null ? "default" : namespace;
-        String logUrl = buildLogUrl(podName, finalNamespace, containerName);
+        String finalContainerName = this.getPodContainerName(podName, namespace);
 
-        return Mono.fromCallable(() -> fetchLogs(logUrl))
-                .flatMapMany(this::readLogsToFlux);
-    }
+        return Flux.create(sink -> {
+            try {
+                String logString = coreV1Api.readNamespacedPodLog(podName, finalNamespace)
+                        .container(finalContainerName)
+                        .follow(true)
+                        .execute();
 
-    private String buildLogUrl(String podName, String namespace, String containerName) {
-        String baseUrl = coreV1Api.getApiClient().getBasePath() +
-                "/api/v1/namespaces/" + namespace +
-                "/pods/" + podName +
-                "/log?follow=true&pretty=false&timestamps=true";
+                InputStream inputStream = new ByteArrayInputStream(logString.getBytes(StandardCharsets.UTF_8));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        if (containerName != null && !containerName.isEmpty()) {
-            baseUrl += "&container=" + containerName;
-        }
-
-        return baseUrl;
-    }
-
-    private BufferedReader fetchLogs(String logUrl) throws IOException, ApiException {
-        Request request = new Request.Builder().url(logUrl).build();
-
-        try (Response response = okHttpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new ApiException(response.code(), response.message());
-            }
-
-            ResponseBody responseBody = response.body();
-            if (responseBody == null) {
-                throw new IOException("Empty response body");
-            }
-
-            return new BufferedReader(new InputStreamReader(responseBody.byteStream()));
-        }
-    }
-
-    private Flux<DataBuffer> readLogsToFlux(BufferedReader reader) {
-        return Flux.generate(
-                () -> reader,
-                (bufferedReader, sink) -> {
-                    try {
-                        String line = bufferedReader.readLine();
-                        if (line != null) {
-                            sink.next(DefaultDataBufferFactory.sharedInstance.wrap(line.getBytes()));
-                        } else {
-                            sink.complete();
-                        }
-                    } catch (IOException e) {
-                        sink.error(e);
-                    }
-                    return bufferedReader;
-                },
-                bufferedReader -> {
-                    try {
-                        bufferedReader.close();
-                    } catch (IOException e) {
-                        logger.error("Error closing BufferedReader", e);
-                    }
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sink.next(dataBufferFactory.wrap(line.getBytes()));
                 }
-        );
+
+                reader.close();
+                sink.complete();
+            } catch (IOException | ApiException e) {
+                logger.error("Error streaming pod logs: {}", e.getMessage(), e);
+                sink.error(e);
+            }
+        });
+    }
+
+    private String getPodContainerName(String podName, String namespace) {
+        String defaultContainerName = "";
+        try {
+            V1Pod pod = coreV1Api.readNamespacedPod(podName, namespace).execute();
+            if (pod.getSpec() != null) {
+                List<V1Container> containers = pod.getSpec().getContainers();
+
+                if (containers.isEmpty()) {
+                    throw new KubernetesException("Smth");
+                }
+
+                defaultContainerName = containers.getFirst().getName();
+            }
+        } catch (ApiException e) {
+            throw new KubernetesException("smth else" + e.getMessage());
+        }
+        return defaultContainerName;
     }
 
     public void rolloutRestartDeployments(List<String> serviceNames, String namespace) {
