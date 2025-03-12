@@ -43,14 +43,6 @@ export class IntnetServiceService {
             
                 try {
                     const decodedUTF8 = decodeURIComponent(escape(decodedBase64));
-        
-                    // Check for end-of-stream marker
-                    if (decodedUTF8 === "[DONE]") {
-                        this.ngZone.run(() => {
-                            observer.complete();
-                        });
-                        return;
-                    }
                     
                     this.ngZone.run(() => {
                         observer.next(decodedUTF8);
@@ -77,6 +69,10 @@ export class IntnetServiceService {
                 console.log("EventSource closed");
             }
         });
+    }
+
+    rolloutRestartDeployments(serviceNames: string[], namespace?: string): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/rollout-restart`, serviceNames, { params: { namespace: namespace ?? "default" }});
     }
 
 }

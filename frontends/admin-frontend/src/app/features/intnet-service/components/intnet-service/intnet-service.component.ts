@@ -46,6 +46,7 @@ export class IntnetServiceComponent implements OnInit {
             },
             (error) => {
                 console.error("Error fetching service pods: ", error);
+                this.isLoading = false;
             }
         );
     }
@@ -76,6 +77,16 @@ export class IntnetServiceComponent implements OnInit {
     refresh(): void {
         if (!this.serviceName) return;
         this.loadPods(this.serviceName);
+    }
+
+    restart(): void {
+        if (!this.serviceName) return;
+
+        this.intnetServiceService.rolloutRestartDeployments([this.serviceName], this.serviceData?.namespace).subscribe(
+            (data) => {
+                this.loadPods(this.serviceName ?? "");
+            }
+        );
     }
 
     faCaretDown = faCaretDown;
