@@ -1,0 +1,33 @@
+.standard-write-button {
+    padding: 0.5rem 1rem;
+    height: 2.5rem;
+    background-color: rgb(42, 100, 218);
+    color: white;
+    border: 1px solid rgb(209 213 219);
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.3rem;
+    cursor: pointer;
+}
+
+.standard-write-button:hover {
+    background-color: rgb(35, 80, 200);
+}
+
+.standard-action-button {
+    padding: 0.5rem 1rem;
+    height: 2.5rem;
+    background-color: rgb(246, 246, 246);
+    color: rgb(21, 21, 21);
+    border: 1px solid rgb(209 213 219);
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.3rem;
+    cursor: pointer;
+}
+    
+.standard-action-button:hover {
+    background-color: rgb(238, 238, 238);
+}

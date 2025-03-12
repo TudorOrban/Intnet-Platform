@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { PodData, ServiceKubernetesData } from "../../models/IntnetService";
 import { IntnetServiceService } from "../../services/intnet-service.service";
 import { CommonModule } from "@angular/common";
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeftRotate, faCaretDown, faCaretUp, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 @Component({
@@ -15,6 +15,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 export class IntnetServiceComponent implements OnInit {
     serviceName?: string;
     serviceData?: ServiceKubernetesData;
+    isLoading: boolean = false;
 
     openPodName?: string;
 
@@ -34,11 +35,14 @@ export class IntnetServiceComponent implements OnInit {
         });
     }
 
-    private loadPods(serviceName: string) {
+    private loadPods(serviceName: string): void {
+        this.isLoading = true;
+
         this.intnetServiceService.getServiceWithPods(serviceName).subscribe(
             (data) => {
                 console.log("Data", data);
                 this.serviceData = data;
+                this.isLoading = false;
             },
             (error) => {
                 console.error("Error fetching service pods: ", error);
@@ -46,7 +50,7 @@ export class IntnetServiceComponent implements OnInit {
         );
     }
 
-    openPod(podName: string) {
+    openPod(podName: string): void {
         if (this.openPodName == podName) {
             this.openPodName = undefined;
             return;
@@ -69,6 +73,13 @@ export class IntnetServiceComponent implements OnInit {
         );
     }
 
+    refresh(): void {
+        if (!this.serviceName) return;
+        this.loadPods(this.serviceName);
+    }
+
     faCaretDown = faCaretDown;
     faCaretUp = faCaretUp;
+    faArrowLeftRotate = faArrowLeftRotate;
+    faSpinner = faSpinner;
 }
