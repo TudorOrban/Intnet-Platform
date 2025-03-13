@@ -2,7 +2,7 @@ imagePullPolicy: IfNotPresent
 
 # Microservices
 intnet-admin:
-  replicaCount: 1
+  replicaCount: 0
 intnet-gateway:
   replicaCount: 1
 intnet-tenant:
@@ -17,8 +17,10 @@ intnet-grid-device-manager:
   replicaCount: 0
 
 ## ML services
+intnet-ml-admin:
+  replicaCount: 1
 intnet-training-data-manager:
-  replicaCount: 0
+  replicaCount: 1
 
 # Device adapters
 modbus-adapter:

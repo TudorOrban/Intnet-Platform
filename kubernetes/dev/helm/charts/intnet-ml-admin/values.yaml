@@ -1,11 +1,12 @@
 replicaCount: 1
 image:
-  repository: intnet-training-data-manager
+  repository: intnet-ml-admin
   tag: latest
   pullPolicy: IfNotPresent
+springProfile: "docker-dev"
 service:
   type: ClusterIP
-  port: 101
+  port: 100
 resources:
   requests:
     cpu: 100m
