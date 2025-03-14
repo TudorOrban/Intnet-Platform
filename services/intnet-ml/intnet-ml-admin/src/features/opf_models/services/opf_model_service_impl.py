@@ -18,10 +18,10 @@ class OPFModelServiceImpl:
 
     def get_all_models(self) -> List[OPFModelSearchDto]:
         models = self.repository.find_all()
-        return [self._map_model_to_dto(model) for model in models]
+        return [OPFModelDtoMapper.map_opf_model_to_dto(model) for model in models]
 
     def create_model(self, model_dto: CreateOPFModelDto) -> Optional[OPFModelSearchDto]:
-        model = self._map_dto_to_model(model_dto)
+        model = OPFModelDtoMapper.map_dto_to_opf_model(model_dto)
         created_model = self.repository.create(model)
         if created_model:
             return OPFModelDtoMapper.map_opf_model_to_dto(created_model)

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from features.opf_models.models.opf_model import OPFModel
 
 
-class OPFModelRepositoryImpl(ABC):
+class OPFModelRepositoryImpl:
     def __init__(self, db: Session):
         self.db = db
 
@@ -38,7 +38,7 @@ class OPFModelRepositoryImpl(ABC):
 
         return existing_model
     
-    def delete(self, id: int) -> bool:
+    def delete_by_id(self, id: int) -> bool:
         existing_model = self.find_by_id(id)
         if not existing_model:
             return False

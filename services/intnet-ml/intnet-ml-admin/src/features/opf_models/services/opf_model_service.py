@@ -12,7 +12,7 @@ class OPFModelService(ABC):
         pass
 
     @abstractmethod
-    def get_all_models(self, id: int) -> List[OPFModelSearchDto]:
+    def get_all_models(self) -> List[OPFModelSearchDto]:
         pass
 
     @abstractmethod

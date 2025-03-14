@@ -11,4 +11,4 @@ def initialize_app():
     load_dotenv()
     configure_logging()
     logger = get_logger(__name__)
-    logger.info("Initializing Training Data Manager Service")
+    logger.info("Initializing ML Admin Service")
