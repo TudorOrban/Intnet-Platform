@@ -9,7 +9,7 @@ from alembic import context
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), "src"))
 
 from src.core.config.db.database_connection import initialize_database, Base
-from src.features.opf_models.models.opf_model import OPFModel # Explicitly import model
+
 
 load_dotenv()
 database_url = os.getenv("DATABASE_URL")
@@ -23,9 +23,6 @@ if config.config_file_name is not None:
 config.set_main_option("sqlalchemy.url", database_url)
 
 target_metadata = Base.metadata
-
-print("Metadata Tables:", Base.metadata.tables.keys())
-print("OPFModel Metadata:", OPFModel.__table__)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

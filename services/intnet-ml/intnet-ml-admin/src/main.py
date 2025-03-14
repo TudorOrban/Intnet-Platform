@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI
 from requests import Session
 
-from core.config.db.database_connection import database, get_db, initialize_database
+from core.config.db.database_connection import get_db, initialize_database
 from core.config.initialization.app_initializer import initialize_app
 
 initialize_app()
