@@ -11,3 +11,5 @@ best_finetuned_model.pth
 **/__pycache__/
 
 .vscode
+
+model_data/

@@ -6,7 +6,7 @@ from features.opf_models.models.opf_model_dtos import CreateOPFModelDto, OPFMode
 class OPFModelDtoMapper:
 
     @staticmethod
-    def map_opf_model_to_dto(model: OPFModel) -> OPFModelSearchDto:
+    def map_opf_model_to_search_dto(model: OPFModel) -> OPFModelSearchDto:
         return OPFModelSearchDto(
             id=model.id,
             name=model.name,
@@ -15,9 +15,9 @@ class OPFModelDtoMapper:
             description=model.description,
             version=model.version,
         )
-
+    
     @staticmethod
-    def map_dto_to_opf_model(model_dto: CreateOPFModelDto) -> OPFModel:
+    def map_create_dto_to_opf_model(model_dto: CreateOPFModelDto) -> OPFModel:
         return OPFModel(
             name=model_dto.name,
             storage_path=model_dto.storage_path,

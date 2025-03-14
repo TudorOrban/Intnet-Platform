@@ -12,15 +12,19 @@ class OPFModelService(ABC):
         pass
 
     @abstractmethod
+    def get_model_data(self, id: int) -> Optional[bytes]:
+        pass
+
+    @abstractmethod
     def get_all_models(self) -> List[OPFModelSearchDto]:
         pass
 
     @abstractmethod
-    def create_model(self, model_dto: CreateOPFModelDto) -> Optional[OPFModelSearchDto]:
+    def create_model(self, model_dto: CreateOPFModelDto, model_data: Optional[bytes]) -> Optional[OPFModelSearchDto]:
         pass
 
     @abstractmethod
-    def update_model(self, model_dto: UpdateOPFModelDto) -> Optional[OPFModelSearchDto]:
+    def update_model(self, model_dto: UpdateOPFModelDto, model_data: Optional[bytes]) -> Optional[OPFModelSearchDto]:
         pass
 
     @abstractmethod
