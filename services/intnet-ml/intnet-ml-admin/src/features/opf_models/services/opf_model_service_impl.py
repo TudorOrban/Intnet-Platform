@@ -4,8 +4,9 @@ from features.opf_models.models.dto_mapper import OPFModelDtoMapper
 from features.opf_models.models.opf_model import OPFModel
 from features.opf_models.models.opf_model_dtos import CreateOPFModelDto, OPFModelSearchDto, UpdateOPFModelDto
 from features.opf_models.repositories.opf_model_repository import OPFModelRepository
+from features.opf_models.services.opf_model_service import OPFModelService
 
-class OPFModelServiceImpl:
+class OPFModelServiceImpl(OPFModelService):
     def __init__(self, opf_model_repository: OPFModelRepository):
         self.repository = opf_model_repository
 

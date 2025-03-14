@@ -5,9 +5,10 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from features.opf_models.models.opf_model import OPFModel
+from features.opf_models.repositories.opf_model_repository import OPFModelRepository
 
 
-class OPFModelRepositoryImpl:
+class OPFModelRepositoryImpl(OPFModelRepository):
     def __init__(self, db: Session):
         self.db = db
 
