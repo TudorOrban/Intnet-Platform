@@ -6,6 +6,8 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt -f https://data.pyg.org/whl/torch-2.2.0+cpu.html
 
-COPY src/ src/
+COPY .env .
+COPY src/ .
+COPY alembic/ .
 
-CMD ["python", "src/main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
