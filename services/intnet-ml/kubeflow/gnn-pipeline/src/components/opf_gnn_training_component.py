@@ -1,5 +1,4 @@
 from typing import List
-import kfp
 from kfp import dsl
 
 @dsl.component(

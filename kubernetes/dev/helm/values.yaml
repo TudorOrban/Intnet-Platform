@@ -57,4 +57,4 @@ cassandra:
 mlflow:
   replicaCount: 0
 mongodb:
-  replicaCount: 0
+  replicaCount: 1
