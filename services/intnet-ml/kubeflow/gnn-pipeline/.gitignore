@@ -1,0 +1,15 @@
+venv
+
+.env
+
+mlartifacts
+mlruns
+
+best_model.pth
+best_finetuned_model.pth
+
+**/__pycache__/
+
+.vscode
+
+model_data/

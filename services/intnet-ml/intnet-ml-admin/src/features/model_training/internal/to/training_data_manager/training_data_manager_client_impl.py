@@ -3,7 +3,7 @@ import os
 from typing import List, Optional
 import httpx
 
-class TrainingDataManagerClient:
+class TrainingDataManagerClientImpl:
     def __init__(self):
         self.base_url = os.getenv("TRAINING_DATA_MANAGER_URL")
         self.client = httpx.AsyncClient(base_url=self.base_url)
