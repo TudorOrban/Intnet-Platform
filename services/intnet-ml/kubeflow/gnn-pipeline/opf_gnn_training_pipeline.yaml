@@ -1,0 +1,83 @@
+# PIPELINE DEFINITION
+# Name: opf-gnn-training-pipeline
+# Description: Trains a GNN using data on OPF solutions
+# Inputs:
+#    base_graph: dict
+#    learning_rate: float [Default: 0.01]
+#    records: list
+components:
+  comp-train-opf-gnn:
+    executorLabel: exec-train-opf-gnn
+    inputDefinitions:
+      parameters:
+        base_graph:
+          parameterType: STRUCT
+        learning_rate:
+          parameterType: NUMBER_DOUBLE
+        records:
+          parameterType: LIST
+deploymentSpec:
+  executors:
+    exec-train-opf-gnn:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_opf_gnn
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_opf_gnn(\n    base_graph: dict,\n    records: List[dict],\n\
+          \    learning_rate: float\n):\n    pass # Docker image's entrypoint runs\
+          \ the training\n\n"
+        image: intnet-opf-gnn:latest
+pipelineInfo:
+  description: Trains a GNN using data on OPF solutions
+  name: opf-gnn-training-pipeline
+root:
+  dag:
+    tasks:
+      train-opf-gnn:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-opf-gnn
+        inputs:
+          parameters:
+            base_graph:
+              componentInputParameter: base_graph
+            learning_rate:
+              componentInputParameter: learning_rate
+            records:
+              componentInputParameter: records
+        taskInfo:
+          name: train-opf-gnn
+  inputDefinitions:
+    parameters:
+      base_graph:
+        parameterType: STRUCT
+      learning_rate:
+        defaultValue: 0.01
+        isOptional: true
+        parameterType: NUMBER_DOUBLE
+      records:
+        parameterType: LIST
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.12.1
