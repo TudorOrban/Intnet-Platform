@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class OPFModelTrainingHyperparameters:
+class OPFModelTrainingHyperparameters(BaseModel):
     learning_rate: float
 
 class TrainJobType(str, Enum):

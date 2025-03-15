@@ -9,5 +9,6 @@ RUN pip install --no-cache-dir -r requirements.txt -f https://data.pyg.org/whl/t
 COPY .env .
 COPY src/ .
 COPY alembic/ .
+COPY training_pipelines/ training_pipelines/.
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
