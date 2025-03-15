@@ -1,12 +1,8 @@
 
 import json
-from typing import List
 import sys
 
-
-def train_gnn(base_graph: dict, records: List[dict], learning_rate: float):
-    """Entry point fro the GNN training workflow"""
-    print(f"Training GNN with learning rate: {learning_rate}, and base graph: {base_graph}")
+from training.opf_gnn_trainer import train_opf_gnn
 
 
 if __name__ == "__main__":
@@ -14,4 +10,4 @@ if __name__ == "__main__":
     records = json.loads(sys.argv[2])
     learning_rate = float(sys.argv[3])
 
-    train_gnn(base_graph, records, learning_rate)
+    train_opf_gnn(base_graph, records, learning_rate)

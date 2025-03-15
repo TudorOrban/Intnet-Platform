@@ -16,10 +16,10 @@ class OPFModelTrainerServiceImpl(OPFModelTrainerService):
         self.training_data_manager_client = training_data_manager_client
         self.kubeflow_manager_service = kubeflow_manager_service
 
-    def train_opf_model(self, request: TrainOPFModelRequest) -> Optional[bytes]:
+    async def train_opf_model(self, request: TrainOPFModelRequest) -> Optional[bytes]:
         """Trains a GNN model using given hyperparameters and data from Training Data Manager"""
-        grid_graph = self.training_data_manager_client.get_graph_by_grid_id(request.grid_id)
-        grid_records = self.training_data_manager_client.get_records_by_grid_id(request.grid_id)
+        grid_graph = await self.training_data_manager_client.get_graph_by_grid_id(request.grid_id)
+        grid_records = await self.training_data_manager_client.get_records_by_grid_id(request.grid_id)
 
         pipeline_package_path = os.path.join(os.path.dirname(__file__), "../../../training_pipelines/opf/opf_gnn_training_pipeline.yaml")
         arguments = {

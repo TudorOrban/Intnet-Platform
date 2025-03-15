@@ -9,9 +9,12 @@ spec:
       {{- include "..selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
         {{- include "..labels" . | nindent 8 }}
     spec:
+      serviceAccountName: intnet-ml-admin-sa
       containers:
         - name: intnet-ml-admin
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
