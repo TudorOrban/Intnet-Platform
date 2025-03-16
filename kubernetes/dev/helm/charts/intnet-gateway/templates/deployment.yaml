@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-intnet-gateway
+  labels:
+    app: intnet-gateway
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

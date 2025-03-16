@@ -10,6 +10,7 @@ class TrainingDataManagerClientImpl:
 
     async def get_graph_by_grid_id(self, grid_id: int) -> Optional[dict]:
         try:
+            print("Grid id", grid_id)
             response = await self.client.get(f"/grid-graphs/{grid_id}")
             response.raise_for_status()
             return response.json()

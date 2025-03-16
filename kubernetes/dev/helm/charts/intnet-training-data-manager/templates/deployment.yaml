@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-intnet-training-data-manager
+  labels:
+    app: intnet-training-data-manager
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

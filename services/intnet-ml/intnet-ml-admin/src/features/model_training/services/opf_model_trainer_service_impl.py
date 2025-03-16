@@ -16,22 +16,25 @@ class OPFModelTrainerServiceImpl(OPFModelTrainerService):
         self.training_data_manager_client = training_data_manager_client
         self.kubeflow_manager_service = kubeflow_manager_service
 
-    async def train_opf_model(self, request: TrainOPFModelRequest) -> Optional[bytes]:
+    async def train_opf_model(self, request: TrainOPFModelRequest):
         """Trains a GNN model using given hyperparameters and data from Training Data Manager"""
         grid_graph = await self.training_data_manager_client.get_graph_by_grid_id(request.grid_id)
         grid_records = await self.training_data_manager_client.get_records_by_grid_id(request.grid_id)
 
-
-        pipeline_package_path = os.path.join(os.path.dirname(__file__), "../../../training_pipelines/opf/opf_gnn_training_pipeline.yaml")
-        arguments = {
-            "base_graph": grid_graph,
-            "records": grid_records,
-            "learning_rate": request.hyperparameters.learning_rate
+        return {
+            "grid_graph": grid_graph,
+            "grid_records": grid_records,
         }
+        # pipeline_package_path = os.path.join(os.path.dirname(__file__), "../../../training_pipelines/opf/opf_gnn_training_pipeline.yaml")
+        # arguments = {
+        #     "base_graph": grid_graph,
+        #     "records": grid_records,
+        #     "learning_rate": request.hyperparameters.learning_rate
+        # }
 
-        run = self.kubeflow_manager_service.submit_kubeflow_pipeline(
-            pipeline_package_path=pipeline_package_path,
-            arguments=arguments,
-            experiment_name=request.experiment_name or "OPF Model Training",
-            run_name=f"Training Run {request.grid_id}"
-        )
+        # run = self.kubeflow_manager_service.submit_kubeflow_pipeline(
+        #     pipeline_package_path=pipeline_package_path,
+        #     arguments=arguments,
+        #     experiment_name=request.experiment_name or "OPF Model Training",
+        #     run_name=f"Training Run {request.grid_id}"
+        # )

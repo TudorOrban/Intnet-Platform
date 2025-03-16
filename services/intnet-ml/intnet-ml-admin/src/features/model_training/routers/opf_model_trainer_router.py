@@ -18,6 +18,7 @@ def create_opf_model_training_router(container: Container):
         request: TrainOPFModelRequest,
         trainer_service: OPFModelTrainerService = Depends(get_trainer_service),
     ):
-        return trainer_service.train_opf_model(request)
-
+        result = await trainer_service.train_opf_model(request)
+        return result
+    
     return router
