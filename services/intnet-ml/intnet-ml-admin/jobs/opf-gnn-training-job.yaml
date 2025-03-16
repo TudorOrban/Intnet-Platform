@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: opf-training-{{ .GridID }}
+spec:
+  parallelism: {{ .Parallelism }}
+  completions: {{ .Parallelism }}
+  template:
+    spec:
+      containers:
+        - name: training-container
+          image: your-training-image:latest
+          command:
+            - "python"
+            - "-m"
+            - "torch.distributed.launch"
+            - "--nproc_per_node=1"
+            - "train_opf_gnn.py"
+            - "--grid_id"
+            - "{{ .GridID }}"
+            - "--learning_rate"
+            - "{{ .LearningRate }}"
+            - "--data_dir"
+            - "/data"
+          volumeMounts:
+            - name: data-volume
+              mountPath: "/data"
+      restartPolicy: Never
+      volumes:
+        - name: data-volume
+          emptyDir: {}

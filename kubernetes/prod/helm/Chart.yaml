@@ -1,0 +1,7 @@
+apiVersion: v3
+name: intnet-platform
+description: Umbrella chart for all Intnet microservices
+
+type: application
+
+version: 0.1.0

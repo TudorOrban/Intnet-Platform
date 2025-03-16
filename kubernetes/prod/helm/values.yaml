@@ -1,0 +1,4 @@
+imagePullPolicy: IfNotPresent
+
+intnet-training-data-manager:
+  replicaCount: 1

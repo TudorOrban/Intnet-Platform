@@ -21,6 +21,7 @@ class OPFModelTrainerServiceImpl(OPFModelTrainerService):
         grid_graph = await self.training_data_manager_client.get_graph_by_grid_id(request.grid_id)
         grid_records = await self.training_data_manager_client.get_records_by_grid_id(request.grid_id)
 
+
         pipeline_package_path = os.path.join(os.path.dirname(__file__), "../../../training_pipelines/opf/opf_gnn_training_pipeline.yaml")
         arguments = {
             "base_graph": grid_graph,

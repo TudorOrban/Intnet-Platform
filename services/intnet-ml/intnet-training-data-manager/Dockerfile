@@ -2,6 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends gcc build-essential libdbus-1-dev pkg-config libglib2.0-dev
+
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt

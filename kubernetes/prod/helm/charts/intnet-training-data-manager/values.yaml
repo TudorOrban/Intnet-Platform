@@ -1,0 +1,17 @@
+replicaCount: 1
+image:
+  repository: intnet.azurecr.io/intnet-training-data-manager
+  tag: latest
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 101
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+imagePullSecrets:
+  - name: acr-secret
