@@ -1,11 +1,12 @@
 replicaCount: 1
 image:
-  repository: intnet.azurecr.io/intnet-training-data-manager
+  repository: intnet.azurecr.io/intnet-grid-data
   tag: latest
   pullPolicy: Always
+springProfile: "docker-dev"
 service:
   type: ClusterIP
-  port: 8080
+  port: 82
 resources:
   requests:
     cpu: 100m

@@ -18,6 +18,11 @@ variable "subnet_id" {
     description = "The subnet ID for the AKS node pool."
 }
 
+variable "acr_id" {
+    type = string
+    description = "The ACR ID to attach to the AKS cluster."
+}
+
 variable "node_count" {
     type = number
     description = "The number of nodes in the AKS node pool."

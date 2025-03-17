@@ -29,6 +29,12 @@ variable "vnet_address_space" {
     default = ["10.0.0.0/16"]
 }
 
+# ACR
+variable "acr_name" {
+    type = string
+    default = "intnet"
+}
+
 # AKS
 variable "aks_name" {
     type = string

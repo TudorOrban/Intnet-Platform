@@ -1,4 +1,6 @@
-imagePullPolicy: IfNotPresent
+
+intnet-grid-data:
+  replicaCount: 1
 
 intnet-training-data-manager:
   replicaCount: 1
