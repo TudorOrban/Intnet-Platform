@@ -1,0 +1,6 @@
+subscription_id = "example-subscription-id"
+tenant_id = "example-tenant-id"
+
+resource_group_name = "intnet-rg"
+location = "eastus"
+vnet_name = "intnet-vnet"
