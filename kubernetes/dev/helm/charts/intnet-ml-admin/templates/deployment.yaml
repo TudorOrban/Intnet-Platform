@@ -2,19 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-intnet-ml-admin
-  labels:
-    app: intnet-ml-admin
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "..selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: intnet-ml-admin
+      app.kubernetes.io/instance: std-release
+      app: intnet-ml-admin
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        {{- include "..labels" . | nindent 8 }}
+        app: intnet-ml-admin
+        app.kubernetes.io/name: intnet-ml-admin
+        app.kubernetes.io/instance: std-release
     spec:
       serviceAccountName: intnet-ml-admin-sa
       containers:

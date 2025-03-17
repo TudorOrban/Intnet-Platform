@@ -2,17 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-intnet-training-data-manager
-  labels:
-    app: intnet-training-data-manager
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "..selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: intnet-training-data-manager
+      app.kubernetes.io/instance: std-release
+      app: intnet-training-data-manager
   template:
     metadata:
       labels:
-        {{- include "..labels" . | nindent 8 }}
+        app: intnet-training-data-manager
+        app.kubernetes.io/name: intnet-training-data-manager
+        app.kubernetes.io/instance: std-release
     spec:
       containers:
         - name: intnet-training-data-manager
