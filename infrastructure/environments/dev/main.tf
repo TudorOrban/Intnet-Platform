@@ -3,11 +3,20 @@ module "networking" {
     resource_group_name = var.resource_group_name
     location = var.location
     vnet_name = var.vnet_name
-    subnet_prefixes = {
-        aks_subnet = ["10.0.1.0/24"]
-        ingress_subnet = ["10.0.2.0/24"]
-        private_link_subnet = ["10.0.3.0/24"]
-    }
+    subnet_prefixes = var.subnet_prefixes
+}
+
+module "postgres" {
+    source = "../../modules/postgres"
+    resource_group_name = var.resource_group_name
+    location = var.location
+    postgres_server_name = var.postgres_server_name
+    postgres_admin_user = var.postgres_admin_user
+    postgres_admin_password = var.postgres_admin_password
+    postgres_sku_name = var.postgres_sku_name
+    subnet_id = module.networking.subnet_ids["grid_data_db_subnet"]
+    allowed_aks_subnet_ids = [module.networking.subnet_ids["aks_subnet"]]
+    subnet_prefixes = var.subnet_prefixes
 }
 
 module "acr" {
@@ -29,6 +38,11 @@ module "aks" {
     service_cidr = var.service_cidr
     network_plugin = var.network_plugin
     dns_service_ip = var.dns_service_ip
+}
+
+
+output "postgres_fqdn" {
+    value = module.postgres.postgres_server_fqdn
 }
 
 output "kube_config" {

@@ -11,4 +11,14 @@ resource "azurerm_subnet" "subnet" {
     resource_group_name = var.resource_group_name
     virtual_network_name = azurerm_virtual_network.vnet.name
     address_prefixes = each.value
+
+    dynamic "delegation" {
+        for_each = each.key == "grid_data_db_subnet" ? [1] : []
+        content {
+            name = "fsdelegation"
+            service_delegation {
+                name = "Microsoft.DBforPostgreSQL/flexibleServers"
+            }
+        }
+    }
 }

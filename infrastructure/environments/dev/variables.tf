@@ -15,7 +15,7 @@ variable "resource_group_name" {
 
 variable "location" {
     type = string
-    default = "eastus"
+    default = "centralus"
 }
 
 # Networking
@@ -27,6 +27,35 @@ variable "vnet_name" {
 variable "vnet_address_space" {
     type = list(string)
     default = ["10.0.0.0/16"]
+}
+
+variable "subnet_prefixes" {
+    type = map(list(string))
+    description = "Map of subnet prefixes"
+    default = {
+        aks_subnet          = ["10.0.1.0/24"]
+        ingress_subnet      = ["10.0.2.0/24"]
+        private_link_subnet = ["10.0.3.0/24"]
+        grid_data_db_subnet = ["10.0.4.0/24"]
+    }
+}
+
+# Postgres
+variable "postgres_sku_name" {
+    type = string
+}
+
+variable "postgres_server_name" {
+    type = string
+}
+
+variable "postgres_admin_user" {
+    type = string
+}
+
+variable "postgres_admin_password" {
+    type = string
+    sensitive = true
 }
 
 # ACR
