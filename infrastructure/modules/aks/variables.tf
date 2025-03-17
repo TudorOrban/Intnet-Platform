@@ -1,47 +1,32 @@
-# Provider
-variable "subscription_id" {
-    type = string
-}
-
-variable "tenant_id" {
-    type = string
-}
-
-# General
 variable "resource_group_name" {
     type = string
-    default = "intnet-rg"
+    description = "The name of the resource group in which to create the AKS cluster."
 }
 
 variable "location" {
     type = string
-    default = "eastus"
+    description = "The Azure region where the AKS cluster will be created."
 }
 
-# Networking
-variable "vnet_name" {
-    type = string
-    default = "intnet-vnet"
-}
-
-variable "vnet_address_space" {
-    type = list(string)
-    default = ["10.0.0.0/16"]
-}
-
-# AKS
 variable "aks_name" {
     type = string
-    default = "intnet-aks"
+    description = "The name of the AKS cluster."
 }
 
-variable "aks_node_count" {
+variable "subnet_id" {
+    type = string
+    description = "The subnet ID for the AKS node pool."
+}
+
+variable "node_count" {
     type = number
+    description = "The number of nodes in the AKS node pool."
     default = 2
 }
 
-variable "aks_node_vm_size" {
+variable "node_vm_size" {
     type = string
+    description = "The VM size for the AKS nodes."
     default = "Standard_D2s_v3"
 }
 
