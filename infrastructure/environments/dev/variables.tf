@@ -18,6 +18,24 @@ variable "location" {
     default = "centralus"
 }
 
+variable "microservices" {
+    type = map(object({
+        sku_name          = optional(string, "B_Standard_B2ms")
+        storage_mb        = optional(number, 32768)
+        version           = optional(string, "14")
+        database_name     = optional(string)
+        zone              = optional(string, "2")
+    }))
+    default = {
+        "intnet-grid-data" = {
+            database_name = "grid_data_db"
+        },
+        "intnet-ml-admin" = {
+            database_name = "ml_admin_db"
+        },
+    }
+}
+
 # Networking
 variable "vnet_name" {
     type = string

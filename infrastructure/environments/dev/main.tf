@@ -10,6 +10,7 @@ module "postgres" {
     source = "../../modules/postgres"
     resource_group_name = var.resource_group_name
     location = var.location
+    microservices = var.microservices
     postgres_server_name = var.postgres_server_name
     postgres_admin_user = var.postgres_admin_user
     postgres_admin_password = var.postgres_admin_password
@@ -40,9 +41,8 @@ module "aks" {
     dns_service_ip = var.dns_service_ip
 }
 
-
-output "postgres_fqdn" {
-    value = module.postgres.postgres_server_fqdn
+output "microservice_db_fqdns" {
+    value = module.postgres.microservice_db_fqdns
 }
 
 output "kube_config" {

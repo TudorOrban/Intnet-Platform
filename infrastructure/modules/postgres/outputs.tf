@@ -1,4 +1,4 @@
-output "postgres_server_fqdn" {
-    value = azurerm_postgresql_flexible_server.postgres.fqdn
-}
 
+output "microservice_db_fqdns" {
+    value = { for key, value in azurerm_postgresql_flexible_server.microservice_db : key => value.fqdn }
+}

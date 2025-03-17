@@ -3,7 +3,7 @@ image:
   repository: intnet.azurecr.io/intnet-grid-data
   tag: latest
   pullPolicy: Always
-springProfile: "docker-dev"
+springProfile: "docker-prod"
 service:
   type: ClusterIP
   port: 82

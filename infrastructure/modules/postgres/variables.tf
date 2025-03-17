@@ -6,6 +6,17 @@ variable "location" {
     type = string
 }
 
+variable "microservices" {
+    type = map(object({
+        sku_name          = optional(string, "B_Standard_B2ms")
+        storage_mb        = optional(number, 32768)
+        version           = optional(string, "14")
+        database_name     = optional(string)
+        zone              = optional(string, "2")
+    }))
+    default = {}
+}
+
 variable "subnet_prefixes" {
     type = map(list(string))
     description = "Map of subnet prefixes"
