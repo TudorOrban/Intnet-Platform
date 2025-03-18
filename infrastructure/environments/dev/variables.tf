@@ -141,3 +141,22 @@ variable "dns_service_ip" {
     description = "The DNS service IP for the AKS cluster."
     default = "10.2.0.10"
 }
+
+# Monitoring
+variable "monitor_workspace_name" {
+    type = string
+    description = "The name of the Azure Monitor workspace."
+    default = "intnet-monitor-workspace"
+}
+
+variable "action_group_name" {
+    type = string
+    description = "The name of the Azure Monitor action group."
+    default = "intnet-monitor-action-group"
+}
+
+variable "grafana_name" {
+    type = string
+    description = "The name of the Azure Managed Grafana instance."
+    default = "intnet-grafana"
+}
