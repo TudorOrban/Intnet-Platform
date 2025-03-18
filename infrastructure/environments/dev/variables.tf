@@ -142,6 +142,37 @@ variable "dns_service_ip" {
     default = "10.2.0.10"
 }
 
+# Kafka
+variable "eventhub_namespace_name" {
+    type = string
+    description = "The name of the Event Hubs namespace."
+    default = "intnet-eventhub-ns"
+}
+
+variable "eventhub_name" {
+    type = string
+    description = "The name of the Event Hub."
+    default = "grid-events"
+}
+
+variable "eventhub_sku" {
+    type = string
+    description = "The SKU of the Event Hubs namespace."
+    default = "Standard"
+}
+
+variable "eventhub_partition_count" {
+  type = number
+  description = "The partition count of the event hub"
+  default = 4
+}
+
+variable "eventhub_message_retention" {
+  type = number
+  description = "The message retention of the event hub"
+  default = 1
+}
+
 # Monitoring
 variable "monitor_workspace_name" {
     type = string

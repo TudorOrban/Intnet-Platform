@@ -1,3 +1,8 @@
+resource "azurerm_resource_group" "intnet_rg" {
+    name = var.resource_group_name
+    location = var.location
+}
+
 module "networking" {
     source = "../../modules/networking"
     resource_group_name = var.resource_group_name
@@ -53,11 +58,22 @@ module "acr" {
 #     dns_service_ip = var.dns_service_ip
 # }
 
-module "monitoring" {
-    source = "../../modules/monitoring"
+module "kafka" {
+    source = "../../modules/kafka"
     resource_group_name = var.resource_group_name
     location = var.location
-    monitor_workspace_name = var.monitor_workspace_name
-    action_group_name = var.action_group_name
-    grafana_name = var.grafana_name
+    eventhub_namespace_name = var.eventhub_namespace_name
+    eventhub_name = var.eventhub_name
+    eventhub_sku = var.eventhub_sku
+    eventhub_partition_count = var.eventhub_partition_count
+    eventhub_message_retention = var.eventhub_message_retention
 }
+
+# module "monitoring" {
+#     source = "../../modules/monitoring"
+#     resource_group_name = var.resource_group_name
+#     location = var.location
+#     monitor_workspace_name = var.monitor_workspace_name
+#     action_group_name = var.action_group_name
+#     grafana_name = var.grafana_name
+# }

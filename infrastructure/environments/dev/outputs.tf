@@ -7,6 +7,20 @@
 #     sensitive = true
 # }
 
-output "grafana_url" {
-    value = module.monitoring.grafana_url
+output "eventhub_connection_string" {
+    value = module.kafka.eventhub_namespace_connection_string
+    sensitive = true
 }
+
+output "eventhub_name" {
+    value = module.kafka.eventhub_name
+}
+
+output "eventhub_namespace_name" {
+    value = module.kafka.eventhub_namespace_name
+}
+
+# output "grafana_url" {
+#     value = module.monitoring.grafana_url
+# }
+
