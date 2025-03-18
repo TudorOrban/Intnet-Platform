@@ -24,3 +24,15 @@ output "eventhub_namespace_name" {
 #     value = module.monitoring.grafana_url
 # }
 
+output "log_analytics_workspace_id" {
+    value = module.logging.log_analytics_workspace_id
+}
+
+output "log_analytics_workspace_primary_shared_key" {
+    value = module.logging.log_analytics_workspace_primary_shared_key
+    sensitive = true
+}
+
+output "log_analytics_workspace_name" {
+    value = module.logging.log_analytics_workspace_name
+}

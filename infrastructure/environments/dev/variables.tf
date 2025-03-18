@@ -191,3 +191,16 @@ variable "grafana_name" {
     description = "The name of the Azure Managed Grafana instance."
     default = "intnet-grafana"
 }
+
+# Logging
+variable "log_analytics_workspace_name" {
+    type = string
+    description = "The name of the Log Analytics workspace."
+    default = "intnet-log-analytics"
+}
+
+variable "log_retention_days" {
+    type = number
+    description = "The retention period for logs in days."
+    default = 30
+}

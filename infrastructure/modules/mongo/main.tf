@@ -4,9 +4,9 @@ resource "azurerm_cosmosdb_account" "mongo" {
     resource_group_name = var.resource_group_name
     offer_type = var.mongo_offer_type
     kind = "MongoDB"
-    enable_automatic_failover = true
-    enable_free_tier = false
-    enable_virtual_network_rules = true
+    automatic_failover_enabled = true
+    free_tier_enabled = false
+    is_virtual_network_filter_enabled = true
 
     virtual_network_rule {
         id = var.subnet_id
@@ -24,8 +24,9 @@ resource "azurerm_cosmosdb_account" "mongo" {
     }
 }
 
-resource "azurerm_cosmodb_mongo_database" "mongo_db" {
+resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
     for_each = toset(var.mongo_database_names)
     name = each.value
-    resource_cosmodb_account_id = azurerm_cosmosdb_account.mongo.id
+    resource_group_name = var.resource_group_name
+    account_name = var.mongo_account_name
 }
