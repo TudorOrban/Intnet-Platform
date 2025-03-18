@@ -15,9 +15,21 @@ module "postgres" {
     postgres_admin_user = var.postgres_admin_user
     postgres_admin_password = var.postgres_admin_password
     postgres_sku_name = var.postgres_sku_name
-    subnet_id = module.networking.subnet_ids["grid_data_db_subnet"]
+    subnet_id = module.networking.subnet_ids["postgres_subnet"]
     allowed_aks_subnet_ids = [module.networking.subnet_ids["aks_subnet"]]
     subnet_prefixes = var.subnet_prefixes
+}
+
+module "mongo" {
+    source = "../../modules/mongo"
+    resource_group_name = var.resource_group_name
+    location = var.location
+    mongo_account_name = var.mongo_account_name
+    subnet_id = module.networking.subnet_ids["mongo_subnet"]
+    allowed_aks_subnet_ids = [module.networking.subnet_ids["aks_subnet"]]
+    mongo_database_names = var.mongo_database_names
+    mongo_offer_type = var.mongo_offer_type
+    mongo_server_version = var.mongo_server_version
 }
 
 module "acr" {

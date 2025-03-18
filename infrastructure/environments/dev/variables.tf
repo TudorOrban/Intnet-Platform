@@ -54,7 +54,8 @@ variable "subnet_prefixes" {
         aks_subnet          = ["10.0.1.0/24"]
         ingress_subnet      = ["10.0.2.0/24"]
         private_link_subnet = ["10.0.3.0/24"]
-        grid_data_db_subnet = ["10.0.4.0/24"]
+        postgres_subnet = ["10.0.4.0/24"]
+        mongo_subnet = ["10.0.5.0/24"]
     }
 }
 
@@ -74,6 +75,31 @@ variable "postgres_admin_user" {
 variable "postgres_admin_password" {
     type = string
     sensitive = true
+}
+
+# Mongo
+variable "mongo_account_name" {
+    type = string
+    description = "The name of the CosmosDB Mongo account."
+    default = "intnet-mongo"
+}
+
+variable "mongo_database_names" {
+    type = list(string)
+    description = "A list of MongoDB database names."
+    default = ["training_data_db"]
+}
+
+variable "mongo_offer_type" {
+    type = string
+    description = "The offer type for the CosmosDB account."
+    default = "Standard"
+}
+
+variable "mongo_server_version" {
+  type = string
+  description = "The MongoDB server version."
+  default = "4.0"
 }
 
 # ACR

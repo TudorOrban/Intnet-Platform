@@ -13,7 +13,7 @@ resource "azurerm_subnet" "subnet" {
     address_prefixes = each.value
 
     dynamic "delegation" {
-        for_each = each.key == "grid_data_db_subnet" ? [1] : []
+        for_each = each.key == "postgres_subnet" ? [1] : []
         content {
             name = "fsdelegation"
             service_delegation {
