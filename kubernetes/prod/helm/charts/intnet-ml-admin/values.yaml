@@ -1,11 +1,11 @@
 replicaCount: 1
 image:
-  repository: intnet.azurecr.io/intnet-training-data-manager
+  repository: intnet-ml-admin
   tag: 0.1.0
   pullPolicy: Always
 service:
   type: ClusterIP
-  port: 8080
+  port: 8000
 resources:
   requests:
     cpu: 100m
@@ -13,5 +13,3 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
-imagePullSecrets:
-  - name: acr-secret

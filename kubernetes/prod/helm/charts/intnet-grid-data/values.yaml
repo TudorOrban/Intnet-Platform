@@ -1,12 +1,12 @@
 replicaCount: 1
 image:
   repository: intnet.azurecr.io/intnet-grid-data
-  tag: latest
+  tag: 0.1.0
   pullPolicy: Always
 springProfile: "docker-prod"
 service:
   type: ClusterIP
-  port: 82
+  port: 8080
 resources:
   requests:
     cpu: 100m
