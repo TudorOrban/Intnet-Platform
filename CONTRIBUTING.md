@@ -37,9 +37,3 @@ We welcome suggestions for new features. If there's something you'd like to see 
 2. Click on the "New issue" button.
 3. Select the "Feature Request" template.
 4. Fill out the template with a clear description of your idea and explain how it would benefit users.
-
-## Community and Support
-
-Join us on Slack! It's a place for discussions, questions, and connecting with other contributors. Whether you need help getting started, have a question about a feature, or want to share ideas, our chat server is the place to be.
-
-- [Join our Slack workspace](https://join.slack.com/t/chainoptim/shared_invite/zt-2f5v91a81-VGjyn1vIXzGssU7uo6iMVw)
