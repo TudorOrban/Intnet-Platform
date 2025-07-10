@@ -1,6 +1,6 @@
 # Intnet: Electric Grid Management Platform
 
-Intnet is a learning project designed to explore the complexities of electric grid management through a modern, distributed systems approach. While not intended for production deployment, it serves as a comprehensive demonstration of **microservices architecture**, **data streaming**, **real-time analytics**, and **machine learning operations (MLOps)** in the context of critical infrastructure.
+Intnet is a learning project designed to explore the complexities of electric grid management through a modern, distributed systems approach. While not intended for production deployment, it serves as a comprehensive demonstration of **microservices architecture**, **data streaming**, and **machine learning operations (MLOps)** in the context of critical infrastructure.
 
 ---
 
