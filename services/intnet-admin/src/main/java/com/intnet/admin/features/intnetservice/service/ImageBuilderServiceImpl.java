@@ -10,6 +10,9 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
+/*
+ * Service responsible for building the image of a microservice
+ */
 @Service
 public class ImageBuilderServiceImpl implements ImageBuilderService {
 
