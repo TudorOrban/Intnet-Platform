@@ -9,6 +9,9 @@ import com.intnet.gridtopology.features.graph.repository.GridNodeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+/*
+ * Service responsuble for CRUD ops for the grid graph
+ */
 @Service
 public class GridGraphServiceImpl implements GridGraphService {
 
