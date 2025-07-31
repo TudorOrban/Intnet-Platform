@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/*
+ * Service responsible for managing grid devices
+ */
 @Service
 public class DeviceServiceImpl implements DeviceService {
 
