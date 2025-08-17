@@ -1,3 +1,4 @@
+# Use JDK 21
 FROM openjdk:21-jdk
 
 WORKDIR /app
