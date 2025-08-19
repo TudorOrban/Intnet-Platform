@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/*
+ * Service responsible for CRUD ops for the Load entity
+ */
 @Service
 public class LoadServiceImpl implements LoadService {
 
