@@ -22,6 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 
+/*
+ * Service responsible with interacting with the Kubernetes cluster
+ */
 @Service
 public class IntnetServiceKubernetesServiceImpl implements IntnetServiceKubernetesService {
 
