@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/*
+ * Service responsible with CRUD ops for GridAssociation entity
+ */
 @Service
 public class GridElementAssociationServiceImpl implements GridElementAssociationService {
 
