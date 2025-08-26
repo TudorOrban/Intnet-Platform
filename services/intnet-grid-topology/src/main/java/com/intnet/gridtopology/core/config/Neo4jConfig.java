@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.core.transaction.Neo4jTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/*
+ * Configuration of Neo4J
+ */
 @Configuration
 @EnableTransactionManagement
 public class Neo4jConfig {
