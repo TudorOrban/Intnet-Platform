@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+ * Service responsible for CRUD ops for the CustomRole feature
+ */
 @Service
 public class CustomRoleServiceImpl implements CustomRoleService {
 
