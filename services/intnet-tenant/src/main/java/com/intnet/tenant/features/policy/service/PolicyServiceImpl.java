@@ -21,6 +21,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/*
+ * Service responsible for CRUD ops for Policy feature
+ */
 @Service
 public class PolicyServiceImpl implements PolicyService {
 
