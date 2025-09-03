@@ -11,6 +11,9 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * Service responsible for managing Intnet microservices
+ */
 @Service
 public class IntnetServiceManagerServiceImpl implements IntnetServiceManagerService {
 
