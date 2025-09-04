@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /*
- * Controller for the Device feature
+ * Controller for CRUD ops for the Device feature
  */
 @RestController
 @RequestMapping("api/v1/devices")
