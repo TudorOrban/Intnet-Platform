@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /*
- * Service responsible for CRUD ops for Policy feature
+ * Service responsible for CRUD ops for the Policy feature
  */
 @Service
 public class PolicyServiceImpl implements PolicyService {
