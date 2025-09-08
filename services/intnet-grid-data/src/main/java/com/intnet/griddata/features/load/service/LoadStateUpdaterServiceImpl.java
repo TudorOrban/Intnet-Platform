@@ -12,6 +12,9 @@ import com.intnet.griddata.shared.sanitization.service.EntitySanitizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/*
+ * Service responsible for updating the state of Loads
+ */
 @Service
 public class LoadStateUpdaterServiceImpl implements LoadStateUpdaterService {
 
