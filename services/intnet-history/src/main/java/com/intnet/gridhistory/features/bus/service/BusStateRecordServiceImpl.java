@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /*
- * Service responsible for CRUD ops for the Bus State Record entity
+ * Service responsible for CRUD ops for the Bus State Record feature
  */
 @Service
 public class BusStateRecordServiceImpl implements BusStateRecordService {
