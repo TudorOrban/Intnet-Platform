@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 /*
- * Controller responsible for building Docker images for the Intnet services
+ * Controller responsible for exposing endpoints for building Docker images for the Intnet services
  */
 @RestController
 @RequestMapping("api/v1/build-images")
