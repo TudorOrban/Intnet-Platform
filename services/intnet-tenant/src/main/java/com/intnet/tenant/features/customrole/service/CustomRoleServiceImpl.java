@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /*
- * Service responsible for CRUD ops for the Custom Role feature
+ * Service responsible for CRUD ops for the Custom Role entity
  */
 @Service
 public class CustomRoleServiceImpl implements CustomRoleService {
