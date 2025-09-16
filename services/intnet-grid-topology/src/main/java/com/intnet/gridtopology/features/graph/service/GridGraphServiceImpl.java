@@ -10,7 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 /*
- * Service responsible for CRUD ops for the Grid Graph feature
+ * Service responsible for CRUD ops for the Grid Graph entity
  */
 @Service
 public class GridGraphServiceImpl implements GridGraphService {
