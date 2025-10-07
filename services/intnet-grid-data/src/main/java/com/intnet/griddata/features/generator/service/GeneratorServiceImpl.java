@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /*
- * Service responsible for CRUD ops for Generator entity
+ * Service responsible for CRUD ops for Generator feature
  */
 @Service
 public class GeneratorServiceImpl implements GeneratorService {
