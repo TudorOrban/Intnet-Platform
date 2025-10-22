@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /*
- * Service responsible for updating the state of the Edge feature
+ * Service responsible for updating the state of the Edge entity
  */
 @Service
 public class EdgeStateUpdaterServiceImpl implements EdgeStateUpdaterService {
