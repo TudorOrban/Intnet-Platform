@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /*
- * Service responsible for updating the state of the Generator entities
+ * Service responsible for updating the state of the Generators
  */
 @Service
 public class GeneratorStateUpdaterServiceImpl implements GeneratorStateUpdaterService {
