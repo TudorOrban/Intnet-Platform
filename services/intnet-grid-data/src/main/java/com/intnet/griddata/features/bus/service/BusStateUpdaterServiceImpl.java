@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /*
- * Service responsible for updating the state of Bus entities
+ * Service responsible for updating the state of Buses
  */
 @Service
 public class BusStateUpdaterServiceImpl implements BusStateUpdaterService {
