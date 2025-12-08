@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /*
- * Service responsible for CRUD ops for the Bus feature
+ * Service responsible for CRUD ops for the Bus entity
  */
 @Service
 public class BusServiceImpl implements BusService {
