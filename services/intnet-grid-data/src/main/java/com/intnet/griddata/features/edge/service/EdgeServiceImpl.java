@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /*
- * Service responsible for CRUD ops for the Edge feature
+ * Service responsible for CRUD ops for the Edge entity
  */
 @Service
 public class EdgeServiceImpl implements EdgeService {
