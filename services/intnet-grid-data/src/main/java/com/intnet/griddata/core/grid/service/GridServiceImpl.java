@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /*
- * Service responsible for CRUD ops for the Grid feature
+ * Service responsible for CRUD ops for the Grid entity
  */
 @Service
 public class GridServiceImpl implements GridService {
